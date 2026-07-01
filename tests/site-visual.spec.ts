@@ -62,6 +62,32 @@ test.describe('site layout', () => {
     await page.mouse.click(stageBox.x + stageBox.width / 2, stageBox.y + stageBox.height / 2);
     await expect(page.locator('[data-viewer-image]')).toHaveAttribute('data-zoomed', 'false');
 
+    await page.mouse.click(stageBox.x + stageBox.width / 2, stageBox.y + stageBox.height / 2);
+    await expect(page.locator('[data-viewer-image]')).toHaveAttribute('data-zoomed', 'true');
+    const zoomedTransform = await viewerImage.evaluate((image) => getComputedStyle(image).transform);
+    await page.mouse.move(stageBox.x + stageBox.width / 2 + 80, stageBox.y + stageBox.height / 2 + 48);
+    expect(await viewerImage.evaluate((image) => getComputedStyle(image).transform)).toBe(zoomedTransform);
+
+    await viewerImage.dispatchEvent('mousedown', {
+      clientX: stageBox.x + stageBox.width / 2,
+      clientY: stageBox.y + stageBox.height / 2,
+      button: 0,
+      buttons: 1,
+      bubbles: true,
+      cancelable: true
+    });
+    await page.evaluate(
+      ({ x, y }) => {
+        document.dispatchEvent(new MouseEvent('mousemove', { clientX: x, clientY: y, buttons: 1, bubbles: true }));
+        document.dispatchEvent(new MouseEvent('mouseup', { clientX: x, clientY: y, buttons: 0, bubbles: true }));
+      },
+      {
+        x: stageBox.x + stageBox.width / 2 + 80,
+        y: stageBox.y + stageBox.height / 2 + 48
+      }
+    );
+    expect(await viewerImage.evaluate((image) => getComputedStyle(image).transform)).not.toBe(zoomedTransform);
+
     await page.locator('[data-viewer-next]').click();
     await expect(page.locator('[data-viewer-image]')).toHaveAttribute('src', /tagweaver\/assets\/screenshots\/en\/2\.png/);
     await expect(page.locator('[data-viewer-thumb]').nth(1)).toHaveAttribute('aria-current', 'true');

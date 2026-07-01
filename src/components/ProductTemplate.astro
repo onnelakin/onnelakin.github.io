@@ -534,6 +534,8 @@ const jsonLd = {
   }
 
   .viewer-image-stage {
+    position: relative;
+    z-index: 1;
     max-width: 100%;
     max-height: calc(100vh - 194px);
     overflow: hidden;
@@ -567,6 +569,8 @@ const jsonLd = {
   }
 
   .viewer-nav {
+    position: relative;
+    z-index: 2;
     width: 44px;
     height: 44px;
     justify-self: center;
@@ -777,6 +781,8 @@ const jsonLd = {
   let dragPanStartY = 0;
   let isDraggingImage = false;
   let didDragImage = false;
+  let suppressNextViewerClick = false;
+  const dragThreshold = 4;
 
   const applyViewerZoom = () => {
     if (!viewerImage) return;
@@ -854,6 +860,7 @@ const jsonLd = {
     if (!viewer?.open || !viewerImage) return;
     didDragImage = false;
     if (viewerImage.dataset.zoomed !== 'true') return;
+    event.preventDefault();
     isDraggingImage = true;
     dragStartX = event.clientX;
     dragStartY = event.clientY;
@@ -863,9 +870,15 @@ const jsonLd = {
   });
   document.addEventListener('mousemove', (event) => {
     if (!isDraggingImage || !viewerImage) return;
+    if (event.buttons !== 1) {
+      isDraggingImage = false;
+      viewerImage.dataset.dragging = 'false';
+      return;
+    }
     const deltaX = event.clientX - dragStartX;
     const deltaY = event.clientY - dragStartY;
-    if (Math.abs(deltaX) > 2 || Math.abs(deltaY) > 2) didDragImage = true;
+    if (!didDragImage && Math.hypot(deltaX, deltaY) < dragThreshold) return;
+    didDragImage = true;
     viewerPanX = dragPanStartX + deltaX;
     viewerPanY = dragPanStartY + deltaY;
     applyViewerZoom();
@@ -874,11 +887,18 @@ const jsonLd = {
     if (!isDraggingImage || !viewerImage) return;
     isDraggingImage = false;
     viewerImage.dataset.dragging = 'false';
+    if (didDragImage) {
+      suppressNextViewerClick = true;
+      window.setTimeout(() => {
+        suppressNextViewerClick = false;
+      }, 0);
+    }
   });
   viewerImage?.addEventListener('click', (event) => {
     if (!viewer?.open) return;
-    if (didDragImage) {
+    if (suppressNextViewerClick) {
       event.preventDefault();
+      suppressNextViewerClick = false;
       didDragImage = false;
       return;
     }
