@@ -43,11 +43,13 @@ const iconUrl = new URL(data.iconPath, Astro.site);
 const canonicalUrl = new URL(data.canonicalPath, Astro.site);
 const enPath = `/apps/${data.source.slug}/`;
 const koPath = `/apps/${data.source.slug}/ko/`;
+const offerPriceCurrency = meta.priceCurrency ?? (meta.price === 0 ? 'USD' : undefined);
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
   name: meta.title,
   operatingSystem: meta.platforms.join(', '),
+  applicationCategory: 'UtilitiesApplication',
   applicationSubCategory: copy.android.name || copy.ios.name,
   description: data.seoDescription,
   inLanguage: data.locale,
@@ -64,7 +66,7 @@ const jsonLd = {
         offers: {
           '@type': 'Offer',
           price: meta.price,
-          ...(meta.priceCurrency ? { priceCurrency: meta.priceCurrency } : {}),
+          ...(offerPriceCurrency ? { priceCurrency: offerPriceCurrency } : {}),
           ...(meta.pricing ? { description: meta.pricing } : {})
         }
       }
