@@ -42,6 +42,28 @@ test.describe('site layout', () => {
     expect(overlaps).toBe(false);
   });
 
+  test('product store links match page locale', async ({ page }) => {
+    await page.goto('/apps/tagweaver/');
+    await expect(page.locator('.hero .button.primary').first()).toHaveAttribute(
+      'href',
+      /https:\/\/apps\.apple\.com\/us\/app\/id6759609875\?l=en-US/
+    );
+    await expect(page.locator('.hero .button.primary').nth(1)).toHaveAttribute(
+      'href',
+      /https:\/\/play\.google\.com\/store\/apps\/details\?id=com\.onnellab\.tagweaver2&hl=en&gl=US/
+    );
+
+    await page.goto('/apps/tagweaver/ko/');
+    await expect(page.locator('.hero .button.primary').first()).toHaveAttribute(
+      'href',
+      /https:\/\/apps\.apple\.com\/kr\/app\/id6759609875\?l=ko/
+    );
+    await expect(page.locator('.hero .button.primary').nth(1)).toHaveAttribute(
+      'href',
+      /https:\/\/play\.google\.com\/store\/apps\/details\?id=com\.onnellab\.tagweaver2&hl=ko&gl=KR/
+    );
+  });
+
   test('product screenshots open in an in-page viewer', async ({ page }) => {
     await page.goto('/apps/tagweaver/');
     await page.locator('.screens-band summary').click();

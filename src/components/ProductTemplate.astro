@@ -46,6 +46,23 @@ const canonicalUrl = new URL(data.canonicalPath, Astro.site);
 const enPath = `/apps/${data.source.slug}/`;
 const koPath = `/apps/${data.source.slug}/ko/`;
 const offerPriceCurrency = meta.priceCurrency ?? (meta.price === 0 ? 'USD' : undefined);
+const localizedAppStoreUrl = (url: string, locale: ProductPageData['locale']) => {
+  const storeCountry = locale === 'ko' ? 'kr' : 'us';
+  const language = locale === 'ko' ? 'ko' : 'en-US';
+  const appStoreUrl = new URL(url);
+  appStoreUrl.pathname = appStoreUrl.pathname.replace(/^\/(?:[a-z]{2}\/)?app\//, `/${storeCountry}/app/`);
+  appStoreUrl.searchParams.set('l', language);
+  return appStoreUrl.toString();
+};
+const localizedGooglePlayUrl = (url: string | undefined, locale: ProductPageData['locale']) => {
+  if (!url) return undefined;
+  const playStoreUrl = new URL(url);
+  playStoreUrl.searchParams.set('hl', locale === 'ko' ? 'ko' : 'en');
+  playStoreUrl.searchParams.set('gl', locale === 'ko' ? 'KR' : 'US');
+  return playStoreUrl.toString();
+};
+const appStoreUrl = localizedAppStoreUrl(meta.appstore, data.locale);
+const googlePlayUrl = localizedGooglePlayUrl(meta.googleplay, data.locale);
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
@@ -56,8 +73,8 @@ const jsonLd = {
   description: data.seoDescription,
   inLanguage: data.locale,
   image: iconUrl.toString(),
-  downloadUrl: [meta.appstore, meta.googleplay].filter(Boolean),
-  sameAs: [meta.appstore, meta.googleplay].filter(Boolean),
+  downloadUrl: [appStoreUrl, googlePlayUrl].filter(Boolean),
+  sameAs: [appStoreUrl, googlePlayUrl].filter(Boolean),
   publisher: {
     '@type': 'Organization',
     name: 'ONNELLAB',
@@ -120,8 +137,8 @@ const jsonLd = {
       </div>
 
       <div class="actions" aria-label={labels.stores}>
-        <a class="button primary" href={meta.appstore}>{labels.appStore}</a>
-        {meta.googleplay && <a class="button primary" href={meta.googleplay}>{labels.googlePlay}</a>}
+        <a class="button primary" href={appStoreUrl}>{labels.appStore}</a>
+        {googlePlayUrl && <a class="button primary" href={googlePlayUrl}>{labels.googlePlay}</a>}
         <a class="button" href={meta.privacy}>{labels.privacy}</a>
         <a class="button" href={`mailto:${meta.supportEmail}`}>{labels.support}</a>
       </div>
@@ -220,8 +237,8 @@ const jsonLd = {
         <h2>{meta.title}</h2>
       </div>
       <div class="actions compact" aria-label={labels.stores}>
-        <a class="button primary" href={meta.appstore}>{labels.appStore}</a>
-        {meta.googleplay && <a class="button primary" href={meta.googleplay}>{labels.googlePlay}</a>}
+        <a class="button primary" href={appStoreUrl}>{labels.appStore}</a>
+        {googlePlayUrl && <a class="button primary" href={googlePlayUrl}>{labels.googlePlay}</a>}
       </div>
     </section>
 
@@ -449,6 +466,10 @@ const jsonLd = {
   .download-band {
     border-top: 1px solid #e3dbcf;
     padding: 46px 0;
+  }
+
+  .content-band {
+    padding-top: 50px;
   }
 
   .screens-band summary {
@@ -700,6 +721,10 @@ const jsonLd = {
     line-height: 1.7;
   }
 
+  .copy-column p + p {
+    margin-top: 18px;
+  }
+
   ul {
     margin: 14px 0 0;
     padding-left: 20px;
@@ -707,30 +732,34 @@ const jsonLd = {
 
   footer {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    align-items: center;
-    gap: 16px;
+    justify-items: center;
+    gap: 8px;
     border-top: 1px solid #e0d8cb;
     padding-top: 18px;
     text-align: center;
   }
 
   footer span {
-    justify-self: end;
+    order: 2;
+  }
+
+  footer a:first-of-type {
+    order: 1;
   }
 
   footer a:last-child {
-    justify-self: start;
+    order: 3;
   }
 
   @media (max-width: 680px) {
     .page-shell {
       width: min(100% - 24px, 980px);
+      padding-top: 20px;
     }
 
     .hero {
       min-height: auto;
-      padding: 42px 0 32px;
+      padding: 34px 0 28px;
     }
 
     .identity,
@@ -745,9 +774,9 @@ const jsonLd = {
     }
 
     .identity img {
-      width: 92px;
-      height: 92px;
-      border-radius: 20px;
+      width: 86px;
+      height: 86px;
+      border-radius: 19px;
     }
 
     h1 {
@@ -755,7 +784,7 @@ const jsonLd = {
     }
 
     .intro {
-      margin-top: 14px;
+      margin-top: 12px;
       font-size: 17px;
       line-height: 1.55;
     }
@@ -788,7 +817,7 @@ const jsonLd = {
     .content-band,
     .screens-band,
     .download-band {
-      padding: 34px 0;
+      padding: 30px 0;
     }
 
     p,
@@ -844,16 +873,6 @@ const jsonLd = {
       width: 100%;
     }
 
-    footer {
-      grid-template-columns: 1fr;
-      justify-items: center;
-      gap: 8px;
-    }
-
-    footer span,
-    footer a:last-child {
-      justify-self: center;
-    }
   }
 </style>
 
