@@ -14,6 +14,7 @@ export type ProductMeta = {
   privacy: string;
   supportEmail: string;
   icon: string;
+  accent?: ProductAccent;
 };
 
 export type PlatformCopy = {
@@ -120,7 +121,7 @@ export function getProductPageData(slug: string, locale: Locale): ProductPageDat
     seoTitle: source.meta.title,
     seoDescription,
     iconPath: getIconRoutePath(source),
-    accent: productAccent(source.slug)
+    accent: productAccent(source)
   };
 }
 
@@ -136,13 +137,13 @@ export function getProductIndexItems(locale: Locale): ProductIndexItem[] {
       iconPath: getIconRoutePath(source),
       href: locale === 'en' ? `/apps/${source.slug}/` : `/apps/${source.slug}/ko/`,
       privacy: source.meta.privacy,
-      accent: productAccent(source.slug)
+      accent: productAccent(source)
     };
   });
 }
 
-export function productAccent(slug: string): ProductAccent {
-  return accentPalette[hashSlug(slug) % accentPalette.length];
+export function productAccent(source: ProductSource): ProductAccent {
+  return source.meta.accent ?? accentPalette[hashSlug(source.slug) % accentPalette.length];
 }
 
 export function pageBodyDescription(copy: ProductCopy): string {
@@ -259,7 +260,8 @@ function readProductMeta(contentDir: string): ProductMeta {
     googleplay: values.get('googleplay'),
     privacy: required(values, 'privacy'),
     supportEmail: required(values, 'supportEmail'),
-    icon: required(values, 'icon')
+    icon: required(values, 'icon'),
+    accent: optionalAccent(values.get('accent'))
   };
 }
 
@@ -342,6 +344,14 @@ function required(values: Map<string, string>, key: string): string {
 
 function normalizeDocPath(value: string): string {
   return value.replaceAll('\\', '/').replace(/^\/+/, '');
+}
+
+function optionalAccent(value: string | undefined): ProductAccent | undefined {
+  if (!value) return undefined;
+  const [border, background, text] = value.split(',').map((item) => item.trim());
+  if (!border || !background || !text) return undefined;
+  if (![border, background, text].every((item) => /^#[0-9a-fA-F]{6}$/.test(item))) return undefined;
+  return { border, background, text };
 }
 
 function hashSlug(value: string): number {

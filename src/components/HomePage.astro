@@ -43,6 +43,7 @@ const text =
         allAppsHref: '/apps/ko/',
         openApp: '열기',
         upcoming: '예정 프로젝트',
+        upcomingItems: ['FloMo', 'Nunote', 'Textoria', 'Heara'],
         privacy: '개인정보처리방침',
         contact: '문의',
         inquiry: '문의:',
@@ -64,6 +65,7 @@ const text =
         allAppsHref: '/apps/',
         openApp: 'Open',
         upcoming: 'Upcoming Projects',
+        upcomingItems: ['FloMo', 'Nunote', 'Textoria', 'Heara'],
         privacy: 'Privacy Policy',
         contact: 'Contact',
         inquiry: 'For inquiries:',
@@ -92,9 +94,10 @@ const text =
 
     <h1>ONNELLAB</h1>
 
-    <p>{text.intro}</p>
-
-    <p>{text.focus}</p>
+    <section class="intro-block" aria-label="ONNELLAB">
+      <p>{text.intro}</p>
+      <p>{text.focus}</p>
+    </section>
 
     {featuredApp && (
       <section class="featured" aria-label={text.featured} style={appCardStyle(featuredApp)}>
@@ -144,12 +147,14 @@ const text =
 
     <h2>{text.upcoming}</h2>
 
-    <ul>
-      <li>FloMo</li>
-      <li>Nunote</li>
-      <li>Textoria</li>
-      <li>Heara</li>
-    </ul>
+    <p class="inline-list">
+      {text.upcomingItems.map((item, index) => (
+        <>
+          <span>{item}</span>
+          {index < text.upcomingItems.length - 1 && <span aria-hidden="true">/</span>}
+        </>
+      ))}
+    </p>
 
     <h2>{text.privacy}</h2>
 
@@ -199,6 +204,16 @@ const text =
 
   p {
     margin: 12px 0;
+  }
+
+  .intro-block {
+    border-left: 2px solid #d8d0c5;
+    margin: 22px 0 0;
+    padding-left: 18px;
+  }
+
+  .intro-block p {
+    max-width: 680px;
   }
 
   ul {
@@ -325,6 +340,13 @@ const text =
   .upcoming-card {
     color: #5b574f;
     border-bottom: 0;
+  }
+
+  .inline-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    color: #737067;
   }
 
   small {
