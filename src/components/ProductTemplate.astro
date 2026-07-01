@@ -180,11 +180,6 @@ const jsonLd = {
         <dialog class="screenshot-viewer" aria-label={labels.screens}>
           <div class="viewer-panel">
             <div class="viewer-bar">
-              <div class="viewer-zoom" aria-label="Zoom">
-                <button type="button" data-viewer-zoom-out aria-label="Zoom out">−</button>
-                <button type="button" data-viewer-zoom-reset aria-label="Reset zoom">100%</button>
-                <button type="button" data-viewer-zoom-in aria-label="Zoom in">+</button>
-              </div>
               <button class="viewer-close" type="button" data-viewer-close aria-label="Close">×</button>
             </div>
             <div class="viewer-frame">
@@ -482,7 +477,7 @@ const jsonLd = {
     border: 1px solid rgba(224, 216, 203, 0.72);
     border-radius: 12px;
     padding: 0;
-    background: rgba(255, 253, 248, 0.97);
+    background: rgba(246, 244, 240, 0.98);
     color: #37342f;
     box-shadow:
       0 22px 70px rgba(55, 50, 43, 0.18),
@@ -502,16 +497,14 @@ const jsonLd = {
   .viewer-bar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+    justify-content: flex-end;
   }
 
   .viewer-close,
-  .viewer-nav,
-  .viewer-zoom button {
+  .viewer-nav {
     border: 1px solid rgba(214, 206, 192, 0.58);
     border-radius: 8px;
-    background: rgba(255, 253, 248, 0.72);
+    background: rgba(246, 244, 240, 0.76);
     color: #37342f;
     font: inherit;
     font-weight: 620;
@@ -519,24 +512,10 @@ const jsonLd = {
   }
 
   .viewer-close:hover,
-  .viewer-nav:hover,
-  .viewer-zoom button:hover {
+  .viewer-nav:hover {
     border-color: var(--accent-border);
-    background: rgba(255, 253, 248, 0.92);
+    background: rgba(250, 249, 246, 0.94);
     color: var(--accent-text);
-  }
-
-  .viewer-zoom {
-    display: inline-flex;
-    gap: 6px;
-  }
-
-  .viewer-zoom button {
-    min-width: 34px;
-    height: 34px;
-    padding: 0 8px;
-    font-size: 13px;
-    line-height: 1;
   }
 
   .viewer-close {
@@ -557,8 +536,10 @@ const jsonLd = {
   .viewer-image-stage {
     max-width: 100%;
     max-height: calc(100vh - 194px);
-    overflow: auto;
+    overflow: hidden;
     border-radius: 10px;
+    cursor: zoom-in;
+    touch-action: none;
   }
 
   .viewer-image-stage img {
@@ -567,15 +548,22 @@ const jsonLd = {
     max-width: 100%;
     max-height: calc(100vh - 194px);
     margin: 0 auto;
-    border: 1px solid #e0d8cb;
+    border: 1px solid #d8d2c9;
     border-radius: 10px;
-    background: #faf8f5;
-    transform-origin: top center;
+    background: #f3f1ec;
+    transform-origin: center;
+    user-select: none;
+    will-change: transform;
   }
 
   .viewer-image-stage img[data-zoomed="true"] {
     max-width: none;
     max-height: none;
+    cursor: grab;
+  }
+
+  .viewer-image-stage img[data-dragging="true"] {
+    cursor: grabbing;
   }
 
   .viewer-nav {
@@ -624,7 +612,6 @@ const jsonLd = {
 
   .viewer-close:focus-visible,
   .viewer-nav:focus-visible,
-  .viewer-zoom button:focus-visible,
   .viewer-thumb:focus-visible {
     outline: 2px solid var(--accent-text);
     outline-offset: 2px;
@@ -779,22 +766,49 @@ const jsonLd = {
   const closeButton = document.querySelector('[data-viewer-close]');
   const prevButton = document.querySelector('[data-viewer-prev]');
   const nextButton = document.querySelector('[data-viewer-next]');
-  const zoomOutButton = document.querySelector('[data-viewer-zoom-out]');
-  const zoomResetButton = document.querySelector('[data-viewer-zoom-reset]');
-  const zoomInButton = document.querySelector('[data-viewer-zoom-in]');
   const thumbnailButtons = Array.from(document.querySelectorAll('[data-viewer-thumb]'));
   let currentScreenshotIndex = 0;
   let viewerZoom = 1;
+  let viewerPanX = 0;
+  let viewerPanY = 0;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let dragPanStartX = 0;
+  let dragPanStartY = 0;
+  let isDraggingImage = false;
+  let didDragImage = false;
 
   const applyViewerZoom = () => {
-    if (!viewerImage || !zoomResetButton) return;
-    viewerImage.style.transform = `scale(${viewerZoom})`;
+    if (!viewerImage) return;
+    viewerImage.style.transform = `translate(${viewerPanX}px, ${viewerPanY}px) scale(${viewerZoom})`;
     viewerImage.dataset.zoomed = viewerZoom > 1 ? 'true' : 'false';
-    zoomResetButton.textContent = `${Math.round(viewerZoom * 100)}%`;
   };
 
-  const setViewerZoom = (zoom) => {
-    viewerZoom = Math.min(3, Math.max(1, Math.round(zoom * 10) / 10));
+  const resetViewerZoom = () => {
+    viewerZoom = 1;
+    viewerPanX = 0;
+    viewerPanY = 0;
+    applyViewerZoom();
+  };
+
+  const zoomViewerAtPoint = (clientX, clientY) => {
+    if (!viewerImage || !viewerStage) return;
+    if (viewerZoom > 1) {
+      resetViewerZoom();
+      return;
+    }
+    const stageRect = viewerStage.getBoundingClientRect();
+    const imageRect = viewerImage.getBoundingClientRect();
+    const targetZoom = 2.2;
+    const stageCenterX = stageRect.left + stageRect.width / 2;
+    const stageCenterY = stageRect.top + stageRect.height / 2;
+    const imageCenterX = imageRect.left + imageRect.width / 2;
+    const imageCenterY = imageRect.top + imageRect.height / 2;
+    const imagePointX = clientX - imageCenterX;
+    const imagePointY = clientY - imageCenterY;
+    viewerZoom = targetZoom;
+    viewerPanX = stageCenterX - imageCenterX - imagePointX * targetZoom;
+    viewerPanY = stageCenterY - imageCenterY - imagePointY * targetZoom;
     applyViewerZoom();
   };
 
@@ -805,11 +819,7 @@ const jsonLd = {
     const image = link.querySelector('img');
     viewerImage.src = link.getAttribute('href');
     viewerImage.alt = image?.getAttribute('alt') || '';
-    if (viewerStage) {
-      viewerStage.scrollTop = 0;
-      viewerStage.scrollLeft = 0;
-    }
-    setViewerZoom(1);
+    resetViewerZoom();
     thumbnailButtons.forEach((button, thumbnailIndex) => {
       if (thumbnailIndex === currentScreenshotIndex) {
         button.setAttribute('aria-current', 'true');
@@ -840,13 +850,39 @@ const jsonLd = {
   closeButton?.addEventListener('click', closeViewer);
   prevButton?.addEventListener('click', () => setViewerImage(currentScreenshotIndex - 1));
   nextButton?.addEventListener('click', () => setViewerImage(currentScreenshotIndex + 1));
-  zoomOutButton?.addEventListener('click', () => setViewerZoom(viewerZoom - 0.2));
-  zoomResetButton?.addEventListener('click', () => setViewerZoom(1));
-  zoomInButton?.addEventListener('click', () => setViewerZoom(viewerZoom + 0.2));
-  viewerStage?.addEventListener('wheel', (event) => {
-    if (!viewer?.open || !event.ctrlKey) return;
-    event.preventDefault();
-    setViewerZoom(viewerZoom + (event.deltaY < 0 ? 0.2 : -0.2));
+  viewerImage?.addEventListener('mousedown', (event) => {
+    if (!viewer?.open || !viewerImage) return;
+    didDragImage = false;
+    if (viewerImage.dataset.zoomed !== 'true') return;
+    isDraggingImage = true;
+    dragStartX = event.clientX;
+    dragStartY = event.clientY;
+    dragPanStartX = viewerPanX;
+    dragPanStartY = viewerPanY;
+    viewerImage.dataset.dragging = 'true';
+  });
+  document.addEventListener('mousemove', (event) => {
+    if (!isDraggingImage || !viewerImage) return;
+    const deltaX = event.clientX - dragStartX;
+    const deltaY = event.clientY - dragStartY;
+    if (Math.abs(deltaX) > 2 || Math.abs(deltaY) > 2) didDragImage = true;
+    viewerPanX = dragPanStartX + deltaX;
+    viewerPanY = dragPanStartY + deltaY;
+    applyViewerZoom();
+  });
+  document.addEventListener('mouseup', () => {
+    if (!isDraggingImage || !viewerImage) return;
+    isDraggingImage = false;
+    viewerImage.dataset.dragging = 'false';
+  });
+  viewerImage?.addEventListener('click', (event) => {
+    if (!viewer?.open) return;
+    if (didDragImage) {
+      event.preventDefault();
+      didDragImage = false;
+      return;
+    }
+    zoomViewerAtPoint(event.clientX, event.clientY);
   });
   thumbnailButtons.forEach((button, index) => {
     button.addEventListener('click', () => setViewerImage(index));

@@ -52,12 +52,14 @@ test.describe('site layout', () => {
     await expect(page.locator('[data-viewer-image]')).toHaveAttribute('src', /tagweaver\/assets\/screenshots\/en\/1\.png/);
     await expect(page.locator('[data-viewer-thumb]').first()).toHaveAttribute('aria-current', 'true');
 
-    await page.locator('[data-viewer-zoom-in]').click();
-    await expect(page.locator('[data-viewer-zoom-reset]')).toHaveText('120%');
+    const viewerImage = page.locator('[data-viewer-image]');
+    const stageBox = await page.locator('[data-viewer-stage]').boundingBox();
+    expect(stageBox).not.toBeNull();
+    if (!stageBox) return;
+    await page.mouse.click(stageBox.x + stageBox.width / 2, stageBox.y + stageBox.height / 2);
     await expect(page.locator('[data-viewer-image]')).toHaveAttribute('data-zoomed', 'true');
 
-    await page.locator('[data-viewer-zoom-reset]').click();
-    await expect(page.locator('[data-viewer-zoom-reset]')).toHaveText('100%');
+    await page.mouse.click(stageBox.x + stageBox.width / 2, stageBox.y + stageBox.height / 2);
     await expect(page.locator('[data-viewer-image]')).toHaveAttribute('data-zoomed', 'false');
 
     await page.locator('[data-viewer-next]').click();
