@@ -98,13 +98,12 @@ const text =
   description={text.description}
   canonicalPath={locale === 'ko' ? '/ko/' : '/'}
   lang={locale}
+  alternates={[
+    { lang: 'en', path: '/' },
+    { lang: 'ko', path: '/ko/' },
+    { lang: 'x-default', path: '/' }
+  ]}
 >
-  <link
-    slot="head"
-    rel="alternate"
-    hreflang={locale === 'ko' ? 'en' : 'ko'}
-    href={new URL(text.switchHref, Astro.site)}
-  />
   <main class="page-shell">
     <nav aria-label="Language">
       <a href={text.switchHref}>{text.switchLabel}</a>

@@ -37,13 +37,12 @@ const text =
   description={text.description}
   canonicalPath={locale === 'ko' ? '/apps/ko/' : '/apps/'}
   lang={locale}
+  alternates={[
+    { lang: 'en', path: '/apps/' },
+    { lang: 'ko', path: '/apps/ko/' },
+    { lang: 'x-default', path: '/apps/' }
+  ]}
 >
-  <link
-    slot="head"
-    rel="alternate"
-    hreflang={locale === 'ko' ? 'en' : 'ko'}
-    href={new URL(text.switchHref, Astro.site)}
-  />
   <main class="page-shell">
     <nav aria-label="Navigation">
       <a class="brand" href={text.homeHref}>ONNELLAB</a>

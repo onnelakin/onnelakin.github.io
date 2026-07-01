@@ -41,7 +41,8 @@ const homePath = data.locale === 'ko' ? '/ko/' : '/';
 const pageStyle = `--accent-border: ${data.accent.border}; --accent-bg: ${data.accent.background}; --accent-text: ${data.accent.text};`;
 const iconUrl = new URL(data.iconPath, Astro.site);
 const canonicalUrl = new URL(data.canonicalPath, Astro.site);
-const alternateUrl = new URL(data.alternatePath, Astro.site);
+const enPath = `/apps/${data.source.slug}/`;
+const koPath = `/apps/${data.source.slug}/ko/`;
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
@@ -49,8 +50,15 @@ const jsonLd = {
   operatingSystem: meta.platforms.join(', '),
   applicationSubCategory: copy.android.name || copy.ios.name,
   description: data.seoDescription,
+  inLanguage: data.locale,
   image: iconUrl.toString(),
   downloadUrl: [meta.appstore, meta.googleplay].filter(Boolean),
+  sameAs: [meta.appstore, meta.googleplay].filter(Boolean),
+  publisher: {
+    '@type': 'Organization',
+    name: 'ONNELLAB',
+    url: new URL('/', Astro.site).toString()
+  },
   url: canonicalUrl.toString()
 };
 ---
@@ -62,9 +70,12 @@ const jsonLd = {
   lang={data.locale}
   image={data.iconPath}
   jsonLd={jsonLd}
+  alternates={[
+    { lang: 'en', path: enPath },
+    { lang: 'ko', path: koPath },
+    { lang: 'x-default', path: enPath }
+  ]}
 >
-  <link slot="head" rel="alternate" hreflang={data.locale === 'en' ? 'ko' : 'en'} href={alternateUrl} />
-
   <main class="page-shell" style={pageStyle}>
     <header class="topbar" aria-label="ONNELLAB">
       <a class="brand" href={homePath}>ONNELLAB</a>

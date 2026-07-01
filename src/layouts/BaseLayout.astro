@@ -6,6 +6,7 @@ type Props = {
   lang?: string;
   image?: string;
   jsonLd?: unknown;
+  alternates?: Array<{ lang: string; path: string }>;
 };
 
 const {
@@ -14,7 +15,8 @@ const {
   canonicalPath,
   lang = 'en',
   image,
-  jsonLd
+  jsonLd,
+  alternates = []
 } = Astro.props;
 const canonicalUrl = new URL(canonicalPath, Astro.site);
 const imageUrl = image ? new URL(image, Astro.site) : undefined;
@@ -28,6 +30,10 @@ const imageUrl = image ? new URL(image, Astro.site) : undefined;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" type="application/rss+xml" title="ONNELLAB Apps" href={new URL('/rss.xml', Astro.site)} />
+    {alternates.map((alternate) => (
+      <link rel="alternate" hreflang={alternate.lang} href={new URL(alternate.path, Astro.site)} />
+    ))}
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
