@@ -172,16 +172,16 @@ const text =
     margin: 0;
     color: #383631;
     font-size: clamp(44px, 7vw, 70px);
-    line-height: 0.98;
+    line-height: 1;
     letter-spacing: 0;
     word-break: keep-all;
   }
 
   .header-rule {
-    width: 54px;
+    width: 62px;
     height: 2px;
-    margin-top: 22px;
-    background: #cfc5b7;
+    margin-top: 24px;
+    background: linear-gradient(90deg, #b9ad9d, rgba(207, 197, 183, 0));
   }
 
   .policy-list {
@@ -238,9 +238,10 @@ const text =
   }
 
   h2 {
-    margin: 0 0 5px;
+    margin: 0 0 6px;
     color: #3f3b35;
-    font-size: 20px;
+    font-size: 21px;
+    font-weight: 650;
     line-height: 1.25;
     letter-spacing: 0;
   }
@@ -250,6 +251,10 @@ const text =
     color: #827d72;
     font-size: 13px;
     line-height: 1.45;
+  }
+
+  .policy-row time {
+    font-variant-numeric: tabular-nums;
   }
 
   .platform-badges {
@@ -286,6 +291,7 @@ const text =
     }
 
     .header-rule {
+      width: 54px;
       margin-top: 18px;
     }
 

@@ -548,7 +548,7 @@ const jsonLd = {
   .screenshot-viewer {
     width: min(1120px, calc(100vw - 32px));
     max-height: calc(100vh - 32px);
-    border: 1px solid rgba(210, 201, 188, 0.48);
+    border: 1px solid rgba(210, 201, 188, 0.56);
     border-radius: 22px;
     padding: 0;
     background:
@@ -563,8 +563,8 @@ const jsonLd = {
 
   .screenshot-viewer::backdrop {
     background:
-      radial-gradient(circle at 50% 42%, rgba(120, 106, 87, 0.22), transparent 38%),
-      rgba(35, 31, 27, 0.78);
+      radial-gradient(circle at 50% 40%, rgba(137, 123, 101, 0.24), transparent 36%),
+      rgba(34, 30, 26, 0.8);
   }
 
   .viewer-panel {
@@ -577,6 +577,7 @@ const jsonLd = {
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    min-height: 34px;
   }
 
   .viewer-close,
@@ -621,7 +622,9 @@ const jsonLd = {
     border-radius: 14px;
     cursor: zoom-in;
     touch-action: none;
-    background: rgba(44, 39, 33, 0.045);
+    background:
+      linear-gradient(180deg, rgba(255, 253, 248, 0.5), rgba(44, 39, 33, 0.035)),
+      rgba(44, 39, 33, 0.045);
   }
 
   .viewer-image-stage img {
@@ -683,7 +686,8 @@ const jsonLd = {
     border-color: var(--accent-border);
     background: #fffdf8;
     box-shadow:
-      0 0 0 1px rgba(255, 253, 248, 0.9),
+      0 0 0 2px rgba(255, 253, 248, 0.92),
+      0 10px 24px rgba(55, 50, 43, 0.12),
       inset 0 0 0 1px var(--accent-border);
   }
 

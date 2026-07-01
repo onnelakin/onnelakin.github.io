@@ -140,7 +140,11 @@ const text =
       </div>
       <div class="product-grid">
         {listedAppCards.map((app) => (
-          <a class="product-card" href={app.href} style={appCardStyle(app)}>
+          <a
+            class:list={['product-card', app.title === featuredApp?.title && 'is-featured-list']}
+            href={app.href}
+            style={appCardStyle(app)}
+          >
             <img src={app.iconPath} alt="" width="44" height="44" />
             <div>
               <h3>{app.title}</h3>
@@ -397,6 +401,7 @@ const text =
   }
 
   .product-card {
+    position: relative;
     display: grid;
     grid-template-columns: 44px minmax(0, 1fr);
     align-items: start;
@@ -411,6 +416,21 @@ const text =
     color: inherit;
     text-decoration: none;
     transition: border-color 140ms ease, background 140ms ease;
+  }
+
+  .product-card.is-featured-list {
+    background:
+      linear-gradient(135deg, rgba(255, 253, 248, 0.98), var(--accent-bg, #fffdf8) 78%),
+      #fffdf8;
+  }
+
+  .product-card.is-featured-list::after {
+    content: "";
+    position: absolute;
+    inset: 16px 0 16px auto;
+    width: 2px;
+    background: var(--accent-border);
+    opacity: 0.68;
   }
 
   .product-card:hover,
@@ -572,6 +592,10 @@ const text =
       background:
         linear-gradient(135deg, #fffdf8 24%, var(--accent-bg, #fffdf8)),
         #fffdf8;
+    }
+
+    .product-card.is-featured-list::after {
+      inset: 14px 0 14px auto;
     }
 
     .product-card > img {
