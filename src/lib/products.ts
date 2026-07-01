@@ -14,6 +14,9 @@ export type ProductMeta = {
   privacy: string;
   supportEmail: string;
   icon: string;
+  pricing?: string;
+  price?: number;
+  priceCurrency?: string;
   accent?: ProductAccent;
 };
 
@@ -120,7 +123,7 @@ export function getProductSources(): ProductSource[] {
 export function getProductPageData(slug: string, locale: Locale): ProductPageData {
   const source = getProductSource(slug);
   const copy = readProductCopy(source.contentDir, locale);
-  const seoDescription = pageDescription(copy);
+  const seoDescription = seoPageDescription(source, copy);
   const canonicalPath = locale === 'en' ? `/apps/${source.slug}/` : `/apps/${source.slug}/ko/`;
   return {
     locale,
@@ -277,6 +280,9 @@ function readProductMeta(contentDir: string): ProductMeta {
     privacy: required(values, 'privacy'),
     supportEmail: required(values, 'supportEmail'),
     icon: required(values, 'icon'),
+    pricing: values.get('pricing'),
+    price: optionalNumber(values.get('price')),
+    priceCurrency: values.get('priceCurrency'),
     accent: optionalAccent(values.get('accent'))
   };
 }
@@ -314,6 +320,23 @@ function pageDescription(copy: ProductCopy): string {
     copy.ios.promo ??
     firstParagraph(pageBodyDescription(copy))
   );
+}
+
+function seoPageDescription(source: ProductSource, copy: ProductCopy): string {
+  const summary = pageDescription(copy).replace(/\s+/g, ' ').trim();
+  const platforms = copy.locale === 'ko'
+    ? source.meta.platforms.join('/')
+    : source.meta.platforms.join(' and ');
+  const category = landingSubtitle(copy);
+  if (copy.locale === 'ko') {
+    return `${source.meta.title}는 ${platforms}용 ${category}입니다. ${summary}`;
+  }
+  return `${source.meta.title} is ${indefiniteArticle(category)} ${category} for ${platforms}. ${summary}`;
+}
+
+function indefiniteArticle(value: string): 'a' | 'an' {
+  if (/^MP3\b/.test(value)) return 'an';
+  return /^[aeiou]/i.test(value) ? 'an' : 'a';
 }
 
 export function landingSubtitle(copy: ProductCopy): string {
@@ -380,6 +403,12 @@ function optionalAccent(value: string | undefined): ProductAccent | undefined {
   if (!border || !background || !text) return undefined;
   if (![border, background, text].every((item) => /^#[0-9a-fA-F]{6}$/.test(item))) return undefined;
   return { border, background, text };
+}
+
+function optionalNumber(value: string | undefined): number | undefined {
+  if (value === undefined) return undefined;
+  const numericValue = Number(value);
+  return Number.isFinite(numericValue) ? numericValue : undefined;
 }
 
 function hashSlug(value: string): number {

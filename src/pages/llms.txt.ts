@@ -1,9 +1,15 @@
-import { getProductIndexItems } from '../lib/products';
+import {
+  getProductPageData,
+  getProductSources,
+  landingSubtitle,
+  pageBodyDescription,
+  renderBlocks
+} from '../lib/products';
 
 const siteUrl = 'https://onnelakin.github.io';
 
 export function GET() {
-  const apps = getProductIndexItems('en');
+  const apps = getProductSources().map((source) => getProductPageData(source.slug, 'en'));
   const lines = [
     '# ONNELLAB',
     '',
@@ -19,16 +25,29 @@ export function GET() {
     '',
     '## Apps',
     '',
-    ...apps.flatMap((app) => [
-      `### ${app.title}`,
-      '',
-      app.description,
-      '',
-      `- Landing page: ${new URL(app.href, siteUrl).toString()}`,
-      `- Privacy policy: ${app.privacy}`,
-      `- Platforms: ${app.platforms.join(', ')}`,
-      ''
-    ]),
+    ...apps.flatMap((app) => {
+      const bodyBlocks = renderBlocks(pageBodyDescription(app.copy));
+      const firstParagraph = bodyBlocks.find((block) => block.type === 'p')?.value as string | undefined;
+      const tasks = bodyBlocks.find((block) => block.type === 'ul')?.value as string[] | undefined;
+      const taskLines = (tasks ?? []).slice(0, 4).map((task) => `- ${task}`);
+      return [
+        `### ${app.meta.title}`,
+        '',
+        landingSubtitle(app.copy),
+        '',
+        firstParagraph ?? app.seoDescription,
+        '',
+        'Key tasks:',
+        ...taskLines,
+        '',
+        `- Landing page: ${new URL(app.canonicalPath, siteUrl).toString()}`,
+        `- Korean page: ${new URL(app.alternatePath, siteUrl).toString()}`,
+        `- Privacy policy: ${app.meta.privacy}`,
+        `- Platforms: ${app.meta.platforms.join(', ')}`,
+        ...(app.meta.pricing ? [`- Pricing: ${app.meta.pricing}`] : []),
+        ''
+      ];
+    }),
     '## Contact',
     '',
     '- Support: onnellab.app@gmail.com'

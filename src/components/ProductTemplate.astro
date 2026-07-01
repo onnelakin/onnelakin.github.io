@@ -59,6 +59,16 @@ const jsonLd = {
     name: 'ONNELLAB',
     url: new URL('/', Astro.site).toString()
   },
+  ...(meta.price !== undefined
+    ? {
+        offers: {
+          '@type': 'Offer',
+          price: meta.price,
+          ...(meta.priceCurrency ? { priceCurrency: meta.priceCurrency } : {}),
+          ...(meta.pricing ? { description: meta.pricing } : {})
+        }
+      }
+    : {}),
   url: canonicalUrl.toString()
 };
 ---
