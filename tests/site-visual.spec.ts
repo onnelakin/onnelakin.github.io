@@ -68,6 +68,16 @@ test.describe('site layout', () => {
     await page.mouse.move(stageBox.x + stageBox.width / 2 + 80, stageBox.y + stageBox.height / 2 + 48);
     expect(await viewerImage.evaluate((image) => getComputedStyle(image).transform)).toBe(zoomedTransform);
 
+    await page.locator('[data-viewer-stage]').dispatchEvent('wheel', {
+      deltaY: -120,
+      clientX: stageBox.x + stageBox.width / 2,
+      clientY: stageBox.y + stageBox.height / 2,
+      bubbles: true,
+      cancelable: true
+    });
+    const wheelZoomTransform = await viewerImage.evaluate((image) => getComputedStyle(image).transform);
+    expect(wheelZoomTransform).not.toBe(zoomedTransform);
+
     await viewerImage.dispatchEvent('mousedown', {
       clientX: stageBox.x + stageBox.width / 2,
       clientY: stageBox.y + stageBox.height / 2,
@@ -86,7 +96,7 @@ test.describe('site layout', () => {
         y: stageBox.y + stageBox.height / 2 + 48
       }
     );
-    expect(await viewerImage.evaluate((image) => getComputedStyle(image).transform)).not.toBe(zoomedTransform);
+    expect(await viewerImage.evaluate((image) => getComputedStyle(image).transform)).not.toBe(wheelZoomTransform);
 
     await page.locator('[data-viewer-next]').click();
     await expect(page.locator('[data-viewer-image]')).toHaveAttribute('src', /tagweaver\/assets\/screenshots\/en\/2\.png/);

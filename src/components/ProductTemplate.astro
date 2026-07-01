@@ -783,6 +783,10 @@ const jsonLd = {
   let didDragImage = false;
   let suppressNextViewerClick = false;
   const dragThreshold = 4;
+  const minViewerZoom = 1;
+  const clickViewerZoom = 1.55;
+  const maxViewerZoom = 1.9;
+  const wheelZoomStep = 0.16;
 
   const applyViewerZoom = () => {
     if (!viewerImage) return;
@@ -791,31 +795,39 @@ const jsonLd = {
   };
 
   const resetViewerZoom = () => {
-    viewerZoom = 1;
+    viewerZoom = minViewerZoom;
     viewerPanX = 0;
     viewerPanY = 0;
     applyViewerZoom();
   };
 
-  const zoomViewerAtPoint = (clientX, clientY) => {
+  const setViewerZoomAtPoint = (targetZoom, clientX, clientY) => {
     if (!viewerImage || !viewerStage) return;
-    if (viewerZoom > 1) {
+    const nextZoom = Math.min(maxViewerZoom, Math.max(minViewerZoom, targetZoom));
+    if (nextZoom <= minViewerZoom) {
       resetViewerZoom();
       return;
     }
-    const stageRect = viewerStage.getBoundingClientRect();
     const imageRect = viewerImage.getBoundingClientRect();
-    const targetZoom = 2.2;
-    const stageCenterX = stageRect.left + stageRect.width / 2;
-    const stageCenterY = stageRect.top + stageRect.height / 2;
     const imageCenterX = imageRect.left + imageRect.width / 2;
     const imageCenterY = imageRect.top + imageRect.height / 2;
-    const imagePointX = clientX - imageCenterX;
-    const imagePointY = clientY - imageCenterY;
-    viewerZoom = targetZoom;
-    viewerPanX = stageCenterX - imageCenterX - imagePointX * targetZoom;
-    viewerPanY = stageCenterY - imageCenterY - imagePointY * targetZoom;
+    const zoomRatio = nextZoom / viewerZoom;
+    const offsetX = clientX - imageCenterX;
+    const offsetY = clientY - imageCenterY;
+    const nextCenterX = clientX - offsetX * zoomRatio;
+    const nextCenterY = clientY - offsetY * zoomRatio;
+    viewerPanX += nextCenterX - imageCenterX;
+    viewerPanY += nextCenterY - imageCenterY;
+    viewerZoom = nextZoom;
     applyViewerZoom();
+  };
+
+  const zoomViewerAtPoint = (clientX, clientY) => {
+    if (viewerZoom > minViewerZoom) {
+      resetViewerZoom();
+      return;
+    }
+    setViewerZoomAtPoint(clickViewerZoom, clientX, clientY);
   };
 
   const setViewerImage = (index) => {
@@ -904,6 +916,12 @@ const jsonLd = {
     }
     zoomViewerAtPoint(event.clientX, event.clientY);
   });
+  viewerStage?.addEventListener('wheel', (event) => {
+    if (!viewer?.open) return;
+    event.preventDefault();
+    const direction = event.deltaY < 0 ? 1 : -1;
+    setViewerZoomAtPoint(viewerZoom + direction * wheelZoomStep, event.clientX, event.clientY);
+  }, { passive: false });
   thumbnailButtons.forEach((button, index) => {
     button.addEventListener('click', () => setViewerImage(index));
   });
