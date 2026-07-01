@@ -244,7 +244,7 @@ const text =
 
   .featured {
     display: grid;
-    grid-template-columns: 84px minmax(0, 1fr) auto;
+    grid-template-columns: 84px minmax(0, 1fr);
     align-items: center;
     gap: 22px;
     border: 1px solid var(--accent-border);
@@ -258,6 +258,10 @@ const text =
     width: 84px;
     height: 84px;
     border-radius: 20px;
+  }
+
+  .featured-icon {
+    grid-row: 1 / span 2;
   }
 
   .featured h2 {
@@ -279,7 +283,8 @@ const text =
   }
 
   .featured > a {
-    justify-self: end;
+    grid-column: 2;
+    justify-self: start;
     border: 1px solid var(--accent-border);
     border-radius: 8px;
     min-width: 84px;

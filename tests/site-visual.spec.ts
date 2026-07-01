@@ -37,4 +37,21 @@ test.describe('site layout', () => {
     );
     expect(croppedScreenshots).toBe(0);
   });
+
+  test('product hero title and task summary do not overlap', async ({ page }) => {
+    await page.goto('/apps/tagweaver/');
+    const titleBox = await page.locator('#product-title').boundingBox();
+    const summaryBox = await page.locator('.task-preview').boundingBox();
+
+    expect(titleBox).not.toBeNull();
+    expect(summaryBox).not.toBeNull();
+    if (!titleBox || !summaryBox) return;
+
+    const overlaps =
+      titleBox.x < summaryBox.x + summaryBox.width &&
+      titleBox.x + titleBox.width > summaryBox.x &&
+      titleBox.y < summaryBox.y + summaryBox.height &&
+      titleBox.y + titleBox.height > summaryBox.y;
+    expect(overlaps).toBe(false);
+  });
 });

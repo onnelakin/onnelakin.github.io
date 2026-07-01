@@ -256,6 +256,10 @@ const jsonLd = {
     gap: 28px;
   }
 
+  .identity > div {
+    min-width: 0;
+  }
+
   .identity img {
     width: 112px;
     height: 112px;
@@ -276,6 +280,7 @@ const jsonLd = {
     font-size: clamp(52px, 10vw, 96px);
     line-height: 0.98;
     letter-spacing: 0;
+    overflow-wrap: anywhere;
   }
 
   .intro {
@@ -500,6 +505,19 @@ const jsonLd = {
     flex-wrap: wrap;
   }
 
+  @media (max-width: 920px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    .hero-side {
+      max-width: 560px;
+      margin-left: 140px;
+      padding-top: 0;
+    }
+  }
+
   @media (max-width: 680px) {
     .page-shell {
       width: min(100% - 24px, 980px);
@@ -528,7 +546,8 @@ const jsonLd = {
     }
 
     .actions,
-    .meta-list {
+    .meta-list,
+    .hero-side {
       margin-left: 0;
     }
 
