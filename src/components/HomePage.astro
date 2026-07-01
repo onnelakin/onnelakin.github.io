@@ -15,6 +15,7 @@ const releasedAppCards = releasedApps
   .map((name) => contentApps.find((app) => app.title === name))
   .filter((app): app is ProductIndexItem => app !== undefined);
 const featuredApp = releasedAppCards.find((app) => app.title === 'TagWeaver') ?? releasedAppCards[0];
+const listedAppCards = releasedAppCards.filter((app) => app.title !== featuredApp?.title);
 const appCardStyle = (app: ProductIndexItem) =>
   `--accent-border: ${app.accent.border}; --accent-bg: ${app.accent.background}; --accent-text: ${app.accent.text};`;
 const staticPrivacyApps = [
@@ -114,10 +115,9 @@ const text =
 
     <h2>{text.released}</h2>
 
-    <section class="app-grid" aria-label={text.released}>
-      {releasedAppCards.map((app) => (
-        <article style={appCardStyle(app)}>
-          <img src={app.iconPath} alt={`${app.title} icon`} width="56" height="56" />
+    <section class="tool-list" aria-label={text.released}>
+      {listedAppCards.map((app) => (
+        <article class="tool-row" style={appCardStyle(app)}>
           <div>
             <h3>{app.title}</h3>
             <p>{app.description}</p>
@@ -131,8 +131,7 @@ const text =
           <a href={app.href}>{text.openApp}</a>
         </article>
       ))}
-      <article class="upcoming-card">
-        <div class="placeholder" aria-hidden="true">M</div>
+      <article class="tool-row upcoming-card">
         <div>
           <h3>Melivra</h3>
           <p>{text.soon}</p>
@@ -252,36 +251,21 @@ const text =
     font-weight: 620;
   }
 
-  .app-grid {
+  .tool-list {
     display: grid;
-    gap: 12px;
+    gap: 0;
+    border-top: 1px solid #e0d8cb;
+    border-bottom: 1px solid #e0d8cb;
     margin: 18px 0 12px;
   }
 
-  article {
+  .tool-row {
     display: grid;
-    grid-template-columns: 56px 1fr auto;
+    grid-template-columns: 1fr auto;
     align-items: center;
-    gap: 16px;
-    border: 1px solid var(--accent-border, #e0d8cb);
-    border-radius: 8px;
-    padding: 14px;
-    background: #fffdf8;
-  }
-
-  img,
-  .placeholder {
-    width: 56px;
-    height: 56px;
-    border-radius: 14px;
-    background: #eee8dd;
-  }
-
-  .placeholder {
-    display: grid;
-    place-items: center;
-    color: #827d72;
-    font-weight: 650;
+    gap: 18px;
+    border-bottom: 1px solid #e9e1d5;
+    padding: 15px 0;
   }
 
   h3 {
@@ -291,7 +275,7 @@ const text =
     letter-spacing: 0;
   }
 
-  article p {
+  .tool-row p {
     margin: 0;
     color: #4f4b43;
     font-size: 15px;
@@ -328,7 +312,7 @@ const text =
     line-height: 1.4;
   }
 
-  article a {
+  .tool-row a {
     border: 1px solid var(--accent-border, #d6cec0);
     border-radius: 8px;
     padding: 8px 11px;
@@ -340,6 +324,7 @@ const text =
 
   .upcoming-card {
     color: #5b574f;
+    border-bottom: 0;
   }
 
   small {
@@ -352,10 +337,6 @@ const text =
       padding: 0 18px;
     }
 
-    article {
-      grid-template-columns: 52px 1fr;
-    }
-
     .featured {
       grid-template-columns: 64px 1fr;
     }
@@ -366,14 +347,12 @@ const text =
       border-radius: 16px;
     }
 
-    img,
-    .placeholder {
-      width: 52px;
-      height: 52px;
-      border-radius: 13px;
+    .tool-row {
+      grid-template-columns: 1fr;
+      gap: 10px;
     }
 
-    article a,
+    .tool-row a,
     .featured > a {
       grid-column: 1 / -1;
       text-align: center;

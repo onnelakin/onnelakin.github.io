@@ -68,14 +68,16 @@ export type ProductAccent = {
   text: string;
 };
 
-const productAccents: Record<string, ProductAccent> = {
-  aligna: { border: '#cfd8cc', background: '#f3f6ef', text: '#4d6248' },
-  clipnest: { border: '#d9cfc7', background: '#f7f1ec', text: '#6a5548' },
-  quivra: { border: '#d5d1c4', background: '#f6f3ea', text: '#635d48' },
-  segra: { border: '#cbd6d7', background: '#eef5f5', text: '#486163' },
-  tagweaver: { border: '#d7cfdb', background: '#f4eff5', text: '#614f68' },
-  vaultxt: { border: '#cdd3dc', background: '#f0f3f7', text: '#4b5b70' }
-};
+const accentPalette: ProductAccent[] = [
+  { border: '#cfd8cc', background: '#f3f6ef', text: '#4d6248' },
+  { border: '#d9cfc7', background: '#f7f1ec', text: '#6a5548' },
+  { border: '#d5d1c4', background: '#f6f3ea', text: '#635d48' },
+  { border: '#cbd6d7', background: '#eef5f5', text: '#486163' },
+  { border: '#d7cfdb', background: '#f4eff5', text: '#614f68' },
+  { border: '#cdd3dc', background: '#f0f3f7', text: '#4b5b70' },
+  { border: '#d8d0c5', background: '#f7f2eb', text: '#665846' },
+  { border: '#d2d6c7', background: '#f4f6ed', text: '#5a6246' }
+];
 
 const fieldLabels = {
   name: '앱 이름:',
@@ -140,7 +142,7 @@ export function getProductIndexItems(locale: Locale): ProductIndexItem[] {
 }
 
 export function productAccent(slug: string): ProductAccent {
-  return productAccents[slug] ?? { border: '#e0d8cb', background: '#fffdf8', text: '#5b574f' };
+  return accentPalette[hashSlug(slug) % accentPalette.length];
 }
 
 export function pageBodyDescription(copy: ProductCopy): string {
@@ -197,9 +199,21 @@ export function renderBlocks(text: string): Array<{ type: 'p' | 'h' | 'ul'; valu
       flushList();
       continue;
     }
-    if (trimmed.startsWith('•')) {
+    if (trimmed.startsWith('•') || trimmed.startsWith('* ')) {
       flushParagraph();
-      list.push(trimmed.replace(/^•\s*/, '').trim());
+      list.push(trimmed.replace(/^(?:•|\*)\s*/, '').trim());
+      continue;
+    }
+    if (trimmed.includes(' * ')) {
+      const [first, ...items] = trimmed.split(/\s+\*\s+/);
+      if (first.trim()) {
+        flushList();
+        paragraph.push(first.trim());
+        flushParagraph();
+      } else {
+        flushParagraph();
+      }
+      list.push(...items.map((item) => item.trim()).filter(Boolean));
       continue;
     }
     flushList();
@@ -328,4 +342,12 @@ function required(values: Map<string, string>, key: string): string {
 
 function normalizeDocPath(value: string): string {
   return value.replaceAll('\\', '/').replace(/^\/+/, '');
+}
+
+function hashSlug(value: string): number {
+  let hash = 0;
+  for (const char of value) {
+    hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
+  }
+  return hash;
 }
