@@ -92,6 +92,12 @@ const accentPalette: ProductAccent[] = [
   { border: '#d6cdd2', background: '#f7f0f3', text: '#674f5b' }
 ];
 
+const appAccentOverrides: Record<string, ProductAccent> = {
+  tagweaver: { border: '#ded2b5', background: '#fbf7ec', text: '#6a5a2e' },
+  vaultxt: { border: '#c8d6cf', background: '#eef6f2', text: '#4a6357' },
+  clipnest: { border: '#d6c9c9', background: '#f7efef', text: '#6b4f4f' }
+};
+
 const fieldLabels = {
   name: '앱 이름:',
   landingSubtitle: '랜딩 부제:',
@@ -161,7 +167,11 @@ export function getProductIndexItems(locale: Locale): ProductIndexItem[] {
 }
 
 export function productAccent(source: ProductSource): ProductAccent {
-  return source.meta.accent ?? accentPalette[hashSlug(source.slug) % accentPalette.length];
+  return (
+    source.meta.accent ??
+    appAccentOverrides[source.slug] ??
+    accentPalette[hashSlug(source.slug) % accentPalette.length]
+  );
 }
 
 export function pageBodyDescription(copy: ProductCopy): string {

@@ -120,20 +120,21 @@ const text =
       <section
         class="featured"
         aria-label={text.featured}
-        style="--accent-border: #d8c88f; --accent-bg: #f8f2df; --accent-text: #6a5a2e;"
+        style={appCardStyle(featuredApp)}
       >
         <div class="featured-icon">
           <img src={featuredApp.iconPath} alt={`${featuredApp.title} icon`} width="72" height="72" />
         </div>
         <div class="featured-copy">
+          <span class="featured-label">{text.featured}</span>
+          <h2>{featuredApp.title}</h2>
+          <p>{featuredApp.description}</p>
           <div class="featured-meta app-meta">
             <span>{featuredApp.status}</span>
             <div class="platform-badges" aria-label="Platforms">
               {featuredApp.platforms.map((platform) => <span>{platform}</span>)}
             </div>
           </div>
-          <h2>{featuredApp.title}</h2>
-          <p>{featuredApp.description}</p>
         </div>
         <a class="featured-link" href={featuredApp.href}>{text.openApp}</a>
       </section>
@@ -252,7 +253,7 @@ const text =
     border-radius: 8px;
     margin: 38px 0 14px;
     padding: 20px 22px;
-    background: linear-gradient(90deg, var(--accent-bg), #fffdf8 68%);
+    background: linear-gradient(90deg, var(--accent-bg), #fffdf8 76%);
   }
 
   .featured-icon img {
@@ -274,6 +275,12 @@ const text =
 
   .featured-copy {
     max-width: 460px;
+  }
+
+  .featured-label {
+    color: var(--accent-text);
+    font-size: 13px;
+    font-weight: 650;
   }
 
   .featured p {
@@ -350,7 +357,7 @@ const text =
   }
 
   .featured-meta.app-meta {
-    margin: 0 0 7px;
+    margin: 9px 0 0;
   }
 
   .platform-badges {
