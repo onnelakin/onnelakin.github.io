@@ -64,6 +64,37 @@ test.describe('site layout', () => {
     );
   });
 
+  test('single store download action is centered', async ({ page }) => {
+    await page.goto('/apps/clipnest/');
+    const downloadBand = page.locator('.download-band');
+    const button = downloadBand.locator('.button.primary');
+    await expect(button).toHaveCount(1);
+
+    const bandBox = await downloadBand.boundingBox();
+    const buttonBox = await button.boundingBox();
+    expect(bandBox).not.toBeNull();
+    expect(buttonBox).not.toBeNull();
+    if (!bandBox || !buttonBox) return;
+
+    const bandCenter = bandBox.x + bandBox.width / 2;
+    const buttonCenter = buttonBox.x + buttonBox.width / 2;
+    expect(Math.abs(bandCenter - buttonCenter)).toBeLessThan(1);
+
+    const footer = page.locator('footer');
+    const footerBox = await footer.boundingBox();
+    expect(footerBox).not.toBeNull();
+    if (!footerBox) return;
+
+    const footerCenter = footerBox.x + footerBox.width / 2;
+    for (const item of await footer.locator('> *').all()) {
+      const itemBox = await item.boundingBox();
+      expect(itemBox).not.toBeNull();
+      if (!itemBox) continue;
+      const itemCenter = itemBox.x + itemBox.width / 2;
+      expect(Math.abs(footerCenter - itemCenter)).toBeLessThan(1);
+    }
+  });
+
   test('product screenshots open in an in-page viewer', async ({ page }) => {
     await page.goto('/apps/tagweaver/');
     await page.locator('.screens-band summary').click();
@@ -132,6 +163,78 @@ test.describe('site layout', () => {
     });
     expect(reducedWheelScale).toBe(1);
     await expect(page.locator('[data-viewer-image]')).toHaveAttribute('data-zoomed', 'false');
+
+    await page.locator('[data-viewer-stage]').evaluate((stage, box) => {
+      const target = stage as HTMLElement;
+      const centerX = box.x + box.width / 2;
+      const centerY = box.y + box.height / 2;
+      const createTouch = (identifier: number, x: number, y: number) =>
+        new Touch({ identifier, target, clientX: x, clientY: y });
+      const dispatchTouch = (type: string, points: Array<[number, number, number]>) => {
+        const touches = points.map(([identifier, x, y]) => createTouch(identifier, x, y));
+        target.dispatchEvent(
+          new TouchEvent(type, {
+            touches,
+            targetTouches: touches,
+            changedTouches: touches,
+            bubbles: true,
+            cancelable: true
+          })
+        );
+      };
+      dispatchTouch('touchstart', [
+        [1, centerX - 32, centerY],
+        [2, centerX + 32, centerY]
+      ]);
+      dispatchTouch('touchmove', [
+        [1, centerX - 48, centerY],
+        [2, centerX + 48, centerY]
+      ]);
+      dispatchTouch('touchend', []);
+    }, stageBox);
+    const pinchZoomScale = await viewerImage.evaluate((image) => {
+      const transform = getComputedStyle(image).transform;
+      return transform === 'none' ? 1 : new DOMMatrixReadOnly(transform).a;
+    });
+    expect(pinchZoomScale).toBeCloseTo(1.5, 5);
+    await expect(page.locator('[data-viewer-image]')).toHaveAttribute('data-zoomed', 'true');
+    await page.locator('[data-viewer-stage]').dispatchEvent('wheel', {
+      deltaY: 120,
+      clientX: stageBox.x + stageBox.width / 2,
+      clientY: stageBox.y + stageBox.height / 2,
+      bubbles: true,
+      cancelable: true
+    });
+    await page.locator('[data-viewer-stage]').dispatchEvent('wheel', {
+      deltaY: 120,
+      clientX: stageBox.x + stageBox.width / 2,
+      clientY: stageBox.y + stageBox.height / 2,
+      bubbles: true,
+      cancelable: true
+    });
+    await page.locator('[data-viewer-stage]').dispatchEvent('wheel', {
+      deltaY: 120,
+      clientX: stageBox.x + stageBox.width / 2,
+      clientY: stageBox.y + stageBox.height / 2,
+      bubbles: true,
+      cancelable: true
+    });
+    await page.locator('[data-viewer-stage]').dispatchEvent('wheel', {
+      deltaY: 120,
+      clientX: stageBox.x + stageBox.width / 2,
+      clientY: stageBox.y + stageBox.height / 2,
+      bubbles: true,
+      cancelable: true
+    });
+    await page.locator('[data-viewer-stage]').dispatchEvent('wheel', {
+      deltaY: 120,
+      clientX: stageBox.x + stageBox.width / 2,
+      clientY: stageBox.y + stageBox.height / 2,
+      bubbles: true,
+      cancelable: true
+    });
+    await expect(page.locator('[data-viewer-image]')).toHaveAttribute('data-zoomed', 'false');
+
     await page.mouse.click(stageBox.x + stageBox.width / 2, stageBox.y + stageBox.height / 2);
     await expect(page.locator('[data-viewer-image]')).toHaveAttribute('data-zoomed', 'true');
     const dragStartTransform = await viewerImage.evaluate((image) => getComputedStyle(image).transform);

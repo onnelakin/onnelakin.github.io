@@ -733,10 +733,19 @@ const jsonLd = {
 
   footer {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     justify-items: center;
+    align-items: center;
     gap: 8px;
     border-top: 1px solid #e0d8cb;
     padding-top: 18px;
+    text-align: center;
+  }
+
+  footer > * {
+    justify-self: center;
+    width: fit-content;
+    max-width: 100%;
     text-align: center;
   }
 
@@ -813,6 +822,11 @@ const jsonLd = {
 
     .actions.compact {
       justify-content: stretch;
+    }
+
+    .actions.compact:has(.button:only-child) {
+      grid-template-columns: minmax(0, min(220px, 100%));
+      justify-content: center;
     }
 
     .content-band,
@@ -897,6 +911,9 @@ const jsonLd = {
   let isDraggingImage = false;
   let didDragImage = false;
   let suppressNextViewerClick = false;
+  let isPinchingViewer = false;
+  let pinchStartDistance = 0;
+  let pinchStartZoom = 1;
   const dragThreshold = 4;
   const minViewerZoom = 1;
   const clickViewerZoom = 1.3;
@@ -954,6 +971,17 @@ const jsonLd = {
     viewerPanY = stageCenterY - imageCenterY - (clientY - imageCenterY) * clickViewerZoom;
     applyViewerZoom();
   };
+
+  const getTouchDistance = (touches) => {
+    const deltaX = touches[0].clientX - touches[1].clientX;
+    const deltaY = touches[0].clientY - touches[1].clientY;
+    return Math.hypot(deltaX, deltaY);
+  };
+
+  const getTouchCenter = (touches) => ({
+    x: (touches[0].clientX + touches[1].clientX) / 2,
+    y: (touches[0].clientY + touches[1].clientY) / 2
+  });
 
   const setViewerImage = (index) => {
     if (!viewerImage) return;
@@ -1040,6 +1068,31 @@ const jsonLd = {
       return;
     }
     zoomViewerAtPoint(event.clientX, event.clientY);
+  });
+  viewerStage?.addEventListener('touchstart', (event) => {
+    if (!viewer?.open || event.touches.length !== 2) return;
+    event.preventDefault();
+    isPinchingViewer = true;
+    pinchStartDistance = getTouchDistance(event.touches);
+    pinchStartZoom = viewerZoom;
+    isDraggingImage = false;
+    didDragImage = false;
+    if (viewerImage) viewerImage.dataset.dragging = 'false';
+  }, { passive: false });
+  viewerStage?.addEventListener('touchmove', (event) => {
+    if (!viewer?.open || !isPinchingViewer || event.touches.length !== 2 || pinchStartDistance <= 0) return;
+    event.preventDefault();
+    const center = getTouchCenter(event.touches);
+    const targetZoom = pinchStartZoom * (getTouchDistance(event.touches) / pinchStartDistance);
+    setViewerZoomAtPoint(targetZoom, center.x, center.y);
+  }, { passive: false });
+  viewerStage?.addEventListener('touchend', (event) => {
+    if (!isPinchingViewer || event.touches.length >= 2) return;
+    isPinchingViewer = false;
+    suppressNextViewerClick = true;
+    window.setTimeout(() => {
+      suppressNextViewerClick = false;
+    }, 0);
   });
   viewerStage?.addEventListener('wheel', (event) => {
     if (!viewer?.open) return;
