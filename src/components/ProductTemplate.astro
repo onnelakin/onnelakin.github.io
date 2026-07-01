@@ -559,6 +559,7 @@ const jsonLd = {
       0 28px 86px rgba(39, 34, 29, 0.26),
       0 0 0 1px rgba(255, 253, 248, 0.42),
       inset 0 1px 0 rgba(255, 255, 255, 0.78);
+    overscroll-behavior: contain;
   }
 
   .screenshot-viewer::backdrop {
@@ -622,6 +623,7 @@ const jsonLd = {
     border-radius: 14px;
     cursor: zoom-in;
     touch-action: none;
+    overscroll-behavior: contain;
     background:
       linear-gradient(180deg, rgba(255, 253, 248, 0.5), rgba(44, 39, 33, 0.035)),
       rgba(44, 39, 33, 0.045);
@@ -639,6 +641,7 @@ const jsonLd = {
     box-shadow: 0 14px 36px rgba(55, 50, 43, 0.14);
     transform-origin: center;
     user-select: none;
+    -webkit-user-drag: none;
     will-change: transform;
   }
 
@@ -1162,6 +1165,8 @@ const jsonLd = {
   viewerStage?.addEventListener('touchend', (event) => {
     if (!isPinchingViewer || event.touches.length >= 2) return;
     isPinchingViewer = false;
+    pinchStartDistance = 0;
+    pinchStartZoom = viewerZoom;
     suppressNextViewerClick = true;
     window.setTimeout(() => {
       suppressNextViewerClick = false;
