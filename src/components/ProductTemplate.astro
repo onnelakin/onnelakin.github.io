@@ -706,9 +706,21 @@ const jsonLd = {
   }
 
   footer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 16px;
     border-top: 1px solid #e0d8cb;
     padding-top: 18px;
-    flex-wrap: wrap;
+    text-align: center;
+  }
+
+  footer span {
+    justify-self: end;
+  }
+
+  footer a:last-child {
+    justify-self: start;
   }
 
   @media (max-width: 680px) {
@@ -830,6 +842,17 @@ const jsonLd = {
 
     .button {
       width: 100%;
+    }
+
+    footer {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      gap: 8px;
+    }
+
+    footer span,
+    footer a:last-child {
+      justify-self: center;
     }
   }
 </style>
