@@ -120,20 +120,22 @@ const text =
       <section
         class="featured"
         aria-label={text.featured}
-        style="--accent-border: #d9cfc7; --accent-bg: #f7f1ec; --accent-text: #6a5548;"
+        style="--accent-border: #d8c88f; --accent-bg: #f8f2df; --accent-text: #6a5a2e;"
       >
         <div class="featured-icon">
           <img src={featuredApp.iconPath} alt={`${featuredApp.title} icon`} width="72" height="72" />
         </div>
-        <div>
-          <span>{text.featured}</span>
+        <div class="featured-copy">
+          <div class="featured-meta app-meta">
+            <span>{featuredApp.status}</span>
+            <div class="platform-badges" aria-label="Platforms">
+              {featuredApp.platforms.map((platform) => <span>{platform}</span>)}
+            </div>
+          </div>
           <h2>{featuredApp.title}</h2>
           <p>{featuredApp.description}</p>
         </div>
         <a class="featured-link" href={featuredApp.href}>{text.openApp}</a>
-        <div class="featured-meta platform-badges" aria-label="Platforms">
-          {featuredApp.platforms.map((platform) => <span>{platform}</span>)}
-        </div>
       </section>
     )}
 
@@ -259,20 +261,19 @@ const text =
     border-radius: 20px;
   }
 
+  .featured-icon,
+  .featured-link {
+    align-self: center;
+  }
+
   .featured h2 {
     margin: 3px 0 8px;
     font-size: 28px;
     line-height: 1.12;
   }
 
-  .featured > div:not(.featured-icon) {
+  .featured-copy {
     max-width: 460px;
-  }
-
-  .featured > div > span {
-    color: var(--accent-text);
-    font-size: 13px;
-    font-weight: 650;
   }
 
   .featured p {
@@ -294,12 +295,6 @@ const text =
     text-decoration: none;
     font-weight: 620;
     line-height: 1.2;
-  }
-
-  .featured-meta {
-    grid-column: 2 / -1;
-    padding-top: 12px;
-    border-top: 1px solid var(--accent-border);
   }
 
   .tool-list {
@@ -352,6 +347,10 @@ const text =
     color: #827d72;
     font-size: 13px;
     line-height: 1.4;
+  }
+
+  .featured-meta.app-meta {
+    margin: 0 0 7px;
   }
 
   .platform-badges {
@@ -409,7 +408,7 @@ const text =
       border-radius: 18px;
     }
 
-    .featured > div:not(.featured-icon) {
+    .featured-copy {
       max-width: none;
     }
 
@@ -422,10 +421,6 @@ const text =
     .featured-link {
       grid-column: 1 / -1;
       text-align: center;
-    }
-
-    .featured-meta {
-      grid-column: 1 / -1;
     }
   }
 </style>
