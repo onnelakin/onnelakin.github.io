@@ -54,6 +54,14 @@ test.describe('site layout', () => {
 
     await page.locator('[data-viewer-next]').click();
     await expect(page.locator('[data-viewer-count]')).toHaveText('2 / 3');
+    await expect(page.locator('[data-viewer-thumb]').nth(1)).toHaveAttribute('aria-current', 'true');
+
+    await page.locator('[data-viewer-thumb]').nth(2).click();
+    await expect(page.locator('[data-viewer-count]')).toHaveText('3 / 3');
+    await expect(page.locator('[data-viewer-image]')).toHaveAttribute('src', /tagweaver\/assets\/screenshots\/en\/3\.png/);
+
+    await page.keyboard.press('ArrowLeft');
+    await expect(page.locator('[data-viewer-count]')).toHaveText('2 / 3');
 
     await page.locator('[data-viewer-close]').click();
     await expect(viewer).not.toBeVisible();

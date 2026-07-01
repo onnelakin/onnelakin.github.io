@@ -188,6 +188,26 @@ const jsonLd = {
               <img data-viewer-image alt="" />
               <button class="viewer-nav viewer-next" type="button" data-viewer-next aria-label="Next">›</button>
             </div>
+            <div class="viewer-thumbs" aria-label={labels.screens}>
+              {data.screenshotPaths.slice(0, 3).map((screenshotPath, index) => (
+                <button
+                  class="viewer-thumb"
+                  type="button"
+                  data-viewer-thumb
+                  data-screenshot-index={index}
+                  aria-label={`${meta.title} ${labels.screens} ${index + 1}`}
+                >
+                  <img
+                    src={screenshotPath}
+                    alt=""
+                    width="1242"
+                    height="2688"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </button>
+              ))}
+            </div>
           </div>
         </dialog>
       </details>
@@ -453,20 +473,21 @@ const jsonLd = {
   .screenshot-viewer {
     width: min(1120px, calc(100vw - 32px));
     max-height: calc(100vh - 32px);
-    border: 1px solid var(--accent-border);
+    border: 1px solid rgba(224, 216, 203, 0.86);
     border-radius: 8px;
     padding: 0;
-    background: #fffdf8;
+    background: rgba(255, 253, 248, 0.97);
     color: #37342f;
+    box-shadow: 0 18px 50px rgba(55, 50, 43, 0.16);
   }
 
   .screenshot-viewer::backdrop {
-    background: rgba(58, 54, 48, 0.72);
+    background: rgba(55, 50, 43, 0.76);
   }
 
   .viewer-panel {
     display: grid;
-    gap: 12px;
+    gap: 14px;
     padding: 14px;
   }
 
@@ -483,7 +504,7 @@ const jsonLd = {
   .viewer-nav {
     border: 1px solid var(--accent-border);
     border-radius: 8px;
-    background: #faf8f5;
+    background: rgba(255, 253, 248, 0.88);
     color: #37342f;
     font: inherit;
     font-weight: 620;
@@ -500,7 +521,7 @@ const jsonLd = {
 
   .viewer-frame {
     display: grid;
-    grid-template-columns: 72px minmax(0, 1fr) 72px;
+    grid-template-columns: 56px minmax(0, 1fr) 56px;
     align-items: center;
     gap: 12px;
   }
@@ -509,9 +530,9 @@ const jsonLd = {
     display: block;
     width: auto;
     max-width: 100%;
-    max-height: calc(100vh - 128px);
+    max-height: calc(100vh - 194px);
     margin: 0 auto;
-    border: 1px solid var(--accent-border);
+    border: 1px solid #e0d8cb;
     border-radius: 8px;
     background: #faf8f5;
   }
@@ -525,8 +546,41 @@ const jsonLd = {
     line-height: 1;
   }
 
+  .viewer-thumbs {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 2px 2px 4px;
+  }
+
+  .viewer-thumb {
+    width: 42px;
+    height: 56px;
+    flex: 0 0 auto;
+    border: 1px solid rgba(214, 206, 192, 0.76);
+    border-radius: 7px;
+    padding: 2px;
+    background: rgba(250, 248, 245, 0.82);
+    cursor: pointer;
+  }
+
+  .viewer-thumb[aria-current="true"] {
+    border-color: var(--accent-text);
+    background: #fffdf8;
+  }
+
+  .viewer-thumb img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+    object-fit: cover;
+  }
+
   .viewer-close:focus-visible,
-  .viewer-nav:focus-visible {
+  .viewer-nav:focus-visible,
+  .viewer-thumb:focus-visible {
     outline: 2px solid var(--accent-text);
     outline-offset: 2px;
   }
@@ -650,12 +704,16 @@ const jsonLd = {
     .viewer-frame img {
       grid-column: 1 / -1;
       grid-row: 1;
-      max-height: calc(100vh - 150px);
+      max-height: calc(100vh - 204px);
     }
 
     .viewer-prev,
     .viewer-next {
       grid-row: 2;
+    }
+
+    .viewer-thumbs {
+      justify-content: flex-start;
     }
 
     .button {
@@ -672,6 +730,7 @@ const jsonLd = {
   const closeButton = document.querySelector('[data-viewer-close]');
   const prevButton = document.querySelector('[data-viewer-prev]');
   const nextButton = document.querySelector('[data-viewer-next]');
+  const thumbnailButtons = Array.from(document.querySelectorAll('[data-viewer-thumb]'));
   let currentScreenshotIndex = 0;
 
   const setViewerImage = (index) => {
@@ -682,6 +741,13 @@ const jsonLd = {
     viewerImage.src = link.getAttribute('href');
     viewerImage.alt = image?.getAttribute('alt') || '';
     viewerCount.textContent = `${currentScreenshotIndex + 1} / ${screenshotLinks.length}`;
+    thumbnailButtons.forEach((button, thumbnailIndex) => {
+      if (thumbnailIndex === currentScreenshotIndex) {
+        button.setAttribute('aria-current', 'true');
+      } else {
+        button.removeAttribute('aria-current');
+      }
+    });
   };
 
   const openViewer = (index) => {
@@ -705,6 +771,9 @@ const jsonLd = {
   closeButton?.addEventListener('click', closeViewer);
   prevButton?.addEventListener('click', () => setViewerImage(currentScreenshotIndex - 1));
   nextButton?.addEventListener('click', () => setViewerImage(currentScreenshotIndex + 1));
+  thumbnailButtons.forEach((button, index) => {
+    button.addEventListener('click', () => setViewerImage(index));
+  });
 
   viewer?.addEventListener('click', (event) => {
     if (event.target === viewer) closeViewer();
