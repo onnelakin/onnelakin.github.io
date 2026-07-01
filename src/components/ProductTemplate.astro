@@ -222,7 +222,6 @@ const jsonLd = {
       <div class="actions compact" aria-label={labels.stores}>
         <a class="button primary" href={meta.appstore}>{labels.appStore}</a>
         {meta.googleplay && <a class="button primary" href={meta.googleplay}>{labels.googlePlay}</a>}
-        <a class="button" href={meta.privacy}>{labels.privacy}</a>
       </div>
     </section>
 
@@ -500,18 +499,23 @@ const jsonLd = {
   .screenshot-viewer {
     width: min(1120px, calc(100vw - 32px));
     max-height: calc(100vh - 32px);
-    border: 1px solid rgba(224, 216, 203, 0.72);
-    border-radius: 12px;
+    border: 1px solid rgba(210, 201, 188, 0.48);
+    border-radius: 18px;
     padding: 0;
-    background: rgba(246, 244, 240, 0.98);
+    background:
+      linear-gradient(180deg, rgba(248, 246, 242, 0.98), rgba(238, 234, 227, 0.98)),
+      #f2eee7;
     color: #37342f;
     box-shadow:
-      0 22px 70px rgba(55, 50, 43, 0.18),
-      inset 0 1px 0 rgba(255, 255, 255, 0.72);
+      0 28px 86px rgba(39, 34, 29, 0.26),
+      0 0 0 1px rgba(255, 253, 248, 0.42),
+      inset 0 1px 0 rgba(255, 255, 255, 0.78);
   }
 
   .screenshot-viewer::backdrop {
-    background: rgba(55, 50, 43, 0.76);
+    background:
+      radial-gradient(circle at 50% 42%, rgba(120, 106, 87, 0.22), transparent 38%),
+      rgba(35, 31, 27, 0.78);
   }
 
   .viewer-panel {
@@ -528,9 +532,9 @@ const jsonLd = {
 
   .viewer-close,
   .viewer-nav {
-    border: 1px solid rgba(214, 206, 192, 0.58);
-    border-radius: 8px;
-    background: rgba(246, 244, 240, 0.76);
+    border: 1px solid rgba(196, 185, 169, 0.58);
+    border-radius: 10px;
+    background: rgba(255, 253, 248, 0.58);
     color: #37342f;
     font: inherit;
     font-weight: 620;
@@ -565,9 +569,10 @@ const jsonLd = {
     max-width: 100%;
     max-height: calc(100vh - 194px);
     overflow: hidden;
-    border-radius: 10px;
+    border-radius: 14px;
     cursor: zoom-in;
     touch-action: none;
+    background: rgba(44, 39, 33, 0.045);
   }
 
   .viewer-image-stage img {
@@ -576,9 +581,10 @@ const jsonLd = {
     max-width: 100%;
     max-height: calc(100vh - 194px);
     margin: 0 auto;
-    border: 1px solid #d8d2c9;
-    border-radius: 10px;
-    background: #f3f1ec;
+    border: 1px solid rgba(210, 201, 188, 0.82);
+    border-radius: 14px;
+    background: #f7f4ee;
+    box-shadow: 0 14px 36px rgba(55, 50, 43, 0.14);
     transform-origin: center;
     user-select: none;
     will-change: transform;
@@ -617,19 +623,19 @@ const jsonLd = {
     width: 42px;
     height: 56px;
     flex: 0 0 auto;
-    border: 1px solid rgba(214, 206, 192, 0.76);
-    border-radius: 8px;
+    border: 1px solid rgba(196, 185, 169, 0.72);
+    border-radius: 10px;
     padding: 2px;
-    background: rgba(250, 248, 245, 0.82);
+    background: rgba(255, 253, 248, 0.62);
     cursor: pointer;
   }
 
   .viewer-thumb[aria-current="true"] {
-    border-color: var(--accent-text);
+    border-color: var(--accent-border);
     background: #fffdf8;
     box-shadow:
       0 0 0 1px rgba(255, 253, 248, 0.9),
-      inset 0 0 0 1px var(--accent-text);
+      inset 0 0 0 1px var(--accent-border);
   }
 
   .viewer-thumb img {
@@ -883,11 +889,21 @@ const jsonLd = {
   };
 
   const zoomViewerAtPoint = (clientX, clientY) => {
+    if (!viewerImage || !viewerStage) return;
     if (viewerZoom > minViewerZoom) {
       resetViewerZoom();
       return;
     }
-    setViewerZoomAtPoint(clickViewerZoom, clientX, clientY);
+    const imageRect = viewerImage.getBoundingClientRect();
+    const stageRect = viewerStage.getBoundingClientRect();
+    const imageCenterX = imageRect.left + imageRect.width / 2;
+    const imageCenterY = imageRect.top + imageRect.height / 2;
+    const stageCenterX = stageRect.left + stageRect.width / 2;
+    const stageCenterY = stageRect.top + stageRect.height / 2;
+    viewerZoom = clickViewerZoom;
+    viewerPanX = stageCenterX - imageCenterX - (clientX - imageCenterX) * clickViewerZoom;
+    viewerPanY = stageCenterY - imageCenterY - (clientY - imageCenterY) * clickViewerZoom;
+    applyViewerZoom();
   };
 
   const setViewerImage = (index) => {

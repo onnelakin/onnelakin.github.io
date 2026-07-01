@@ -54,10 +54,20 @@ test.describe('site layout', () => {
 
     const viewerImage = page.locator('[data-viewer-image]');
     const stageBox = await page.locator('[data-viewer-stage]').boundingBox();
+    const imageBox = await viewerImage.boundingBox();
     expect(stageBox).not.toBeNull();
-    if (!stageBox) return;
-    await page.mouse.click(stageBox.x + stageBox.width / 2, stageBox.y + stageBox.height / 2);
+    expect(imageBox).not.toBeNull();
+    if (!stageBox || !imageBox) return;
+    await page.mouse.click(imageBox.x + imageBox.width * 0.25, imageBox.y + imageBox.height * 0.3);
     await expect(page.locator('[data-viewer-image]')).toHaveAttribute('data-zoomed', 'true');
+    const focusedTransform = await viewerImage.evaluate((image) => getComputedStyle(image).transform);
+    const focusedMatrix = await viewerImage.evaluate((image) => {
+      const transform = getComputedStyle(image).transform;
+      const matrix = transform === 'none' ? new DOMMatrixReadOnly() : new DOMMatrixReadOnly(transform);
+      return { e: matrix.e, f: matrix.f };
+    });
+    expect(Math.abs(focusedMatrix.e)).toBeGreaterThan(20);
+    expect(Math.abs(focusedMatrix.f)).toBeGreaterThan(20);
 
     await page.mouse.click(stageBox.x + stageBox.width / 2, stageBox.y + stageBox.height / 2);
     await expect(page.locator('[data-viewer-image]')).toHaveAttribute('data-zoomed', 'false');
@@ -65,6 +75,7 @@ test.describe('site layout', () => {
     await page.mouse.click(stageBox.x + stageBox.width / 2, stageBox.y + stageBox.height / 2);
     await expect(page.locator('[data-viewer-image]')).toHaveAttribute('data-zoomed', 'true');
     const zoomedTransform = await viewerImage.evaluate((image) => getComputedStyle(image).transform);
+    expect(zoomedTransform).not.toBe(focusedTransform);
     await page.mouse.move(stageBox.x + stageBox.width / 2 + 80, stageBox.y + stageBox.height / 2 + 48);
     expect(await viewerImage.evaluate((image) => getComputedStyle(image).transform)).toBe(zoomedTransform);
 
