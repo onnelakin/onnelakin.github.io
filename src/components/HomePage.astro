@@ -152,29 +152,27 @@ const text =
           <a href={app.href}>{text.openApp}</a>
         </article>
       ))}
+      <article class="tool-row upcoming-card">
+        <div>
+          <h3>Melivra</h3>
+          <p>{text.soon}</p>
+          <span>{text.upcoming}</span>
+        </div>
+      </article>
     </section>
 
     <p><a href={text.allAppsHref}>{text.allApps}</a></p>
 
     <h2>{text.upcoming}</h2>
 
-    <section class="upcoming-list" aria-label={text.upcoming}>
-      <article class="tool-row upcoming-card">
-        <img src="/app-assets/melivra/assets/icon/melivra.png" alt="" width="38" height="38" />
-        <div>
-          <h3>Melivra</h3>
-          <p>{text.soon}</p>
-        </div>
-      </article>
-      <p class="inline-list">
-        {text.upcomingItems.map((item, index) => (
-          <>
-            <span>{item}</span>
-            {index < text.upcomingItems.length - 1 && <span aria-hidden="true">/</span>}
-          </>
-        ))}
-      </p>
-    </section>
+    <p class="inline-list">
+      {text.upcomingItems.map((item, index) => (
+        <>
+          <span>{item}</span>
+          {index < text.upcomingItems.length - 1 && <span aria-hidden="true">/</span>}
+        </>
+      ))}
+    </p>
 
     <h2>{text.privacy}</h2>
 
@@ -245,7 +243,7 @@ const text =
 
   .featured {
     display: grid;
-    grid-template-columns: 84px minmax(0, 1fr);
+    grid-template-columns: 84px 1fr auto;
     align-items: center;
     gap: 22px;
     border: 1px solid var(--accent-border);
@@ -259,10 +257,6 @@ const text =
     width: 84px;
     height: 84px;
     border-radius: 20px;
-  }
-
-  .featured-icon {
-    grid-row: 1 / span 2;
   }
 
   .featured h2 {
@@ -284,17 +278,13 @@ const text =
   }
 
   .featured > a {
-    grid-column: 2;
-    justify-self: start;
     border: 1px solid var(--accent-border);
     border-radius: 8px;
-    min-width: 84px;
-    padding: 10px 16px;
+    padding: 10px 14px;
     background: #fffdf8;
     color: #37342f;
     text-decoration: none;
     font-weight: 620;
-    text-align: center;
   }
 
   .tool-list {
@@ -375,24 +365,17 @@ const text =
     line-height: 1.2;
   }
 
+  .upcoming-card {
+    grid-template-columns: 1fr;
+    color: #5b574f;
+    border-bottom: 0;
+  }
+
   .inline-list {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     color: #737067;
-  }
-
-  .upcoming-list {
-    border-top: 1px solid #e0d8cb;
-    border-bottom: 1px solid #e0d8cb;
-    padding: 12px 0 14px;
-  }
-
-  .upcoming-card {
-    grid-template-columns: 38px 1fr;
-    color: #5b574f;
-    border-bottom: 1px solid #e9e1d5;
-    padding-top: 0;
   }
 
   small {
@@ -425,6 +408,5 @@ const text =
       grid-column: 1 / -1;
       text-align: center;
     }
-
   }
 </style>

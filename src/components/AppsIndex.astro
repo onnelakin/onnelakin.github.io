@@ -8,8 +8,6 @@ type Props = {
 
 const { locale } = Astro.props;
 const apps = getProductIndexItems(locale);
-const featuredApp = apps.find((app) => app.title === 'TagWeaver') ?? apps[0];
-const listedApps = apps.filter((app) => app.slug !== featuredApp?.slug);
 const appCardStyle = (app: (typeof apps)[number]) =>
   `--accent-border: ${app.accent.border}; --accent-bg: ${app.accent.background}; --accent-text: ${app.accent.text};`;
 const text =
@@ -18,7 +16,6 @@ const text =
         title: 'ONNELLAB 앱',
         description: 'ONNELLAB이 만든 조용하고 가벼운 앱을 한곳에서 살펴보세요.',
         heading: '앱',
-        featured: '대표 앱',
         open: '열기',
         switchLabel: 'English',
         switchHref: '/apps/',
@@ -28,7 +25,6 @@ const text =
         title: 'ONNELLAB Apps',
         description: 'Calm, lightweight apps by ONNELLAB.',
         heading: 'Apps',
-        featured: 'Featured App',
         open: 'Open',
         switchLabel: '한국어',
         switchHref: '/apps/ko/',
@@ -58,30 +54,8 @@ const text =
       <p>{text.description}</p>
     </header>
 
-    {featuredApp && (
-      <section class="featured-app" aria-label={text.featured} style={appCardStyle(featuredApp)}>
-        <div class="featured-copy">
-          <span>{text.featured}</span>
-          <div class="featured-title">
-            <img src={featuredApp.iconPath} alt={`${featuredApp.title} icon`} width="64" height="64" />
-            <div>
-              <h2>{featuredApp.title}</h2>
-              <p>{featuredApp.description}</p>
-            </div>
-          </div>
-          <div class="meta-row">
-            <span>{featuredApp.status}</span>
-            <div class="platform-badges" aria-label="Platforms">
-              {featuredApp.platforms.map((platform) => <span>{platform}</span>)}
-            </div>
-          </div>
-          <a href={featuredApp.href}>{text.open}</a>
-        </div>
-      </section>
-    )}
-
     <section class="grid" aria-label={text.heading}>
-      {listedApps.map((app) => (
+      {apps.map((app) => (
         <article style={appCardStyle(app)}>
           <img src={app.iconPath} alt={`${app.title} icon`} width="64" height="64" />
           <div>
@@ -154,44 +128,24 @@ const text =
 
   .grid {
     display: grid;
-    gap: 0;
-    border-top: 1px solid #e0d8cb;
-    border-bottom: 1px solid #e0d8cb;
-    margin-top: 24px;
-  }
-
-  .featured-app {
-    border: 1px solid var(--accent-border);
-    border-radius: 8px;
-    margin-top: 34px;
-    padding: 22px;
-    background: linear-gradient(90deg, var(--accent-bg), #fffdf8 74%);
-  }
-
-  .featured-copy > span {
-    color: var(--accent-text);
-    font-size: 13px;
-    font-weight: 650;
-  }
-
-  .featured-title {
-    display: grid;
-    grid-template-columns: 64px minmax(0, 1fr);
-    align-items: center;
-    gap: 16px;
-    margin-top: 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 36px;
   }
 
   article {
     display: grid;
-    grid-template-columns: 54px 1fr auto;
-    align-items: center;
+    grid-template-columns: 64px 1fr;
+    align-items: start;
     gap: 16px;
-    border-bottom: 1px solid #e9e1d5;
-    padding: 15px 0;
+    border: 1px solid var(--accent-border, #e0d8cb);
+    border-radius: 8px;
+    padding: 16px;
+    background: #fffdf8;
   }
 
   article a {
+    grid-column: 1 / -1;
     justify-self: start;
   }
 
@@ -249,10 +203,6 @@ const text =
     background: #faf8f5;
     text-decoration: none;
     font-weight: 620;
-  }
-
-  article:last-child {
-    border-bottom: 0;
   }
 
   @media (max-width: 680px) {

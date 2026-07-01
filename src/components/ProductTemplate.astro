@@ -18,7 +18,6 @@ const labels =
         privacy: 'Privacy Policy',
         support: 'Support',
         download: '다운로드',
-        preview: '화면',
         stores: '스토어',
         status: '상태'
       }
@@ -30,7 +29,6 @@ const labels =
         privacy: 'Privacy Policy',
         support: 'Support',
         download: 'Download',
-        preview: 'Screens',
         stores: 'Stores',
         status: 'Status'
       };
@@ -43,7 +41,6 @@ const homePath = data.locale === 'ko' ? '/ko/' : '/';
 const pageStyle = `--accent-border: ${data.accent.border}; --accent-bg: ${data.accent.background}; --accent-text: ${data.accent.text};`;
 const iconUrl = new URL(data.iconPath, Astro.site);
 const canonicalUrl = new URL(data.canonicalPath, Astro.site);
-const screenshotUrls = data.screenshotPaths.map((screenshotPath) => new URL(screenshotPath, Astro.site));
 const enPath = `/apps/${data.source.slug}/`;
 const koPath = `/apps/${data.source.slug}/ko/`;
 const offerPriceCurrency = meta.priceCurrency ?? (meta.price === 0 ? 'USD' : undefined);
@@ -56,7 +53,7 @@ const jsonLd = {
   applicationSubCategory: copy.android.name || copy.ios.name,
   description: data.seoDescription,
   inLanguage: data.locale,
-  image: [iconUrl.toString(), ...screenshotUrls.map((url) => url.toString())],
+  image: iconUrl.toString(),
   downloadUrl: [meta.appstore, meta.googleplay].filter(Boolean),
   sameAs: [meta.appstore, meta.googleplay].filter(Boolean),
   publisher: {
@@ -91,7 +88,7 @@ const jsonLd = {
     { lang: 'x-default', path: enPath }
   ]}
 >
-  <main class="page-shell" data-product={data.source.slug} style={pageStyle}>
+  <main class="page-shell" style={pageStyle}>
     <header class="topbar" aria-label="ONNELLAB">
       <a class="brand" href={homePath}>ONNELLAB</a>
       <a class="language" href={data.alternatePath}>{labels.switchLabel}</a>
@@ -108,18 +105,16 @@ const jsonLd = {
           </div>
         </div>
 
-        <div class="hero-side">
-          {heroSignals.length > 0 && (
-            <div class="task-preview" aria-hidden="true">
-              {heroSignals.map((signal, index) => (
-                <div class="task-row">
-                  <span>{String(index + 1).padStart(2, '0')}</span>
-                  <strong>{signal}</strong>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        {heroSignals.length > 0 && (
+          <div class="task-preview" aria-hidden="true">
+            {heroSignals.map((signal, index) => (
+              <div class="task-row">
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <strong>{signal}</strong>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div class="actions" aria-label={labels.stores}>
@@ -155,31 +150,7 @@ const jsonLd = {
       </div>
     </section>
 
-    {data.screenshotPaths.length > 0 && (
-      <section class="preview-band" aria-label={labels.preview}>
-        <div class="preview-heading">
-          <p class="eyebrow">{labels.preview}</p>
-          <h2>{meta.title}</h2>
-        </div>
-        <div class="screenshot-row">
-          {data.screenshotPaths.slice(0, 3).map((screenshotPath, index) => (
-            <figure>
-              <img
-                src={screenshotPath}
-                alt={`${meta.title} ${labels.preview} ${index + 1}`}
-                width="1242"
-                height="2688"
-                loading={index === 0 ? 'eager' : 'lazy'}
-                decoding="async"
-              />
-            </figure>
-          ))}
-        </div>
-      </section>
-    )}
-
     <section class="download-band" aria-label={labels.download}>
-      <img src={data.iconPath} alt="" width="64" height="64" loading="lazy" />
       <div>
         <p class="eyebrow">{labels.download}</p>
         <h2>{meta.title}</h2>
@@ -244,9 +215,9 @@ const jsonLd = {
 
   .hero-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
     align-items: center;
-    gap: clamp(48px, 8vw, 96px);
+    gap: 28px;
   }
 
   .identity {
@@ -254,10 +225,6 @@ const jsonLd = {
     grid-template-columns: 112px minmax(0, 1fr);
     align-items: start;
     gap: 28px;
-  }
-
-  .identity > div {
-    min-width: 0;
   }
 
   .identity img {
@@ -280,7 +247,6 @@ const jsonLd = {
     font-size: clamp(52px, 10vw, 96px);
     line-height: 0.98;
     letter-spacing: 0;
-    overflow-wrap: anywhere;
   }
 
   .intro {
@@ -291,16 +257,9 @@ const jsonLd = {
     line-height: 1.55;
   }
 
-  .hero-side {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    align-items: center;
-    padding-top: 12px;
-  }
-
   .task-preview {
     border-left: 1px solid var(--accent-border);
-    padding-left: 28px;
+    padding-left: 22px;
   }
 
   .task-row {
@@ -326,37 +285,6 @@ const jsonLd = {
     font-size: 15px;
     font-weight: 650;
     line-height: 1.45;
-  }
-
-  .page-shell[data-product='tagweaver'] .task-preview {
-    border-left-style: dashed;
-  }
-
-  .page-shell[data-product='tagweaver'] .task-row span {
-    border: 1px solid var(--accent-border);
-    border-radius: 999px;
-    background: #fffdf8;
-    text-align: center;
-  }
-
-  .page-shell[data-product='vaultxt'] .task-preview {
-    border-left: 0;
-    padding-left: 24px;
-    box-shadow: inset 2px 0 0 var(--accent-border), inset 6px 0 0 #fffdf8;
-  }
-
-  .page-shell[data-product='vaultxt'] .task-row {
-    border-bottom-style: dashed;
-  }
-
-  .page-shell[data-product='aligna'] .task-preview,
-  .page-shell[data-product='segra'] .task-preview {
-    border-left-width: 2px;
-  }
-
-  .page-shell[data-product='clipnest'] .task-row:first-child,
-  .page-shell[data-product='quivra'] .task-row:first-child {
-    border-top-color: var(--accent-text);
   }
 
   .actions {
@@ -428,48 +356,9 @@ const jsonLd = {
   }
 
   .content-band,
-  .preview-band,
   .download-band {
     border-top: 1px solid #e0d8cb;
     padding: 44px 0;
-  }
-
-  .preview-band {
-    display: grid;
-    gap: 24px;
-  }
-
-  .preview-heading {
-    display: flex;
-    align-items: end;
-    justify-content: space-between;
-    gap: 16px;
-  }
-
-  .preview-heading h2 {
-    margin: 0;
-  }
-
-  .screenshot-row {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 18px;
-    align-items: start;
-  }
-
-  figure {
-    margin: 0;
-    border: 1px solid var(--accent-border);
-    border-radius: 8px;
-    padding: 8px;
-    background: #fffdf8;
-  }
-
-  figure img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: 6px;
   }
 
   .download-band {
@@ -477,18 +366,6 @@ const jsonLd = {
     justify-items: center;
     gap: 18px;
     text-align: center;
-    border: 1px solid var(--accent-border);
-    border-radius: 8px;
-    margin: 10px 0 34px;
-    padding: 34px 20px;
-    background: linear-gradient(180deg, var(--accent-bg), #fffdf8 78%);
-  }
-
-  .download-band img {
-    width: 64px;
-    height: 64px;
-    border-radius: 16px;
-    box-shadow: 0 0 0 1px var(--accent-border);
   }
 
   .download-band h2 {
@@ -536,19 +413,6 @@ const jsonLd = {
     flex-wrap: wrap;
   }
 
-  @media (max-width: 920px) {
-    .hero-grid {
-      grid-template-columns: 1fr;
-      gap: 30px;
-    }
-
-    .hero-side {
-      max-width: 560px;
-      margin-left: 140px;
-      padding-top: 0;
-    }
-  }
-
   @media (max-width: 680px) {
     .page-shell {
       width: min(100% - 24px, 980px);
@@ -561,7 +425,6 @@ const jsonLd = {
 
     .identity,
     .actions,
-    .hero-side,
     .hero-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -577,8 +440,7 @@ const jsonLd = {
     }
 
     .actions,
-    .meta-list,
-    .hero-side {
+    .meta-list {
       margin-left: 0;
     }
 
@@ -587,28 +449,8 @@ const jsonLd = {
       padding-left: 0;
     }
 
-    .hero-side {
-      padding-top: 0;
-    }
-
     .actions.compact {
       justify-content: stretch;
-    }
-
-    .preview-heading {
-      display: block;
-    }
-
-    .screenshot-row {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      padding-bottom: 4px;
-    }
-
-    figure {
-      flex: 0 0 min(74vw, 320px);
-      scroll-snap-align: start;
     }
 
     .button {

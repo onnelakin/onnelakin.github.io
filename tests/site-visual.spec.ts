@@ -23,23 +23,9 @@ test.describe('site layout', () => {
     });
   }
 
-  test('product screenshots render uncropped after copy on product pages', async ({ page }) => {
-    await page.goto('/apps/tagweaver/');
-    await expect(page.locator('.screenshot-row img')).toHaveCount(3);
-    await expect(page.locator('.download-band .button.primary').first()).toBeVisible();
-
-    const croppedScreenshots = await page.evaluate(() =>
-      Array.from(document.querySelectorAll('.screenshot-row figure')).filter((figure) => {
-        const image = figure.querySelector('img');
-        if (!image) return true;
-        return figure.clientHeight + 1 < image.clientHeight;
-      }).length
-    );
-    expect(croppedScreenshots).toBe(0);
-  });
-
   test('product hero title and task summary do not overlap', async ({ page }) => {
     await page.goto('/apps/tagweaver/');
+    await expect(page.locator('.download-band .button.primary').first()).toBeVisible();
     const titleBox = await page.locator('#product-title').boundingBox();
     const summaryBox = await page.locator('.task-preview').boundingBox();
 
