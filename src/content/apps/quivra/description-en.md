@@ -48,6 +48,24 @@ Key features
 Only the essentials.
 Nothing unnecessary.
 
+Landing page:
+Quivra converts everyday media files without extra setup.
+
+Choose a WAV, M4A, MP4, or MOV file and Quivra picks the right conversion path automatically. You do not need to choose an output format before starting.
+
+Audio files can be converted to MP3. MP4 videos can be saved as MP3 audio. MOV videos can be converted to MP4.
+
+Supported conversions
+
+• WAV to MP3
+• M4A to MP3
+• MP4 to MP3 audio extraction
+• MOV to MP4 video conversion
+
+Quivra is a paid converter with no ads and no subscriptions. It remembers the save location you choose and handles duplicate file names automatically.
+
+Original files are left untouched. Quivra creates a new converted file so common media cleanup tasks stay simple and predictable.
+
 ios
 앱 이름:
 Quivra – WAV to MP3 Converter

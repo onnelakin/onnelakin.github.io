@@ -39,6 +39,26 @@ All MP3 tag editing is performed locally on your device.
 
 TagWeaver focuses on precise and predictable MP3 tag editing without unnecessary features.
 
+Landing page:
+TagWeaver lets you inspect and edit MP3 metadata directly.
+
+Update the title, artist, album, track number, year, genre, and other ID3 tag fields stored inside your music files. Album artwork and lyrics can be managed from the same editing flow.
+
+TagWeaver does not try to reorganize your library automatically. It saves only the fields you review and change.
+
+Supported editing
+
+• MP3 metadata editing
+• ID3 v2.3 and v2.4 tags
+• Title, artist, album, and track fields
+• Album artwork
+• Lyrics
+• Multiple-file selection and batch editing
+
+Use it to align tracks from the same album, clean up scattered MP3 files, or correct metadata before moving files into another music app. Batch saving for multiple files is available with Pro.
+
+All editing happens on your device. There is no login, account creation, file upload, advertising, or tracking.
+
 ios
 앱 이름:
 TagWeaver – MP3 Tag Editor

@@ -48,6 +48,26 @@ All processing happens directly on your device.
 
 Segra is a quiet audio tool focused on trimming and organizing audio files without the complexity of a full audio editor.
 
+Landing page:
+Segra keeps common audio edits simple.
+
+Trim MP3 and WAV files, merge multiple recordings, or combine audio with an image to create an MP4 video. It is built for focused editing tasks rather than full music production.
+
+You can cut a long recording down to the part you need, join voice files in order, or create a simple video for narration, podcasts, audiobooks, or TTS audio.
+
+Core tasks
+
+• Trim audio sections
+• Work with MP3 and WAV files
+• Merge multiple audio files
+• Create MP4 videos from audio and images
+• Preserve original files
+• Process everything offline
+
+When you choose a start and end point, Segra saves the selected section as a new file. Original files are not modified.
+
+All processing happens on your device. There is no login, account creation, file upload, advertising, or tracking.
+
 ios
 앱 이름:
 Segra - Audio Cutter & Merger

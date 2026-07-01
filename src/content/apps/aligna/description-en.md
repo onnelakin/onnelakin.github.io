@@ -30,6 +30,28 @@ No ads.
 No cloud services.
 Everything stays on your device.
 
+Landing page:
+Aligna renames groups of files with consistent rules.
+
+Use it when photos, music files, or documents need the same naming pattern. Add dates, add sequence numbers, clean spaces, remove invalid characters, or format music file names from track information.
+
+Every change can be previewed before it is applied, so file names stay predictable.
+
+Core tasks
+
+• Add dates before or after file names
+• Add sequential numbers
+• Replace spaces with underscores
+• Remove invalid characters
+• Organize photos by capture date
+• Rename music files from artist, track, or title fields
+• Preview changes before applying
+• Rename multiple files in one batch
+
+Aligna is not a file explorer or cloud manager. It focuses on one task: making file names clean and consistent.
+
+There are no accounts, ads, or cloud services. On iOS, files may be saved with new names instead of directly changing the original file.
+
 ios
 앱 이름:
 Aligna - File Renamer

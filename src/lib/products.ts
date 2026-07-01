@@ -86,6 +86,7 @@ const fieldLabels = {
   shortDescription: '간단한 설명:',
   detailedDescription: '자세한 설명:',
   landingDescription: '랜딩 페이지:',
+  landingDescriptionEn: 'Landing page:',
   subtitle: '부제:',
   promo: '프로모션 텍스트:',
   description: '설명:',
@@ -288,7 +289,8 @@ function parsePlatformCopy(text: string): PlatformCopy {
     shortDescription: field(text, fieldLabels.shortDescription),
     subtitle: field(text, fieldLabels.subtitle),
     promo: field(text, fieldLabels.promo),
-    landingDescription: field(text, fieldLabels.landingDescription),
+    landingDescription:
+      field(text, fieldLabels.landingDescription) ?? field(text, fieldLabels.landingDescriptionEn),
     description:
       field(text, fieldLabels.detailedDescription) ?? field(text, fieldLabels.description) ?? '',
     keywords: field(text, fieldLabels.keywords)

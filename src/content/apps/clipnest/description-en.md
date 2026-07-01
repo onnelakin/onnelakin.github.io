@@ -33,5 +33,25 @@ Whether you need a clipboard manager, clipboard history, quick paste tool, or te
 
 Copy it. Save it. Paste it anytime.
 
+Landing page:
+ClipNest keeps copied text ready when you need it again.
+
+Save frequently used messages, addresses, emails, links, and snippets on your device, then paste them from the keyboard without leaving the app you are using.
+
+Pinned items stay easy to reach. Recent copied text can be searched and reused instead of being copied again.
+
+Core features
+
+• Clipboard history
+• Keyboard paste access
+• Pinned text items
+• Recent clip search
+• Duplicate handling
+• Local storage on your device
+
+ClipNest does not constantly monitor your clipboard. It checks for new clipboard content when the keyboard is opened.
+
+Your saved text is not sent to external servers. There are no accounts, ads, or subscriptions.
+
 키워드:
 clipboard,manager,history,paste,keyboard,copy,text,snippets,pasteboard,pin
