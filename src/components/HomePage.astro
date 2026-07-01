@@ -37,12 +37,10 @@ const text =
         title: 'ONNELLAB - 조용하고 구조적인 디지털 도구',
         description:
           'ONNELLAB은 음악, 텍스트, 오디오, 파일, 생산성을 위한 조용하고 구조적인 앱을 만드는 독립 소프트웨어 스튜디오입니다.',
-        intro:
-          '파일, 텍스트, 오디오, 음악 작업을 위한 작고 집중된 도구를 만듭니다.',
-        focus:
-          '빠르게 열리고, 조용히 머물며, 한 가지 일을 정확히 끝내는 앱에 집중합니다.',
+        intro: '파일, 텍스트, 오디오 작업을 위한 조용한 도구.',
+        focus: '빠르게 열리고, 조용히 머물며, 한 가지 일을 정확히 끝내는 앱을 만듭니다.',
         studioLabel: 'Independent App Studio',
-        metaItems: ['iOS / Android', 'Privacy-conscious', 'Utility apps'],
+        metaLine: 'iOS / Android · 개인정보를 존중하는 유틸리티 앱',
         released: '출시된 앱',
         featured: '대표 앱',
         allApps: '전체 앱 페이지',
@@ -62,12 +60,10 @@ const text =
         title: 'ONNELLAB - Calm, Structured Digital Tools',
         description:
           'ONNELLAB is an independent software studio creating calm, structured apps for music, text, audio, files, and productivity.',
-        intro:
-          'Small, focused apps for file, text, audio, and music work.',
-        focus:
-          'Built to open quickly, stay quiet, and finish one task clearly.',
+        intro: 'Quiet utility apps for focused work.',
+        focus: 'Small tools for files, text, audio, and music.',
         studioLabel: 'Independent App Studio',
-        metaItems: ['iOS / Android', 'Privacy-conscious', 'Utility apps'],
+        metaLine: 'iOS / Android · Privacy-conscious utility apps',
         released: 'Released Apps',
         featured: 'Featured App',
         allApps: 'All app pages',
@@ -104,13 +100,12 @@ const text =
     <section class="home-hero" aria-label="ONNELLAB">
       <p class="studio-label">{text.studioLabel}</p>
       <h1>ONNELLAB</h1>
+      <div class="brand-rule" aria-hidden="true"></div>
       <div class="intro-block">
         <p>{text.intro}</p>
         <p>{text.focus}</p>
       </div>
-      <div class="home-meta" aria-label="ONNELLAB focus">
-        {text.metaItems.map((item) => <span>{item}</span>)}
-      </div>
+      <p class="home-meta">{text.metaLine}</p>
     </section>
 
     {featuredApp && (
@@ -204,24 +199,32 @@ const text =
   }
 
   .home-hero {
-    margin-top: 54px;
-    padding-bottom: 4px;
+    margin-top: 58px;
+    padding-bottom: 2px;
   }
 
   .studio-label {
-    margin: 0 0 10px;
+    margin: 0 0 12px;
     color: #827d72;
-    font-size: 13px;
-    font-weight: 650;
+    font-size: 12px;
+    font-weight: 680;
     line-height: 1.4;
   }
 
   h1 {
     margin: 0;
-    font-size: clamp(48px, 11vw, 86px);
-    font-weight: 680;
-    line-height: 0.96;
+    color: #383631;
+    font-size: clamp(46px, 9vw, 74px);
+    font-weight: 720;
+    line-height: 0.98;
     letter-spacing: 0;
+  }
+
+  .brand-rule {
+    width: 62px;
+    height: 2px;
+    margin-top: 22px;
+    background: #cfc5b7;
   }
 
   h2 {
@@ -235,36 +238,24 @@ const text =
   }
 
   .intro-block {
-    max-width: 660px;
-    border-left: 2px solid #d8d0c5;
-    margin: 26px 0 0;
-    padding-left: 20px;
+    max-width: 620px;
+    margin: 24px 0 0;
     word-break: keep-all;
     overflow-wrap: break-word;
   }
 
   .intro-block p {
-    max-width: 600px;
+    max-width: 580px;
     color: #4f4b43;
-    font-size: 18px;
-    line-height: 1.62;
+    font-size: 17px;
+    line-height: 1.64;
   }
 
   .home-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 7px;
-    margin-top: 18px;
-  }
-
-  .home-meta span {
-    border: 1px solid #ded6c9;
-    border-radius: 999px;
-    padding: 3px 8px;
-    background: #fffdf8;
+    margin: 17px 0 0;
     color: #737067;
     font-size: 12px;
-    line-height: 1.4;
+    line-height: 1.5;
   }
 
   ul {
@@ -440,7 +431,6 @@ const text =
 
     .intro-block {
       margin-top: 22px;
-      padding-left: 16px;
     }
 
     .intro-block p {
