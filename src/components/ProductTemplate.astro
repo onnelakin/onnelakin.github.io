@@ -161,8 +161,8 @@ const jsonLd = {
               <a
                 class="screenshot-link"
                 href={screenshotPath}
-                target="_blank"
-                rel="noopener noreferrer"
+                data-screenshot-link
+                data-screenshot-index={index}
                 aria-label={`${meta.title} ${labels.screens} ${index + 1}`}
               >
                 <img
@@ -177,6 +177,19 @@ const jsonLd = {
             </figure>
           ))}
         </div>
+        <dialog class="screenshot-viewer" aria-label={labels.screens}>
+          <div class="viewer-panel">
+            <div class="viewer-bar">
+              <span data-viewer-count></span>
+              <button class="viewer-close" type="button" data-viewer-close aria-label="Close">×</button>
+            </div>
+            <div class="viewer-frame">
+              <button class="viewer-nav viewer-prev" type="button" data-viewer-prev aria-label="Previous">‹</button>
+              <img data-viewer-image alt="" />
+              <button class="viewer-nav viewer-next" type="button" data-viewer-next aria-label="Next">›</button>
+            </div>
+          </div>
+        </dialog>
       </details>
     )}
 
@@ -425,11 +438,97 @@ const jsonLd = {
   .screenshot-link {
     display: block;
     border-radius: 6px;
+    cursor: zoom-in;
   }
 
   .screenshot-link:focus-visible {
     outline: 2px solid var(--accent-text);
     outline-offset: 3px;
+  }
+
+  .screenshot-link:hover img {
+    box-shadow: 0 0 0 1px var(--accent-text);
+  }
+
+  .screenshot-viewer {
+    width: min(1120px, calc(100vw - 32px));
+    max-height: calc(100vh - 32px);
+    border: 1px solid var(--accent-border);
+    border-radius: 8px;
+    padding: 0;
+    background: #fffdf8;
+    color: #37342f;
+  }
+
+  .screenshot-viewer::backdrop {
+    background: rgba(58, 54, 48, 0.72);
+  }
+
+  .viewer-panel {
+    display: grid;
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .viewer-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    color: #737067;
+    font-size: 13px;
+  }
+
+  .viewer-close,
+  .viewer-nav {
+    border: 1px solid var(--accent-border);
+    border-radius: 8px;
+    background: #faf8f5;
+    color: #37342f;
+    font: inherit;
+    font-weight: 620;
+    cursor: pointer;
+  }
+
+  .viewer-close {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  .viewer-frame {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr) 72px;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .viewer-frame img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    max-height: calc(100vh - 128px);
+    margin: 0 auto;
+    border: 1px solid var(--accent-border);
+    border-radius: 8px;
+    background: #faf8f5;
+  }
+
+  .viewer-nav {
+    width: 48px;
+    height: 48px;
+    justify-self: center;
+    padding: 0;
+    font-size: 30px;
+    line-height: 1;
+  }
+
+  .viewer-close:focus-visible,
+  .viewer-nav:focus-visible {
+    outline: 2px solid var(--accent-text);
+    outline-offset: 2px;
   }
 
   .download-band {
@@ -536,8 +635,84 @@ const jsonLd = {
       scroll-snap-align: start;
     }
 
+    .screenshot-viewer {
+      width: min(100vw - 18px, 520px);
+    }
+
+    .viewer-panel {
+      padding: 10px;
+    }
+
+    .viewer-frame {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .viewer-frame img {
+      grid-column: 1 / -1;
+      grid-row: 1;
+      max-height: calc(100vh - 150px);
+    }
+
+    .viewer-prev,
+    .viewer-next {
+      grid-row: 2;
+    }
+
     .button {
       width: 100%;
     }
   }
 </style>
+
+<script>
+  const screenshotLinks = Array.from(document.querySelectorAll('[data-screenshot-link]'));
+  const viewer = document.querySelector('.screenshot-viewer');
+  const viewerImage = document.querySelector('[data-viewer-image]');
+  const viewerCount = document.querySelector('[data-viewer-count]');
+  const closeButton = document.querySelector('[data-viewer-close]');
+  const prevButton = document.querySelector('[data-viewer-prev]');
+  const nextButton = document.querySelector('[data-viewer-next]');
+  let currentScreenshotIndex = 0;
+
+  const setViewerImage = (index) => {
+    if (!viewerImage || !viewerCount) return;
+    currentScreenshotIndex = (index + screenshotLinks.length) % screenshotLinks.length;
+    const link = screenshotLinks[currentScreenshotIndex];
+    const image = link.querySelector('img');
+    viewerImage.src = link.getAttribute('href');
+    viewerImage.alt = image?.getAttribute('alt') || '';
+    viewerCount.textContent = `${currentScreenshotIndex + 1} / ${screenshotLinks.length}`;
+  };
+
+  const openViewer = (index) => {
+    if (!viewer || typeof viewer.showModal !== 'function') return;
+    setViewerImage(index);
+    viewer.showModal();
+  };
+
+  const closeViewer = () => {
+    if (viewer?.open) viewer.close();
+  };
+
+  screenshotLinks.forEach((link, index) => {
+    link.addEventListener('click', (event) => {
+      if (!viewer || typeof viewer.showModal !== 'function') return;
+      event.preventDefault();
+      openViewer(index);
+    });
+  });
+
+  closeButton?.addEventListener('click', closeViewer);
+  prevButton?.addEventListener('click', () => setViewerImage(currentScreenshotIndex - 1));
+  nextButton?.addEventListener('click', () => setViewerImage(currentScreenshotIndex + 1));
+
+  viewer?.addEventListener('click', (event) => {
+    if (event.target === viewer) closeViewer();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (!viewer?.open) return;
+    if (event.key === 'ArrowLeft') setViewerImage(currentScreenshotIndex - 1);
+    if (event.key === 'ArrowRight') setViewerImage(currentScreenshotIndex + 1);
+  });
+</script>

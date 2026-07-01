@@ -41,4 +41,21 @@ test.describe('site layout', () => {
       titleBox.y + titleBox.height > summaryBox.y;
     expect(overlaps).toBe(false);
   });
+
+  test('product screenshots open in an in-page viewer', async ({ page }) => {
+    await page.goto('/apps/tagweaver/');
+    await page.locator('.screens-band summary').click();
+    await page.locator('[data-screenshot-link]').first().click();
+
+    const viewer = page.locator('.screenshot-viewer');
+    await expect(viewer).toBeVisible();
+    await expect(page.locator('[data-viewer-count]')).toHaveText('1 / 3');
+    await expect(page.locator('[data-viewer-image]')).toHaveAttribute('src', /tagweaver\/assets\/screenshots\/en\/1\.png/);
+
+    await page.locator('[data-viewer-next]').click();
+    await expect(page.locator('[data-viewer-count]')).toHaveText('2 / 3');
+
+    await page.locator('[data-viewer-close]').click();
+    await expect(viewer).not.toBeVisible();
+  });
 });
