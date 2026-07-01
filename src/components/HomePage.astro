@@ -94,7 +94,7 @@ const text =
 >
   <main class="page-shell">
     <nav class="top-nav" aria-label="Language">
-      <a href={text.switchHref}>{text.switchLabel}</a>
+      <a class="language" href={text.switchHref}>{text.switchLabel}</a>
     </nav>
 
     <section class="home-showcase" aria-label="ONNELLAB">
@@ -191,8 +191,30 @@ const text =
     font-size: 14px;
   }
 
-  .top-nav a {
+  .language {
+    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #ded6ca;
+    border-radius: 999px;
+    padding: 6px 12px;
+    background: rgba(255, 253, 248, 0.72);
+    color: #5f5a50;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 1.35;
     text-decoration: none;
+  }
+
+  .language:hover,
+  .language:focus-visible {
+    border-color: #cfc5b7;
+    background: #fffdf8;
+  }
+
+  .language:focus-visible {
+    outline: 2px solid #827d72;
+    outline-offset: 3px;
   }
 
   .home-showcase {
@@ -500,17 +522,33 @@ const text =
       padding: 38px 0 28px;
     }
 
+    h1 {
+      font-size: clamp(45px, 15vw, 62px);
+    }
+
+    .brand-rule {
+      margin-top: 18px;
+    }
+
     .intro-block {
-      margin-top: 22px;
+      margin-top: 20px;
     }
 
     .intro-block p {
       font-size: 16px;
+      line-height: 1.62;
     }
 
     .featured {
       width: 100%;
-      padding: 18px;
+      gap: 20px;
+      padding: 17px;
+    }
+
+    .featured-topline {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 8px;
     }
 
     .featured-body {
@@ -528,9 +566,14 @@ const text =
       grid-template-columns: 1fr;
     }
 
+    .product-card {
+      min-height: auto;
+      padding: 15px;
+    }
+
     .home-footer {
       display: grid;
-      gap: 16px;
+      gap: 14px;
     }
 
     .footer-links {

@@ -134,11 +134,28 @@ const text =
   }
 
   .language {
-    border: 1px solid #ddd5c8;
-    border-radius: 8px;
-    padding: 8px 12px;
+    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #ded6ca;
+    border-radius: 999px;
+    padding: 6px 12px;
+    background: rgba(255, 253, 248, 0.72);
+    color: #5f5a50;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 1.35;
+  }
+
+  .language:hover,
+  .language:focus-visible {
+    border-color: #cfc5b7;
     background: #fffdf8;
-    font-size: 14px;
+  }
+
+  .language:focus-visible {
+    outline: 2px solid #827d72;
+    outline-offset: 3px;
   }
 
   header {
@@ -240,15 +257,33 @@ const text =
 
   @media (max-width: 680px) {
     .page-shell {
-      width: min(100% - 24px, 980px);
+      width: min(100% - 28px, 980px);
+      padding-top: 24px;
+    }
+
+    header {
+      padding-top: 36px;
+    }
+
+    h1 {
+      font-size: clamp(40px, 14vw, 58px);
+    }
+
+    header p {
+      font-size: 16px;
+      line-height: 1.58;
     }
 
     .grid {
       grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 28px;
     }
 
     .app-card {
       grid-template-columns: 56px 1fr;
+      gap: 14px;
+      padding: 15px;
     }
 
     img {
@@ -256,6 +291,5 @@ const text =
       height: 56px;
       border-radius: 14px;
     }
-
   }
 </style>
