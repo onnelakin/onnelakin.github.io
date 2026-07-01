@@ -49,19 +49,19 @@ test.describe('site layout', () => {
 
     const viewer = page.locator('.screenshot-viewer');
     await expect(viewer).toBeVisible();
-    await expect(page.locator('[data-viewer-count]')).toHaveText('1 / 3');
     await expect(page.locator('[data-viewer-image]')).toHaveAttribute('src', /tagweaver\/assets\/screenshots\/en\/1\.png/);
+    await expect(page.locator('[data-viewer-thumb]').first()).toHaveAttribute('aria-current', 'true');
 
     await page.locator('[data-viewer-next]').click();
-    await expect(page.locator('[data-viewer-count]')).toHaveText('2 / 3');
+    await expect(page.locator('[data-viewer-image]')).toHaveAttribute('src', /tagweaver\/assets\/screenshots\/en\/2\.png/);
     await expect(page.locator('[data-viewer-thumb]').nth(1)).toHaveAttribute('aria-current', 'true');
 
     await page.locator('[data-viewer-thumb]').nth(2).click();
-    await expect(page.locator('[data-viewer-count]')).toHaveText('3 / 3');
     await expect(page.locator('[data-viewer-image]')).toHaveAttribute('src', /tagweaver\/assets\/screenshots\/en\/3\.png/);
+    await expect(page.locator('[data-viewer-thumb]').nth(2)).toHaveAttribute('aria-current', 'true');
 
     await page.keyboard.press('ArrowLeft');
-    await expect(page.locator('[data-viewer-count]')).toHaveText('2 / 3');
+    await expect(page.locator('[data-viewer-image]')).toHaveAttribute('src', /tagweaver\/assets\/screenshots\/en\/2\.png/);
 
     await page.locator('[data-viewer-close]').click();
     await expect(viewer).not.toBeVisible();

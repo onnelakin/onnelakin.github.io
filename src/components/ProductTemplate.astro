@@ -180,7 +180,6 @@ const jsonLd = {
         <dialog class="screenshot-viewer" aria-label={labels.screens}>
           <div class="viewer-panel">
             <div class="viewer-bar">
-              <span data-viewer-count></span>
               <button class="viewer-close" type="button" data-viewer-close aria-label="Close">×</button>
             </div>
             <div class="viewer-frame">
@@ -473,12 +472,14 @@ const jsonLd = {
   .screenshot-viewer {
     width: min(1120px, calc(100vw - 32px));
     max-height: calc(100vh - 32px);
-    border: 1px solid rgba(224, 216, 203, 0.86);
-    border-radius: 8px;
+    border: 1px solid rgba(224, 216, 203, 0.72);
+    border-radius: 12px;
     padding: 0;
     background: rgba(255, 253, 248, 0.97);
     color: #37342f;
-    box-shadow: 0 18px 50px rgba(55, 50, 43, 0.16);
+    box-shadow:
+      0 22px 70px rgba(55, 50, 43, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.72);
   }
 
   .screenshot-viewer::backdrop {
@@ -494,10 +495,7 @@ const jsonLd = {
   .viewer-bar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    color: #737067;
-    font-size: 13px;
+    justify-content: flex-end;
   }
 
   .viewer-close,
@@ -533,7 +531,7 @@ const jsonLd = {
     max-height: calc(100vh - 194px);
     margin: 0 auto;
     border: 1px solid #e0d8cb;
-    border-radius: 8px;
+    border-radius: 10px;
     background: #faf8f5;
   }
 
@@ -559,7 +557,7 @@ const jsonLd = {
     height: 56px;
     flex: 0 0 auto;
     border: 1px solid rgba(214, 206, 192, 0.76);
-    border-radius: 7px;
+    border-radius: 8px;
     padding: 2px;
     background: rgba(250, 248, 245, 0.82);
     cursor: pointer;
@@ -726,7 +724,6 @@ const jsonLd = {
   const screenshotLinks = Array.from(document.querySelectorAll('[data-screenshot-link]'));
   const viewer = document.querySelector('.screenshot-viewer');
   const viewerImage = document.querySelector('[data-viewer-image]');
-  const viewerCount = document.querySelector('[data-viewer-count]');
   const closeButton = document.querySelector('[data-viewer-close]');
   const prevButton = document.querySelector('[data-viewer-prev]');
   const nextButton = document.querySelector('[data-viewer-next]');
@@ -734,13 +731,12 @@ const jsonLd = {
   let currentScreenshotIndex = 0;
 
   const setViewerImage = (index) => {
-    if (!viewerImage || !viewerCount) return;
+    if (!viewerImage) return;
     currentScreenshotIndex = (index + screenshotLinks.length) % screenshotLinks.length;
     const link = screenshotLinks[currentScreenshotIndex];
     const image = link.querySelector('img');
     viewerImage.src = link.getAttribute('href');
     viewerImage.alt = image?.getAttribute('alt') || '';
-    viewerCount.textContent = `${currentScreenshotIndex + 1} / ${screenshotLinks.length}`;
     thumbnailButtons.forEach((button, thumbnailIndex) => {
       if (thumbnailIndex === currentScreenshotIndex) {
         button.setAttribute('aria-current', 'true');
