@@ -10,6 +10,29 @@ const { locale } = Astro.props;
 const apps = getProductIndexItems(locale);
 const appCardStyle = (app: (typeof apps)[number]) =>
   `--accent-border: ${app.accent.border}; --accent-bg: ${app.accent.background}; --accent-text: ${app.accent.text};`;
+const appCategory = (title: string) => {
+  if (['TagWeaver', 'Melivra'].includes(title)) return 'Music';
+  if (['VaultXT'].includes(title)) return 'Text';
+  if (['Aligna', 'Segra'].includes(title)) return 'Files';
+  if (['Quivra', 'ClipNest'].includes(title)) return 'Workflow';
+  return 'Utility';
+};
+const categoryLabels =
+  locale === 'ko'
+    ? {
+        Music: '음악',
+        Text: '텍스트',
+        Files: '파일',
+        Workflow: '작업 흐름',
+        Utility: '유틸리티'
+      }
+    : {
+        Music: 'Music',
+        Text: 'Text',
+        Files: 'Files',
+        Workflow: 'Workflow',
+        Utility: 'Utility'
+      };
 const text =
   locale === 'ko'
     ? {
@@ -62,6 +85,7 @@ const text =
             <h2>{app.title}</h2>
             <p>{app.description}</p>
             <div class="meta-row">
+              <span>{categoryLabels[appCategory(app.title)]}</span>
               <span>{app.status}</span>
               <div class="platform-badges" aria-label="Platforms">
                 {app.platforms.map((platform) => <span>{platform}</span>)}

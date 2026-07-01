@@ -13,6 +13,7 @@ test.describe('site layout', () => {
 
       const brokenImages = await page.evaluate(() =>
         Array.from(document.images)
+          .filter((image) => !image.closest('details:not([open])'))
           .filter((image) => image.naturalWidth === 0 || image.naturalHeight === 0)
           .map((image) => image.getAttribute('src') ?? '')
       );

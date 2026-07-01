@@ -123,13 +123,15 @@ const text =
         </div>
         <div>
           <span>{text.featured}</span>
-          <h2>{featuredApp.title}</h2>
+          <div class="featured-heading">
+            <h2>{featuredApp.title}</h2>
+            <a class="featured-link" href={featuredApp.href}>{text.openApp}</a>
+          </div>
           <p>{featuredApp.description}</p>
           <div class="platform-badges" aria-label="Platforms">
             {featuredApp.platforms.map((platform) => <span>{platform}</span>)}
           </div>
         </div>
-        <a href={featuredApp.href}>{text.openApp}</a>
       </section>
     )}
 
@@ -152,13 +154,6 @@ const text =
           <a href={app.href}>{text.openApp}</a>
         </article>
       ))}
-      <article class="tool-row upcoming-card">
-        <div>
-          <h3>Melivra</h3>
-          <p>{text.soon}</p>
-          <span>{text.upcoming}</span>
-        </div>
-      </article>
     </section>
 
     <p><a href={text.allAppsHref}>{text.allApps}</a></p>
@@ -166,6 +161,8 @@ const text =
     <h2>{text.upcoming}</h2>
 
     <p class="inline-list">
+      <span>Melivra</span>
+      <span aria-hidden="true">/</span>
       {text.upcomingItems.map((item, index) => (
         <>
           <span>{item}</span>
@@ -243,25 +240,35 @@ const text =
 
   .featured {
     display: grid;
-    grid-template-columns: 84px 1fr auto;
+    width: min(100%, 640px);
+    grid-template-columns: 72px minmax(0, 1fr);
     align-items: center;
-    gap: 22px;
+    gap: 18px;
     border: 1px solid var(--accent-border);
     border-radius: 8px;
-    margin: 38px 0 14px;
-    padding: 22px;
-    background: linear-gradient(90deg, var(--accent-bg), #fffdf8 74%);
+    margin: 34px 0 14px;
+    padding: 18px;
+    background: linear-gradient(90deg, var(--accent-bg), #fffdf8 88%);
   }
 
   .featured-icon img {
-    width: 84px;
-    height: 84px;
-    border-radius: 20px;
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
   }
 
   .featured h2 {
-    margin: 4px 0 6px;
-    font-size: 28px;
+    margin: 0;
+    font-size: 25px;
+    line-height: 1.12;
+  }
+
+  .featured-heading {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 3px 0 5px;
   }
 
   .featured > div > span {
@@ -273,18 +280,22 @@ const text =
   .featured p {
     margin: 0;
     color: #4f4b43;
-    font-size: 16px;
-    line-height: 1.55;
+    font-size: 15px;
+    line-height: 1.5;
   }
 
-  .featured > a {
+  .featured-link {
+    display: inline-flex;
+    align-items: center;
     border: 1px solid var(--accent-border);
     border-radius: 8px;
-    padding: 10px 14px;
+    padding: 6px 10px;
     background: #fffdf8;
     color: #37342f;
     text-decoration: none;
     font-weight: 620;
+    font-size: 14px;
+    line-height: 1.2;
   }
 
   .tool-list {
@@ -365,12 +376,6 @@ const text =
     line-height: 1.2;
   }
 
-  .upcoming-card {
-    grid-template-columns: 1fr;
-    color: #5b574f;
-    border-bottom: 0;
-  }
-
   .inline-list {
     display: flex;
     flex-wrap: wrap;
@@ -389,6 +394,7 @@ const text =
     }
 
     .featured {
+      width: 100%;
       grid-template-columns: 72px 1fr;
     }
 
@@ -404,7 +410,7 @@ const text =
     }
 
     .tool-row a,
-    .featured > a {
+    .featured-link {
       grid-column: 1 / -1;
       text-align: center;
     }

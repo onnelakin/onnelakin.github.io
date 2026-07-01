@@ -18,6 +18,7 @@ const labels =
         privacy: 'Privacy Policy',
         support: 'Support',
         download: '다운로드',
+        screens: '화면',
         stores: '스토어',
         status: '상태'
       }
@@ -29,6 +30,7 @@ const labels =
         privacy: 'Privacy Policy',
         support: 'Support',
         download: 'Download',
+        screens: 'Screens',
         stores: 'Stores',
         status: 'Status'
       };
@@ -149,6 +151,26 @@ const jsonLd = {
         ))}
       </div>
     </section>
+
+    {data.screenshotPaths.length > 0 && (
+      <details class="screens-band">
+        <summary>{labels.screens}</summary>
+        <div class="screenshot-row">
+          {data.screenshotPaths.slice(0, 3).map((screenshotPath, index) => (
+            <figure>
+              <img
+                src={screenshotPath}
+                alt={`${meta.title} ${labels.screens} ${index + 1}`}
+                width="1242"
+                height="2688"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+          ))}
+        </div>
+      </details>
+    )}
 
     <section class="download-band" aria-label={labels.download}>
       <div>
@@ -356,9 +378,40 @@ const jsonLd = {
   }
 
   .content-band,
+  .screens-band,
   .download-band {
     border-top: 1px solid #e0d8cb;
     padding: 44px 0;
+  }
+
+  .screens-band summary {
+    cursor: pointer;
+    color: #37342f;
+    font-size: 20px;
+    font-weight: 650;
+    list-style-position: outside;
+  }
+
+  .screenshot-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-top: 24px;
+  }
+
+  figure {
+    margin: 0;
+    border: 1px solid var(--accent-border);
+    border-radius: 8px;
+    padding: 8px;
+    background: #fffdf8;
+  }
+
+  figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
   }
 
   .download-band {
@@ -451,6 +504,18 @@ const jsonLd = {
 
     .actions.compact {
       justify-content: stretch;
+    }
+
+    .screenshot-row {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 4px;
+    }
+
+    figure {
+      flex: 0 0 min(74vw, 320px);
+      scroll-snap-align: start;
     }
 
     .button {
