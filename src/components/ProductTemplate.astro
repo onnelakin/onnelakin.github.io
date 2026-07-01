@@ -849,10 +849,9 @@ const jsonLd = {
   let suppressNextViewerClick = false;
   const dragThreshold = 4;
   const minViewerZoom = 1;
-  const minWheelViewerZoom = 1.08;
-  const clickViewerZoom = 1.35;
-  const maxViewerZoom = 1.9;
-  const wheelZoomStep = 0.16;
+  const clickViewerZoom = 1.3;
+  const maxViewerZoom = 2;
+  const wheelZoomStep = 0.1;
 
   const applyViewerZoom = () => {
     if (!viewerImage) return;
@@ -1000,7 +999,7 @@ const jsonLd = {
     const targetZoom =
       direction > 0
         ? viewerZoom + wheelZoomStep
-        : Math.max(minWheelViewerZoom, viewerZoom - wheelZoomStep);
+        : Math.max(minViewerZoom, viewerZoom - wheelZoomStep);
     setViewerZoomAtPoint(targetZoom, event.clientX, event.clientY);
   }, { passive: false });
   thumbnailButtons.forEach((button, index) => {

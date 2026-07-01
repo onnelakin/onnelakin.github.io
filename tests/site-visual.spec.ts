@@ -64,8 +64,9 @@ test.describe('site layout', () => {
     const focusedMatrix = await viewerImage.evaluate((image) => {
       const transform = getComputedStyle(image).transform;
       const matrix = transform === 'none' ? new DOMMatrixReadOnly() : new DOMMatrixReadOnly(transform);
-      return { e: matrix.e, f: matrix.f };
+      return { a: matrix.a, e: matrix.e, f: matrix.f };
     });
+    expect(focusedMatrix.a).toBe(1.3);
     expect(Math.abs(focusedMatrix.e)).toBeGreaterThan(20);
     expect(Math.abs(focusedMatrix.f)).toBeGreaterThan(20);
 
@@ -88,6 +89,11 @@ test.describe('site layout', () => {
     });
     const wheelZoomTransform = await viewerImage.evaluate((image) => getComputedStyle(image).transform);
     expect(wheelZoomTransform).not.toBe(zoomedTransform);
+    const wheelZoomScale = await viewerImage.evaluate((image) => {
+      const transform = getComputedStyle(image).transform;
+      return transform === 'none' ? 1 : new DOMMatrixReadOnly(transform).a;
+    });
+    expect(wheelZoomScale).toBeCloseTo(1.4, 5);
 
     for (let index = 0; index < 8; index += 1) {
       await page.locator('[data-viewer-stage]').dispatchEvent('wheel', {
@@ -102,9 +108,11 @@ test.describe('site layout', () => {
       const transform = getComputedStyle(image).transform;
       return transform === 'none' ? 1 : new DOMMatrixReadOnly(transform).a;
     });
-    expect(reducedWheelScale).toBeGreaterThan(1);
-    expect(reducedWheelScale).toBeLessThan(1.2);
-    const reducedWheelTransform = await viewerImage.evaluate((image) => getComputedStyle(image).transform);
+    expect(reducedWheelScale).toBe(1);
+    await expect(page.locator('[data-viewer-image]')).toHaveAttribute('data-zoomed', 'false');
+    await page.mouse.click(stageBox.x + stageBox.width / 2, stageBox.y + stageBox.height / 2);
+    await expect(page.locator('[data-viewer-image]')).toHaveAttribute('data-zoomed', 'true');
+    const dragStartTransform = await viewerImage.evaluate((image) => getComputedStyle(image).transform);
 
     await viewerImage.dispatchEvent('mousedown', {
       clientX: stageBox.x + stageBox.width / 2,
@@ -124,7 +132,7 @@ test.describe('site layout', () => {
         y: stageBox.y + stageBox.height / 2 + 48
       }
     );
-    expect(await viewerImage.evaluate((image) => getComputedStyle(image).transform)).not.toBe(reducedWheelTransform);
+    expect(await viewerImage.evaluate((image) => getComputedStyle(image).transform)).not.toBe(dragStartTransform);
 
     await page.locator('[data-viewer-next]').click();
     await expect(page.locator('[data-viewer-image]')).toHaveAttribute('src', /tagweaver\/assets\/screenshots\/en\/2\.png/);
