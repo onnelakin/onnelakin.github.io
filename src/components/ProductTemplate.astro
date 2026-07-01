@@ -560,9 +560,45 @@ const jsonLd = {
   }
 
   .screenshot-link {
+    position: relative;
     display: block;
     border-radius: 6px;
     cursor: zoom-in;
+  }
+
+  .screenshot-link::before,
+  .screenshot-link::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .screenshot-link::before {
+    right: 10px;
+    bottom: 10px;
+    width: 31px;
+    height: 31px;
+    border: 1px solid rgba(196, 185, 169, 0.62);
+    border-radius: 999px;
+    background:
+      linear-gradient(180deg, rgba(255, 253, 248, 0.86), rgba(244, 240, 233, 0.72)),
+      rgba(255, 253, 248, 0.72);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.78),
+      0 8px 18px rgba(39, 34, 29, 0.1);
+  }
+
+  .screenshot-link::after {
+    right: 19px;
+    bottom: 19px;
+    width: 8px;
+    height: 8px;
+    border: 1.5px solid var(--accent-text);
+    border-radius: 999px;
+    box-shadow: 5px 5px 0 -3.3px var(--accent-text);
+    opacity: 0.86;
+    transform: rotate(-45deg);
+    transform-origin: center;
   }
 
   .screenshot-link:focus-visible {
@@ -572,6 +608,14 @@ const jsonLd = {
 
   .screenshot-link:hover img {
     box-shadow: 0 0 0 1px var(--accent-text);
+  }
+
+  .screenshot-link:hover::before,
+  .screenshot-link:focus-visible::before {
+    border-color: var(--accent-border);
+    background:
+      linear-gradient(180deg, #fffdf8, rgba(245, 241, 234, 0.86)),
+      #fffdf8;
   }
 
   .screenshot-viewer {
