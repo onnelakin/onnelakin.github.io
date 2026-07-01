@@ -52,6 +52,14 @@ test.describe('site layout', () => {
     await expect(page.locator('[data-viewer-image]')).toHaveAttribute('src', /tagweaver\/assets\/screenshots\/en\/1\.png/);
     await expect(page.locator('[data-viewer-thumb]').first()).toHaveAttribute('aria-current', 'true');
 
+    await page.locator('[data-viewer-zoom-in]').click();
+    await expect(page.locator('[data-viewer-zoom-reset]')).toHaveText('120%');
+    await expect(page.locator('[data-viewer-image]')).toHaveAttribute('data-zoomed', 'true');
+
+    await page.locator('[data-viewer-zoom-reset]').click();
+    await expect(page.locator('[data-viewer-zoom-reset]')).toHaveText('100%');
+    await expect(page.locator('[data-viewer-image]')).toHaveAttribute('data-zoomed', 'false');
+
     await page.locator('[data-viewer-next]').click();
     await expect(page.locator('[data-viewer-image]')).toHaveAttribute('src', /tagweaver\/assets\/screenshots\/en\/2\.png/);
     await expect(page.locator('[data-viewer-thumb]').nth(1)).toHaveAttribute('aria-current', 'true');

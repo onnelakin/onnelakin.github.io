@@ -180,11 +180,18 @@ const jsonLd = {
         <dialog class="screenshot-viewer" aria-label={labels.screens}>
           <div class="viewer-panel">
             <div class="viewer-bar">
+              <div class="viewer-zoom" aria-label="Zoom">
+                <button type="button" data-viewer-zoom-out aria-label="Zoom out">−</button>
+                <button type="button" data-viewer-zoom-reset aria-label="Reset zoom">100%</button>
+                <button type="button" data-viewer-zoom-in aria-label="Zoom in">+</button>
+              </div>
               <button class="viewer-close" type="button" data-viewer-close aria-label="Close">×</button>
             </div>
             <div class="viewer-frame">
               <button class="viewer-nav viewer-prev" type="button" data-viewer-prev aria-label="Previous">‹</button>
-              <img data-viewer-image alt="" />
+              <div class="viewer-image-stage" data-viewer-stage>
+                <img data-viewer-image alt="" />
+              </div>
               <button class="viewer-nav viewer-next" type="button" data-viewer-next aria-label="Next">›</button>
             </div>
             <div class="viewer-thumbs" aria-label={labels.screens}>
@@ -495,11 +502,13 @@ const jsonLd = {
   .viewer-bar {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between;
+    gap: 12px;
   }
 
   .viewer-close,
-  .viewer-nav {
+  .viewer-nav,
+  .viewer-zoom button {
     border: 1px solid rgba(214, 206, 192, 0.58);
     border-radius: 8px;
     background: rgba(255, 253, 248, 0.72);
@@ -510,10 +519,24 @@ const jsonLd = {
   }
 
   .viewer-close:hover,
-  .viewer-nav:hover {
+  .viewer-nav:hover,
+  .viewer-zoom button:hover {
     border-color: var(--accent-border);
     background: rgba(255, 253, 248, 0.92);
     color: var(--accent-text);
+  }
+
+  .viewer-zoom {
+    display: inline-flex;
+    gap: 6px;
+  }
+
+  .viewer-zoom button {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 8px;
+    font-size: 13px;
+    line-height: 1;
   }
 
   .viewer-close {
@@ -531,7 +554,14 @@ const jsonLd = {
     gap: 12px;
   }
 
-  .viewer-frame img {
+  .viewer-image-stage {
+    max-width: 100%;
+    max-height: calc(100vh - 194px);
+    overflow: auto;
+    border-radius: 10px;
+  }
+
+  .viewer-image-stage img {
     display: block;
     width: auto;
     max-width: 100%;
@@ -540,6 +570,12 @@ const jsonLd = {
     border: 1px solid #e0d8cb;
     border-radius: 10px;
     background: #faf8f5;
+    transform-origin: top center;
+  }
+
+  .viewer-image-stage img[data-zoomed="true"] {
+    max-width: none;
+    max-height: none;
   }
 
   .viewer-nav {
@@ -588,6 +624,7 @@ const jsonLd = {
 
   .viewer-close:focus-visible,
   .viewer-nav:focus-visible,
+  .viewer-zoom button:focus-visible,
   .viewer-thumb:focus-visible {
     outline: 2px solid var(--accent-text);
     outline-offset: 2px;
@@ -709,9 +746,13 @@ const jsonLd = {
       grid-template-columns: 1fr 1fr;
     }
 
-    .viewer-frame img {
+    .viewer-image-stage {
       grid-column: 1 / -1;
       grid-row: 1;
+      max-height: calc(100vh - 204px);
+    }
+
+    .viewer-image-stage img {
       max-height: calc(100vh - 204px);
     }
 
@@ -734,11 +775,28 @@ const jsonLd = {
   const screenshotLinks = Array.from(document.querySelectorAll('[data-screenshot-link]'));
   const viewer = document.querySelector('.screenshot-viewer');
   const viewerImage = document.querySelector('[data-viewer-image]');
+  const viewerStage = document.querySelector('[data-viewer-stage]');
   const closeButton = document.querySelector('[data-viewer-close]');
   const prevButton = document.querySelector('[data-viewer-prev]');
   const nextButton = document.querySelector('[data-viewer-next]');
+  const zoomOutButton = document.querySelector('[data-viewer-zoom-out]');
+  const zoomResetButton = document.querySelector('[data-viewer-zoom-reset]');
+  const zoomInButton = document.querySelector('[data-viewer-zoom-in]');
   const thumbnailButtons = Array.from(document.querySelectorAll('[data-viewer-thumb]'));
   let currentScreenshotIndex = 0;
+  let viewerZoom = 1;
+
+  const applyViewerZoom = () => {
+    if (!viewerImage || !zoomResetButton) return;
+    viewerImage.style.transform = `scale(${viewerZoom})`;
+    viewerImage.dataset.zoomed = viewerZoom > 1 ? 'true' : 'false';
+    zoomResetButton.textContent = `${Math.round(viewerZoom * 100)}%`;
+  };
+
+  const setViewerZoom = (zoom) => {
+    viewerZoom = Math.min(3, Math.max(1, Math.round(zoom * 10) / 10));
+    applyViewerZoom();
+  };
 
   const setViewerImage = (index) => {
     if (!viewerImage) return;
@@ -747,6 +805,11 @@ const jsonLd = {
     const image = link.querySelector('img');
     viewerImage.src = link.getAttribute('href');
     viewerImage.alt = image?.getAttribute('alt') || '';
+    if (viewerStage) {
+      viewerStage.scrollTop = 0;
+      viewerStage.scrollLeft = 0;
+    }
+    setViewerZoom(1);
     thumbnailButtons.forEach((button, thumbnailIndex) => {
       if (thumbnailIndex === currentScreenshotIndex) {
         button.setAttribute('aria-current', 'true');
@@ -777,6 +840,14 @@ const jsonLd = {
   closeButton?.addEventListener('click', closeViewer);
   prevButton?.addEventListener('click', () => setViewerImage(currentScreenshotIndex - 1));
   nextButton?.addEventListener('click', () => setViewerImage(currentScreenshotIndex + 1));
+  zoomOutButton?.addEventListener('click', () => setViewerZoom(viewerZoom - 0.2));
+  zoomResetButton?.addEventListener('click', () => setViewerZoom(1));
+  zoomInButton?.addEventListener('click', () => setViewerZoom(viewerZoom + 0.2));
+  viewerStage?.addEventListener('wheel', (event) => {
+    if (!viewer?.open || !event.ctrlKey) return;
+    event.preventDefault();
+    setViewerZoom(viewerZoom + (event.deltaY < 0 ? 0.2 : -0.2));
+  });
   thumbnailButtons.forEach((button, index) => {
     button.addEventListener('click', () => setViewerImage(index));
   });
