@@ -1,7 +1,12 @@
 import { getAllProductPages } from '../lib/products';
 
 export function GET() {
-  const paths = ['/', '/apps/', ...getAllProductPages().map((page) => page.canonicalPath)];
+  const paths = [
+    '/',
+    '/ko/',
+    '/apps/',
+    ...getAllProductPages().map((page) => page.canonicalPath),
+  ];
   const uniquePaths = paths.filter((value, index, all) => all.indexOf(value) === index);
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

@@ -1,0 +1,165 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getProductIndexItems, type Locale } from '../lib/products';
+
+type Props = {
+  locale: Locale;
+};
+
+const { locale } = Astro.props;
+const contentApps = getProductIndexItems(locale);
+const privacyApps = contentApps.filter((app) => app.privacy);
+const contentAppTitles = new Set(contentApps.map((app) => app.title));
+const appHref = new Map(contentApps.map((app) => [app.title, app.href]));
+const staticPrivacyApps = [
+  ['Quivra', 'https://onnelakin.github.io/quivra-privacy-policy/'],
+  ['TagWeaver', 'https://onnelakin.github.io/tagweaver-privacy-policy/'],
+  ['VaultXT', 'https://onnelakin.github.io/vaultxt-privacy-policy/'],
+  ['Segra', 'https://onnelakin.github.io/segra-privacy-policy/'],
+  ['ClipNest', 'https://onnelakin.github.io/clipnest-privacy-policy/'],
+  ['Melivra', 'https://onnelakin.github.io/melivra-privacy-policy/']
+].filter(([title]) => !contentAppTitles.has(title));
+
+const text =
+  locale === 'ko'
+    ? {
+        title: 'ONNELLAB - 조용하고 구조적인 디지털 도구',
+        description:
+          'ONNELLAB은 음악, 텍스트, 오디오, 파일, 생산성을 위한 조용하고 구조적인 앱을 만드는 독립 소프트웨어 스튜디오입니다.',
+        intro:
+          '일상적인 디지털 작업을 위한 조용하고 구조적인 도구를 만드는 독립 소프트웨어 스튜디오입니다.',
+        focus:
+          'ONNELLAB은 하나의 일을 잘 해내는 가볍고 개인정보를 존중하는 앱에 집중합니다.',
+        released: '출시된 앱',
+        allApps: '전체 앱 페이지',
+        upcoming: '예정 프로젝트',
+        privacy: '개인정보처리방침',
+        contact: '문의',
+        inquiry: '문의:',
+        soon: '출시 예정',
+        switchLabel: 'English',
+        switchHref: '/'
+      }
+    : {
+        title: 'ONNELLAB - Calm, Structured Digital Tools',
+        description:
+          'ONNELLAB is an independent software studio creating calm, structured apps for music, text, audio, files, and productivity.',
+        intro:
+          'Independent software studio creating calm, structured tools for everyday digital work.',
+        focus:
+          'ONNELLAB focuses on lightweight, privacy-conscious applications designed to do one job well.',
+        released: 'Released Apps',
+        allApps: 'All app pages',
+        upcoming: 'Upcoming Projects',
+        privacy: 'Privacy Policy',
+        contact: 'Contact',
+        inquiry: 'For inquiries:',
+        soon: 'Coming Soon',
+        switchLabel: '한국어',
+        switchHref: '/ko/'
+      };
+---
+
+<BaseLayout
+  title={text.title}
+  description={text.description}
+  canonicalPath={locale === 'ko' ? '/ko/' : '/'}
+  lang={locale}
+>
+  <link
+    slot="head"
+    rel="alternate"
+    hreflang={locale === 'ko' ? 'en' : 'ko'}
+    href={new URL(text.switchHref, Astro.site)}
+  />
+  <main class="page-shell">
+    <nav aria-label="Language">
+      <a href={text.switchHref}>{text.switchLabel}</a>
+    </nav>
+
+    <h1>ONNELLAB</h1>
+
+    <p>{text.intro}</p>
+
+    <p>{text.focus}</p>
+
+    <h2>{text.released}</h2>
+
+    <ul>
+      <li><a href={appHref.get('Aligna') ?? '/apps/aligna/'}>Aligna</a></li>
+      <li>Quivra</li>
+      <li>TagWeaver</li>
+      <li>{appHref.has('VaultXT') ? <a href={appHref.get('VaultXT')}>VaultXT</a> : 'VaultXT'}</li>
+      <li>Segra</li>
+      <li>ClipNest</li>
+      <li>Melivra <small>({text.soon})</small></li>
+    </ul>
+
+    <p><a href="/apps/">{text.allApps}</a></p>
+
+    <h2>{text.upcoming}</h2>
+
+    <ul>
+      <li>FloMo</li>
+      <li>Nunote</li>
+      <li>Textoria</li>
+      <li>Heara</li>
+    </ul>
+
+    <h2>{text.privacy}</h2>
+
+    <ul>
+      {privacyApps.map((app) => <li><a href={app.privacy}>{app.title}</a></li>)}
+      {staticPrivacyApps.map(([name, href]) => <li><a href={href}>{name}</a></li>)}
+    </ul>
+
+    <h2>{text.contact}</h2>
+
+    <p>
+      {text.inquiry}
+      <a href="mailto:onnellab.app@gmail.com">onnellab.app@gmail.com</a>
+    </p>
+  </main>
+</BaseLayout>
+
+<style>
+  .page-shell {
+    max-width: 820px;
+    margin: 80px auto;
+    padding: 0 24px;
+    line-height: 1.75;
+  }
+
+  nav {
+    text-align: right;
+    font-size: 14px;
+  }
+
+  nav a {
+    text-decoration: none;
+  }
+
+  h1 {
+    font-weight: 600;
+    margin-bottom: 8px;
+    letter-spacing: 0;
+  }
+
+  h2 {
+    margin-top: 48px;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+
+  p {
+    margin: 12px 0;
+  }
+
+  ul {
+    padding-left: 20px;
+  }
+
+  small {
+    color: #777;
+  }
+</style>
