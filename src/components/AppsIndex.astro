@@ -1,0 +1,194 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getProductIndexItems, type Locale } from '../lib/products';
+
+type Props = {
+  locale: Locale;
+};
+
+const { locale } = Astro.props;
+const apps = getProductIndexItems(locale);
+const text =
+  locale === 'ko'
+    ? {
+        title: 'ONNELLAB 앱',
+        description: '앱 문서에서 생성된 ONNELLAB 앱 페이지입니다.',
+        heading: '앱',
+        open: '열기',
+        switchLabel: 'English',
+        switchHref: '/apps/',
+        homeHref: '/ko/'
+      }
+    : {
+        title: 'ONNELLAB Apps',
+        description: 'ONNELLAB app pages generated from app docs.',
+        heading: 'Apps',
+        open: 'Open',
+        switchLabel: '한국어',
+        switchHref: '/apps/ko/',
+        homeHref: '/'
+      };
+---
+
+<BaseLayout
+  title={text.title}
+  description={text.description}
+  canonicalPath={locale === 'ko' ? '/apps/ko/' : '/apps/'}
+  lang={locale}
+>
+  <link
+    slot="head"
+    rel="alternate"
+    hreflang={locale === 'ko' ? 'en' : 'ko'}
+    href={new URL(text.switchHref, Astro.site)}
+  />
+  <main class="page-shell">
+    <nav aria-label="Navigation">
+      <a class="brand" href={text.homeHref}>ONNELLAB</a>
+      <a class="language" href={text.switchHref}>{text.switchLabel}</a>
+    </nav>
+
+    <header>
+      <h1>{text.heading}</h1>
+      <p>{text.description}</p>
+    </header>
+
+    <section class="grid" aria-label={text.heading}>
+      {apps.map((app) => (
+        <article>
+          <img src={app.iconPath} alt={`${app.title} icon`} width="64" height="64" />
+          <div>
+            <h2>{app.title}</h2>
+            <p>{app.description}</p>
+            <span>{app.status} · {app.platforms.join(' · ')}</span>
+          </div>
+          <a href={app.href}>{text.open}</a>
+        </article>
+      ))}
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .page-shell {
+    width: min(980px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 28px 0 36px;
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .brand,
+  .language {
+    text-decoration: none;
+  }
+
+  .brand {
+    color: #737067;
+    font-size: 14px;
+    font-weight: 650;
+  }
+
+  .language {
+    border: 1px solid #ddd5c8;
+    border-radius: 8px;
+    padding: 8px 12px;
+    background: #fffdf8;
+    font-size: 14px;
+  }
+
+  header {
+    padding-top: 42px;
+  }
+
+  h1 {
+    margin: 12px 0 10px;
+    font-size: clamp(42px, 7vw, 72px);
+    line-height: 1;
+    letter-spacing: 0;
+  }
+
+  header p {
+    max-width: 560px;
+    color: #5b574f;
+    font-size: 18px;
+    line-height: 1.6;
+  }
+
+  .grid {
+    display: grid;
+    gap: 14px;
+    margin-top: 36px;
+  }
+
+  article {
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    align-items: center;
+    gap: 18px;
+    border: 1px solid #e0d8cb;
+    border-radius: 8px;
+    padding: 16px;
+    background: #fffdf8;
+  }
+
+  img {
+    border-radius: 16px;
+    background: #eee8dd;
+  }
+
+  h2 {
+    margin: 0 0 6px;
+    font-size: 20px;
+    letter-spacing: 0;
+  }
+
+  p {
+    margin: 0;
+    color: #4f4b43;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  span {
+    display: block;
+    margin-top: 8px;
+    color: #827d72;
+    font-size: 13px;
+  }
+
+  article a {
+    border: 1px solid #d6cec0;
+    border-radius: 8px;
+    padding: 9px 12px;
+    background: #faf8f5;
+    text-decoration: none;
+    font-weight: 620;
+  }
+
+  @media (max-width: 680px) {
+    .page-shell {
+      width: min(100% - 24px, 980px);
+    }
+
+    article {
+      grid-template-columns: 56px 1fr;
+    }
+
+    img {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+    }
+
+    article a {
+      grid-column: 1 / -1;
+      text-align: center;
+    }
+  }
+</style>

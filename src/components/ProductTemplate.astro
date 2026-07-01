@@ -17,6 +17,7 @@ const labels =
         googlePlay: 'Google Play',
         privacy: 'Privacy Policy',
         support: 'Support',
+        download: '다운로드',
         stores: '스토어',
         androidNote: 'Android 설명',
         iosNote: 'iOS 설명',
@@ -30,6 +31,7 @@ const labels =
         googlePlay: 'Google Play',
         privacy: 'Privacy Policy',
         support: 'Support',
+        download: 'Download',
         stores: 'Stores',
         androidNote: 'Android copy',
         iosNote: 'iOS copy',
@@ -41,6 +43,7 @@ const bodyBlocks = renderBlocks(pageBodyDescription(copy));
 const heroIntro = copy.android.shortDescription || copy.ios.subtitle || copy.ios.promo;
 const hasAndroidCopy = Boolean(copy.android.name || copy.android.shortDescription || copy.android.description);
 const hasIosCopy = Boolean(copy.ios.name || copy.ios.subtitle || copy.ios.promo || copy.ios.description);
+const homePath = data.locale === 'ko' ? '/ko/' : '/';
 const iconUrl = new URL(data.iconPath, Astro.site);
 const canonicalUrl = new URL(data.canonicalPath, Astro.site);
 const alternateUrl = new URL(data.alternatePath, Astro.site);
@@ -69,7 +72,7 @@ const jsonLd = {
 
   <main class="page-shell">
     <header class="topbar" aria-label="ONNELLAB">
-      <a class="brand" href="/">ONNELLAB</a>
+      <a class="brand" href={homePath}>ONNELLAB</a>
       <a class="language" href={data.alternatePath}>{labels.switchLabel}</a>
     </header>
 
@@ -91,7 +94,7 @@ const jsonLd = {
       </div>
 
       <dl class="meta-list">
-        <div>
+        <div class="meta-pill">
           <dt>{labels.platforms}</dt>
           <dd>{meta.platforms.join(' · ')}</dd>
         </div>
@@ -111,6 +114,18 @@ const jsonLd = {
             <p>{block.value}</p>
           )
         ))}
+      </div>
+    </section>
+
+    <section class="download-band" aria-label={labels.download}>
+      <div>
+        <p class="eyebrow">{labels.download}</p>
+        <h2>{meta.title}</h2>
+      </div>
+      <div class="actions compact" aria-label={labels.stores}>
+        <a class="button primary" href={meta.appstore}>{labels.appStore}</a>
+        {meta.googleplay && <a class="button primary" href={meta.googleplay}>{labels.googlePlay}</a>}
+        <a class="button" href={meta.privacy}>{labels.privacy}</a>
       </div>
     </section>
 
@@ -246,10 +261,20 @@ const jsonLd = {
   }
 
   .meta-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
     margin: 4px 0 0;
+  }
+
+  .meta-pill {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    border: 1px solid #e0d8cb;
+    border-radius: 8px;
+    padding: 8px 11px;
+    background: #fffdf8;
   }
 
   dt {
@@ -264,9 +289,25 @@ const jsonLd = {
   }
 
   .content-band,
+  .download-band,
   .platforms {
     border-top: 1px solid #e0d8cb;
     padding: 44px 0;
+  }
+
+  .download-band {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 22px;
+  }
+
+  .download-band h2 {
+    margin: 0;
+  }
+
+  .actions.compact {
+    justify-content: flex-end;
   }
 
   .copy-column {
@@ -330,9 +371,14 @@ const jsonLd = {
 
     .identity,
     .actions,
+    .download-band,
     .platform-grid {
       display: grid;
       grid-template-columns: 1fr;
+    }
+
+    .actions.compact {
+      justify-content: stretch;
     }
 
     .button {

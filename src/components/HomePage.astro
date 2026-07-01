@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getProductIndexItems, type Locale } from '../lib/products';
+import { getProductIndexItems, type Locale, type ProductIndexItem } from '../lib/products';
 
 type Props = {
   locale: Locale;
@@ -10,8 +10,10 @@ const { locale } = Astro.props;
 const contentApps = getProductIndexItems(locale);
 const privacyApps = contentApps.filter((app) => app.privacy);
 const contentAppTitles = new Set(contentApps.map((app) => app.title));
-const appHref = new Map(contentApps.map((app) => [app.title, app.href]));
 const releasedApps = ['Quivra', 'TagWeaver', 'VaultXT', 'Segra', 'ClipNest', 'Aligna'];
+const releasedAppCards = releasedApps
+  .map((name) => contentApps.find((app) => app.title === name))
+  .filter((app): app is ProductIndexItem => app !== undefined);
 const staticPrivacyApps = [
   ['Quivra', 'https://onnelakin.github.io/quivra-privacy-policy/'],
   ['TagWeaver', 'https://onnelakin.github.io/tagweaver-privacy-policy/'],
@@ -33,6 +35,8 @@ const text =
           'ONNELLAB은 하나의 일을 잘 해내는 가볍고 개인정보를 존중하는 앱에 집중합니다.',
         released: '출시된 앱',
         allApps: '전체 앱 페이지',
+        allAppsHref: '/apps/ko/',
+        openApp: '열기',
         upcoming: '예정 프로젝트',
         privacy: '개인정보처리방침',
         contact: '문의',
@@ -51,6 +55,8 @@ const text =
           'ONNELLAB focuses on lightweight, privacy-conscious applications designed to do one job well.',
         released: 'Released Apps',
         allApps: 'All app pages',
+        allAppsHref: '/apps/',
+        openApp: 'Open',
         upcoming: 'Upcoming Projects',
         privacy: 'Privacy Policy',
         contact: 'Contact',
@@ -86,14 +92,29 @@ const text =
 
     <h2>{text.released}</h2>
 
-    <ul>
-      {releasedApps.map((name) => (
-        <li>{appHref.has(name) ? <a href={appHref.get(name)}>{name}</a> : name}</li>
+    <section class="app-grid" aria-label={text.released}>
+      {releasedAppCards.map((app) => (
+        <article>
+          <img src={app.iconPath} alt={`${app.title} icon`} width="56" height="56" />
+          <div>
+            <h3>{app.title}</h3>
+            <p>{app.description}</p>
+            <span>{app.status} · {app.platforms.join(' · ')}</span>
+          </div>
+          <a href={app.href}>{text.openApp}</a>
+        </article>
       ))}
-      <li>Melivra <small>({text.soon})</small></li>
-    </ul>
+      <article class="upcoming-card">
+        <div class="placeholder" aria-hidden="true">M</div>
+        <div>
+          <h3>Melivra</h3>
+          <p>{text.soon}</p>
+          <span>{text.upcoming}</span>
+        </div>
+      </article>
+    </section>
 
-    <p><a href="/apps/">{text.allApps}</a></p>
+    <p><a href={text.allAppsHref}>{text.allApps}</a></p>
 
     <h2>{text.upcoming}</h2>
 
@@ -158,7 +179,98 @@ const text =
     padding-left: 20px;
   }
 
+  .app-grid {
+    display: grid;
+    gap: 12px;
+    margin: 18px 0 12px;
+  }
+
+  article {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    align-items: center;
+    gap: 16px;
+    border: 1px solid #e0d8cb;
+    border-radius: 8px;
+    padding: 14px;
+    background: #fffdf8;
+  }
+
+  img,
+  .placeholder {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: #eee8dd;
+  }
+
+  .placeholder {
+    display: grid;
+    place-items: center;
+    color: #827d72;
+    font-weight: 650;
+  }
+
+  h3 {
+    margin: 0 0 4px;
+    font-size: 18px;
+    line-height: 1.25;
+    letter-spacing: 0;
+  }
+
+  article p {
+    margin: 0;
+    color: #4f4b43;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  article span {
+    display: block;
+    margin-top: 6px;
+    color: #827d72;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  article a {
+    border: 1px solid #d6cec0;
+    border-radius: 8px;
+    padding: 8px 11px;
+    background: #faf8f5;
+    text-decoration: none;
+    font-weight: 620;
+    line-height: 1.2;
+  }
+
+  .upcoming-card {
+    color: #5b574f;
+  }
+
   small {
     color: #777;
+  }
+
+  @media (max-width: 680px) {
+    .page-shell {
+      margin: 48px auto;
+      padding: 0 18px;
+    }
+
+    article {
+      grid-template-columns: 52px 1fr;
+    }
+
+    img,
+    .placeholder {
+      width: 52px;
+      height: 52px;
+      border-radius: 13px;
+    }
+
+    article a {
+      grid-column: 1 / -1;
+      text-align: center;
+    }
   }
 </style>

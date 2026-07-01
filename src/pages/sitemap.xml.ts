@@ -5,6 +5,7 @@ export function GET() {
     '/',
     '/ko/',
     '/apps/',
+    '/apps/ko/',
     ...getAllProductPages().map((page) => page.canonicalPath),
   ];
   const uniquePaths = paths.filter((value, index, all) => all.indexOf(value) === index);
