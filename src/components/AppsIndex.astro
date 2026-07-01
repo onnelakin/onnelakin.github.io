@@ -8,6 +8,8 @@ type Props = {
 
 const { locale } = Astro.props;
 const apps = getProductIndexItems(locale);
+const appCardStyle = (app: (typeof apps)[number]) =>
+  `--accent-border: ${app.accent.border}; --accent-bg: ${app.accent.background}; --accent-text: ${app.accent.text};`;
 const text =
   locale === 'ko'
     ? {
@@ -55,12 +57,17 @@ const text =
 
     <section class="grid" aria-label={text.heading}>
       {apps.map((app) => (
-        <article>
+        <article style={appCardStyle(app)}>
           <img src={app.iconPath} alt={`${app.title} icon`} width="64" height="64" />
           <div>
             <h2>{app.title}</h2>
             <p>{app.description}</p>
-            <span>{app.status} · {app.platforms.join(' · ')}</span>
+            <div class="meta-row">
+              <span>{app.status}</span>
+              <div class="platform-badges" aria-label="Platforms">
+                {app.platforms.map((platform) => <span>{platform}</span>)}
+              </div>
+            </div>
           </div>
           <a href={app.href}>{text.open}</a>
         </article>
@@ -131,7 +138,7 @@ const text =
     grid-template-columns: 64px 1fr auto;
     align-items: center;
     gap: 18px;
-    border: 1px solid #e0d8cb;
+    border: 1px solid var(--accent-border, #e0d8cb);
     border-radius: 8px;
     padding: 16px;
     background: #fffdf8;
@@ -155,15 +162,37 @@ const text =
     line-height: 1.6;
   }
 
-  span {
-    display: block;
+  .meta-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
     margin-top: 8px;
+  }
+
+  .meta-row > span {
     color: #827d72;
     font-size: 13px;
   }
 
+  .platform-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .platform-badges span {
+    border: 1px solid var(--accent-border, #ddd5c8);
+    border-radius: 999px;
+    padding: 2px 7px;
+    background: var(--accent-bg, #faf8f5);
+    color: var(--accent-text, #827d72);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
   article a {
-    border: 1px solid #d6cec0;
+    border: 1px solid var(--accent-border, #d6cec0);
     border-radius: 8px;
     padding: 9px 12px;
     background: #faf8f5;

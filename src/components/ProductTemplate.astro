@@ -44,6 +44,7 @@ const heroIntro = copy.android.shortDescription || copy.ios.subtitle || copy.ios
 const hasAndroidCopy = Boolean(copy.android.name || copy.android.shortDescription || copy.android.description);
 const hasIosCopy = Boolean(copy.ios.name || copy.ios.subtitle || copy.ios.promo || copy.ios.description);
 const homePath = data.locale === 'ko' ? '/ko/' : '/';
+const pageStyle = `--accent-border: ${data.accent.border}; --accent-bg: ${data.accent.background}; --accent-text: ${data.accent.text};`;
 const iconUrl = new URL(data.iconPath, Astro.site);
 const canonicalUrl = new URL(data.canonicalPath, Astro.site);
 const alternateUrl = new URL(data.alternatePath, Astro.site);
@@ -70,7 +71,7 @@ const jsonLd = {
 >
   <link slot="head" rel="alternate" hreflang={data.locale === 'en' ? 'ko' : 'en'} href={alternateUrl} />
 
-  <main class="page-shell">
+  <main class="page-shell" style={pageStyle}>
     <header class="topbar" aria-label="ONNELLAB">
       <a class="brand" href={homePath}>ONNELLAB</a>
       <a class="language" href={data.alternatePath}>{labels.switchLabel}</a>
@@ -96,7 +97,9 @@ const jsonLd = {
       <dl class="meta-list">
         <div class="meta-pill">
           <dt>{labels.platforms}</dt>
-          <dd>{meta.platforms.join(' · ')}</dd>
+          <dd>
+            {meta.platforms.map((platform) => <span>{platform}</span>)}
+          </dd>
         </div>
       </dl>
     </section>
@@ -129,7 +132,7 @@ const jsonLd = {
       </div>
     </section>
 
-    <section class="platforms" aria-labelledby="platform-copy">
+    <section class="platforms subtle" aria-labelledby="platform-copy">
       <h2 id="platform-copy">{labels.platformCopy}</h2>
       <div class="platform-grid">
         {hasAndroidCopy && (
@@ -210,6 +213,7 @@ const jsonLd = {
   img {
     border-radius: 22px;
     background: #eee8dd;
+    box-shadow: 0 0 0 1px var(--accent-border);
   }
 
   .eyebrow {
@@ -256,7 +260,7 @@ const jsonLd = {
 
   .button.primary {
     background: #3a3630;
-    border-color: #3a3630;
+    border-color: var(--accent-text);
     color: #fffaf0;
   }
 
@@ -271,10 +275,10 @@ const jsonLd = {
     display: inline-flex;
     align-items: baseline;
     gap: 8px;
-    border: 1px solid #e0d8cb;
+    border: 1px solid var(--accent-border);
     border-radius: 8px;
     padding: 8px 11px;
-    background: #fffdf8;
+    background: var(--accent-bg);
   }
 
   dt {
@@ -283,9 +287,22 @@ const jsonLd = {
   }
 
   dd {
-    margin: 4px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 0;
     color: #464139;
     font-weight: 600;
+  }
+
+  dd span {
+    border: 1px solid var(--accent-border);
+    border-radius: 999px;
+    padding: 2px 7px;
+    background: #fffdf8;
+    color: var(--accent-text);
+    font-size: 12px;
+    line-height: 1.4;
   }
 
   .content-band,
@@ -300,6 +317,10 @@ const jsonLd = {
     align-items: center;
     justify-content: space-between;
     gap: 22px;
+  }
+
+  .download-band {
+    background: linear-gradient(90deg, var(--accent-bg), transparent 72%);
   }
 
   .download-band h2 {
@@ -346,11 +367,30 @@ const jsonLd = {
     gap: 18px;
   }
 
+  .platforms.subtle {
+    padding-top: 34px;
+  }
+
+  .platforms.subtle h2 {
+    color: #737067;
+    font-size: 18px;
+  }
+
   article {
-    border: 1px solid #e0d8cb;
+    border: 1px solid #e6ded2;
     border-radius: 8px;
-    padding: 20px;
-    background: #fffdf8;
+    padding: 16px;
+    background: rgba(255, 253, 248, 0.62);
+  }
+
+  article h3 {
+    color: #4f4b43;
+    font-size: 17px;
+  }
+
+  article p {
+    color: #625d54;
+    font-size: 15px;
   }
 
   footer {

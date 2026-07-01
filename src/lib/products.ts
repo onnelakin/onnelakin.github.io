@@ -47,6 +47,7 @@ export type ProductPageData = {
   seoTitle: string;
   seoDescription: string;
   iconPath: string;
+  accent: ProductAccent;
 };
 
 export type ProductIndexItem = {
@@ -58,6 +59,22 @@ export type ProductIndexItem = {
   iconPath: string;
   href: string;
   privacy: string;
+  accent: ProductAccent;
+};
+
+export type ProductAccent = {
+  border: string;
+  background: string;
+  text: string;
+};
+
+const productAccents: Record<string, ProductAccent> = {
+  aligna: { border: '#cfd8cc', background: '#f3f6ef', text: '#4d6248' },
+  clipnest: { border: '#d9cfc7', background: '#f7f1ec', text: '#6a5548' },
+  quivra: { border: '#d5d1c4', background: '#f6f3ea', text: '#635d48' },
+  segra: { border: '#cbd6d7', background: '#eef5f5', text: '#486163' },
+  tagweaver: { border: '#d7cfdb', background: '#f4eff5', text: '#614f68' },
+  vaultxt: { border: '#cdd3dc', background: '#f0f3f7', text: '#4b5b70' }
 };
 
 const fieldLabels = {
@@ -100,7 +117,8 @@ export function getProductPageData(slug: string, locale: Locale): ProductPageDat
     alternatePath: locale === 'en' ? `/apps/${source.slug}/ko/` : `/apps/${source.slug}/`,
     seoTitle: source.meta.title,
     seoDescription,
-    iconPath: getIconRoutePath(source)
+    iconPath: getIconRoutePath(source),
+    accent: productAccent(source.slug)
   };
 }
 
@@ -115,9 +133,14 @@ export function getProductIndexItems(locale: Locale): ProductIndexItem[] {
       description: pageDescription(copy),
       iconPath: getIconRoutePath(source),
       href: locale === 'en' ? `/apps/${source.slug}/` : `/apps/${source.slug}/ko/`,
-      privacy: source.meta.privacy
+      privacy: source.meta.privacy,
+      accent: productAccent(source.slug)
     };
   });
+}
+
+export function productAccent(slug: string): ProductAccent {
+  return productAccents[slug] ?? { border: '#e0d8cb', background: '#fffdf8', text: '#5b574f' };
 }
 
 export function pageBodyDescription(copy: ProductCopy): string {

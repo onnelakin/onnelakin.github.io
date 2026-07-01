@@ -14,6 +14,9 @@ const releasedApps = ['Quivra', 'TagWeaver', 'VaultXT', 'Segra', 'ClipNest', 'Al
 const releasedAppCards = releasedApps
   .map((name) => contentApps.find((app) => app.title === name))
   .filter((app): app is ProductIndexItem => app !== undefined);
+const featuredApp = releasedAppCards.find((app) => app.title === 'TagWeaver') ?? releasedAppCards[0];
+const appCardStyle = (app: ProductIndexItem) =>
+  `--accent-border: ${app.accent.border}; --accent-bg: ${app.accent.background}; --accent-text: ${app.accent.text};`;
 const staticPrivacyApps = [
   ['Quivra', 'https://onnelakin.github.io/quivra-privacy-policy/'],
   ['TagWeaver', 'https://onnelakin.github.io/tagweaver-privacy-policy/'],
@@ -34,6 +37,7 @@ const text =
         focus:
           'ONNELLAB은 하나의 일을 잘 해내는 가볍고 개인정보를 존중하는 앱에 집중합니다.',
         released: '출시된 앱',
+        featured: '대표 앱',
         allApps: '전체 앱 페이지',
         allAppsHref: '/apps/ko/',
         openApp: '열기',
@@ -54,6 +58,7 @@ const text =
         focus:
           'ONNELLAB focuses on lightweight, privacy-conscious applications designed to do one job well.',
         released: 'Released Apps',
+        featured: 'Featured App',
         allApps: 'All app pages',
         allAppsHref: '/apps/',
         openApp: 'Open',
@@ -90,16 +95,38 @@ const text =
 
     <p>{text.focus}</p>
 
+    {featuredApp && (
+      <section class="featured" aria-label={text.featured} style={appCardStyle(featuredApp)}>
+        <div class="featured-icon">
+          <img src={featuredApp.iconPath} alt={`${featuredApp.title} icon`} width="72" height="72" />
+        </div>
+        <div>
+          <span>{text.featured}</span>
+          <h2>{featuredApp.title}</h2>
+          <p>{featuredApp.description}</p>
+          <div class="platform-badges" aria-label="Platforms">
+            {featuredApp.platforms.map((platform) => <span>{platform}</span>)}
+          </div>
+        </div>
+        <a href={featuredApp.href}>{text.openApp}</a>
+      </section>
+    )}
+
     <h2>{text.released}</h2>
 
     <section class="app-grid" aria-label={text.released}>
       {releasedAppCards.map((app) => (
-        <article>
+        <article style={appCardStyle(app)}>
           <img src={app.iconPath} alt={`${app.title} icon`} width="56" height="56" />
           <div>
             <h3>{app.title}</h3>
             <p>{app.description}</p>
-            <span>{app.status} · {app.platforms.join(' · ')}</span>
+            <div class="app-meta">
+              <span>{app.status}</span>
+              <div class="platform-badges" aria-label="Platforms">
+                {app.platforms.map((platform) => <span>{platform}</span>)}
+              </div>
+            </div>
           </div>
           <a href={app.href}>{text.openApp}</a>
         </article>
@@ -179,6 +206,52 @@ const text =
     padding-left: 20px;
   }
 
+  .featured {
+    display: grid;
+    grid-template-columns: 72px 1fr auto;
+    align-items: center;
+    gap: 18px;
+    border: 1px solid var(--accent-border);
+    border-radius: 8px;
+    margin: 34px 0 8px;
+    padding: 18px;
+    background: linear-gradient(90deg, var(--accent-bg), #fffdf8 68%);
+  }
+
+  .featured-icon img {
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+  }
+
+  .featured h2 {
+    margin: 4px 0 6px;
+    font-size: 24px;
+  }
+
+  .featured > div > span {
+    color: var(--accent-text);
+    font-size: 13px;
+    font-weight: 650;
+  }
+
+  .featured p {
+    margin: 0;
+    color: #4f4b43;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  .featured > a {
+    border: 1px solid var(--accent-border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    background: #fffdf8;
+    color: #37342f;
+    text-decoration: none;
+    font-weight: 620;
+  }
+
   .app-grid {
     display: grid;
     gap: 12px;
@@ -190,7 +263,7 @@ const text =
     grid-template-columns: 56px 1fr auto;
     align-items: center;
     gap: 16px;
-    border: 1px solid #e0d8cb;
+    border: 1px solid var(--accent-border, #e0d8cb);
     border-radius: 8px;
     padding: 14px;
     background: #fffdf8;
@@ -225,16 +298,38 @@ const text =
     line-height: 1.5;
   }
 
-  article span {
-    display: block;
-    margin-top: 6px;
+  .app-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 7px;
+  }
+
+  .app-meta > span {
     color: #827d72;
     font-size: 13px;
     line-height: 1.4;
   }
 
+  .platform-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .platform-badges span {
+    border: 1px solid var(--accent-border, #ddd5c8);
+    border-radius: 999px;
+    padding: 2px 7px;
+    background: var(--accent-bg, #faf8f5);
+    color: var(--accent-text, #827d72);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
   article a {
-    border: 1px solid #d6cec0;
+    border: 1px solid var(--accent-border, #d6cec0);
     border-radius: 8px;
     padding: 8px 11px;
     background: #faf8f5;
@@ -261,6 +356,16 @@ const text =
       grid-template-columns: 52px 1fr;
     }
 
+    .featured {
+      grid-template-columns: 64px 1fr;
+    }
+
+    .featured-icon img {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+    }
+
     img,
     .placeholder {
       width: 52px;
@@ -268,7 +373,8 @@ const text =
       border-radius: 13px;
     }
 
-    article a {
+    article a,
+    .featured > a {
       grid-column: 1 / -1;
       text-align: center;
     }
