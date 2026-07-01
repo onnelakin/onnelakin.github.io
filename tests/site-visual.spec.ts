@@ -23,10 +23,18 @@ test.describe('site layout', () => {
     });
   }
 
-  test('product preview appears before copy on product pages', async ({ page }) => {
+  test('product screenshots render uncropped after copy on product pages', async ({ page }) => {
     await page.goto('/apps/tagweaver/');
-    await expect(page.locator('.hero-preview img')).toBeVisible();
     await expect(page.locator('.screenshot-row img')).toHaveCount(3);
     await expect(page.locator('.download-band .button.primary').first()).toBeVisible();
+
+    const croppedScreenshots = await page.evaluate(() =>
+      Array.from(document.querySelectorAll('.screenshot-row figure')).filter((figure) => {
+        const image = figure.querySelector('img');
+        if (!image) return true;
+        return figure.clientHeight + 1 < image.clientHeight;
+      }).length
+    );
+    expect(croppedScreenshots).toBe(0);
   });
 });

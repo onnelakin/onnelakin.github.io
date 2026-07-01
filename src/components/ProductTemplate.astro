@@ -39,7 +39,6 @@ const bodyBlocks = renderBlocks(pageBodyDescription(copy));
 const heroIntro = landingSubtitle(copy);
 const heroSignals =
   (bodyBlocks.find((block) => block.type === 'ul')?.value as string[] | undefined)?.slice(0, 3) ?? [];
-const heroScreenshotPath = data.screenshotPaths[0];
 const homePath = data.locale === 'ko' ? '/ko/' : '/';
 const pageStyle = `--accent-border: ${data.accent.border}; --accent-bg: ${data.accent.background}; --accent-text: ${data.accent.text};`;
 const iconUrl = new URL(data.iconPath, Astro.site);
@@ -84,7 +83,7 @@ const jsonLd = {
   description={data.seoDescription}
   canonicalPath={data.canonicalPath}
   lang={data.locale}
-  image={heroScreenshotPath ?? data.iconPath}
+  image={data.iconPath}
   jsonLd={jsonLd}
   alternates={[
     { lang: 'en', path: enPath },
@@ -110,18 +109,6 @@ const jsonLd = {
         </div>
 
         <div class="hero-side">
-          {heroScreenshotPath && (
-            <figure class="hero-preview" aria-hidden="true">
-              <img
-                src={heroScreenshotPath}
-                alt=""
-                width="1242"
-                height="2688"
-                loading="eager"
-                decoding="async"
-              />
-            </figure>
-          )}
           {heroSignals.length > 0 && (
             <div class="task-preview" aria-hidden="true">
               {heroSignals.map((signal, index) => (
@@ -152,6 +139,22 @@ const jsonLd = {
       </dl>
     </section>
 
+    <section class="content-band" aria-label={copy.android.name ?? copy.ios.name ?? meta.title}>
+      <div class="copy-column">
+        {bodyBlocks.map((block) => (
+          block.type === 'h' ? (
+            <h2>{block.value}</h2>
+          ) : block.type === 'ul' ? (
+            <ul>
+              {(block.value as string[]).map((item) => <li>{item}</li>)}
+            </ul>
+          ) : (
+            <p>{block.value}</p>
+          )
+        ))}
+      </div>
+    </section>
+
     {data.screenshotPaths.length > 0 && (
       <section class="preview-band" aria-label={labels.preview}>
         <div class="preview-heading">
@@ -174,22 +177,6 @@ const jsonLd = {
         </div>
       </section>
     )}
-
-    <section class="content-band" aria-label={copy.android.name ?? copy.ios.name ?? meta.title}>
-      <div class="copy-column">
-        {bodyBlocks.map((block) => (
-          block.type === 'h' ? (
-            <h2>{block.value}</h2>
-          ) : block.type === 'ul' ? (
-            <ul>
-              {(block.value as string[]).map((item) => <li>{item}</li>)}
-            </ul>
-          ) : (
-            <p>{block.value}</p>
-          )
-        ))}
-      </div>
-    </section>
 
     <section class="download-band" aria-label={labels.download}>
       <img src={data.iconPath} alt="" width="64" height="64" loading="lazy" />
@@ -301,26 +288,8 @@ const jsonLd = {
 
   .hero-side {
     display: grid;
-    grid-template-columns: 120px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
     align-items: center;
-    gap: 18px;
-  }
-
-  .hero-preview {
-    max-height: 260px;
-    margin: 0;
-    border: 1px solid var(--accent-border);
-    border-radius: 8px;
-    padding: 6px;
-    background: #fffdf8;
-    overflow: hidden;
-  }
-
-  .hero-preview img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: 5px;
   }
 
   .task-preview {
@@ -446,8 +415,8 @@ const jsonLd = {
 
   .screenshot-row {
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-    gap: 14px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
     align-items: start;
   }
 
@@ -464,15 +433,6 @@ const jsonLd = {
     width: 100%;
     height: auto;
     border-radius: 6px;
-  }
-
-  .screenshot-row figure:first-child {
-    grid-row: span 2;
-  }
-
-  .screenshot-row figure:not(:first-child) {
-    max-height: 310px;
-    overflow: hidden;
   }
 
   .download-band {
@@ -576,11 +536,6 @@ const jsonLd = {
       padding-left: 0;
     }
 
-    .hero-preview {
-      width: min(180px, 54vw);
-      max-height: 220px;
-    }
-
     .actions.compact {
       justify-content: stretch;
     }
@@ -599,14 +554,6 @@ const jsonLd = {
     figure {
       flex: 0 0 min(74vw, 320px);
       scroll-snap-align: start;
-    }
-
-    .screenshot-row figure:first-child {
-      grid-row: auto;
-    }
-
-    .screenshot-row figure:not(:first-child) {
-      max-height: none;
     }
 
     .button {

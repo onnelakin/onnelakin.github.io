@@ -130,18 +130,6 @@ const text =
           </div>
         </div>
         <a href={featuredApp.href}>{text.openApp}</a>
-        {featuredApp.screenshotPath && (
-          <div class="featured-preview">
-            <img
-              src={featuredApp.screenshotPath}
-              alt={`${featuredApp.title} preview`}
-              width="1242"
-              height="2688"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        )}
       </section>
     )}
 
@@ -300,26 +288,6 @@ const text =
     font-weight: 620;
   }
 
-  .featured-preview {
-    grid-column: 3;
-    grid-row: 1;
-    justify-self: end;
-    width: 140px;
-    max-height: 220px;
-    border: 1px solid var(--accent-border);
-    border-radius: 8px;
-    padding: 5px;
-    background: #fffdf8;
-    overflow: hidden;
-  }
-
-  .featured-preview img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: 5px;
-  }
-
   .tool-list {
     display: grid;
     gap: 0;
@@ -442,11 +410,5 @@ const text =
       text-align: center;
     }
 
-    .featured-preview {
-      grid-column: 1 / -1;
-      justify-self: start;
-      width: min(200px, 58vw);
-      max-height: 250px;
-    }
   }
 </style>
