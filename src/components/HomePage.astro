@@ -117,21 +117,19 @@ const text =
     </section>
 
     {featuredApp && (
-      <section class="featured" aria-label={text.featured} style={appCardStyle(featuredApp)}>
+      <section class="featured" aria-label={text.featured}>
         <div class="featured-icon">
           <img src={featuredApp.iconPath} alt={`${featuredApp.title} icon`} width="72" height="72" />
         </div>
         <div>
           <span>{text.featured}</span>
-          <div class="featured-heading">
-            <h2>{featuredApp.title}</h2>
-            <a class="featured-link" href={featuredApp.href}>{text.openApp}</a>
-          </div>
+          <h2>{featuredApp.title}</h2>
           <p>{featuredApp.description}</p>
           <div class="platform-badges" aria-label="Platforms">
             {featuredApp.platforms.map((platform) => <span>{platform}</span>)}
           </div>
         </div>
+        <a class="featured-link" href={featuredApp.href}>{text.openApp}</a>
       </section>
     )}
 
@@ -241,9 +239,12 @@ const text =
   .featured {
     display: grid;
     width: min(100%, 640px);
-    grid-template-columns: 72px minmax(0, 1fr);
+    grid-template-columns: 72px minmax(0, 1fr) auto;
     align-items: center;
     gap: 18px;
+    --accent-border: #d6b799;
+    --accent-bg: #f7eee5;
+    --accent-text: #7a5434;
     border: 1px solid var(--accent-border);
     border-radius: 8px;
     margin: 34px 0 14px;
@@ -258,17 +259,9 @@ const text =
   }
 
   .featured h2 {
-    margin: 0;
+    margin: 3px 0 5px;
     font-size: 25px;
     line-height: 1.12;
-  }
-
-  .featured-heading {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 3px 0 5px;
   }
 
   .featured > div > span {

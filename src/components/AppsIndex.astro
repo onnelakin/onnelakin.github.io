@@ -7,7 +7,19 @@ type Props = {
 };
 
 const { locale } = Astro.props;
-const apps = getProductIndexItems(locale);
+const privacyUpdatedAtByTitle: Record<string, string> = {
+  Quivra: '2026-02-10',
+  TagWeaver: '2026-02-14',
+  VaultXT: '2026-03-11',
+  Segra: '2026-06-12',
+  ClipNest: '2026-06-13',
+  Aligna: '2026-06-24',
+  Melivra: '2026-06-24'
+};
+const privacyDate = (title: string) => privacyUpdatedAtByTitle[title] ?? '9999-12-31';
+const apps = getProductIndexItems(locale).sort(
+  (a, b) => privacyDate(a.title).localeCompare(privacyDate(b.title)) || a.title.localeCompare(b.title)
+);
 const appCardStyle = (app: (typeof apps)[number]) =>
   `--accent-border: ${app.accent.border}; --accent-bg: ${app.accent.background}; --accent-text: ${app.accent.text};`;
 const appCategory = (title: string) => {
