@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const targetPath = '/privacy/ko/';
+---
+
+<BaseLayout
+  title="ONNELLAB 개인정보 처리방침"
+  description="ONNELLAB 앱별 개인정보 처리방침 링크를 정리한 페이지입니다."
+  canonicalPath={targetPath}
+  lang="ko"
+  alternates={[
+    { lang: 'en', path: '/privacy/' },
+    { lang: 'ko', path: targetPath },
+    { lang: 'x-default', path: '/privacy/' }
+  ]}
+>
+  <meta http-equiv="refresh" content={`0; url=${targetPath}`} slot="head" />
+  <script is:inline define:vars={{ targetPath }}>
+    window.location.replace(targetPath);
+  </script>
+  <main>
+    <p><a href={targetPath}>개인정보 처리방침으로 이동</a></p>
+  </main>
+</BaseLayout>

@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const targetPath = '/apps/ko/';
+---
+
+<BaseLayout
+  title="ONNELLAB 앱"
+  description="ONNELLAB이 만든 조용하고 가벼운 앱을 한곳에서 살펴보세요."
+  canonicalPath={targetPath}
+  lang="ko"
+  alternates={[
+    { lang: 'en', path: '/apps/' },
+    { lang: 'ko', path: targetPath },
+    { lang: 'x-default', path: '/apps/' }
+  ]}
+>
+  <meta http-equiv="refresh" content={`0; url=${targetPath}`} slot="head" />
+  <script is:inline define:vars={{ targetPath }}>
+    window.location.replace(targetPath);
+  </script>
+  <main>
+    <p><a href={targetPath}>앱 페이지로 이동</a></p>
+  </main>
+</BaseLayout>

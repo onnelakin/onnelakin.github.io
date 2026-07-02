@@ -125,6 +125,14 @@ test.describe('site layout', () => {
     await expect(page).toHaveURL(/\/apps\/tagweaver\/ko\/$/);
   });
 
+  test('legacy korean-prefixed collection paths redirect to canonical pages', async ({ page }) => {
+    await page.goto('/ko/apps/');
+    await expect(page).toHaveURL(/\/apps\/ko\/$/);
+
+    await page.goto('/ko/privacy/');
+    await expect(page).toHaveURL(/\/privacy\/ko\/$/);
+  });
+
   test('manual language choice prevents automatic korean redirect', async ({ page }) => {
     await page.addInitScript(() => {
       window.localStorage.setItem('onnellab.locale', 'en');
