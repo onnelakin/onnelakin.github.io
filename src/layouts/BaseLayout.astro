@@ -110,6 +110,10 @@ const imageUrl = image ? new URL(image, Astro.site) : undefined;
     box-sizing: border-box;
   }
 
+  :root {
+    --onnellab-wordmark-font: "Avenir Next", Avenir, "Helvetica Neue", Arial, sans-serif;
+  }
+
   body {
     margin: 0;
     background: #faf8f5;
@@ -121,5 +125,11 @@ const imageUrl = image ? new URL(image, Astro.site) : undefined;
 
   a {
     color: inherit;
+  }
+
+  .wordmark,
+  .brand {
+    font-family: var(--onnellab-wordmark-font);
+    letter-spacing: 0;
   }
 </style>
