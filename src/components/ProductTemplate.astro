@@ -19,8 +19,7 @@ const labels =
         support: 'Support',
         download: '다운로드',
         screens: '스크린샷',
-        stores: '스토어',
-        status: '상태'
+        stores: '스토어'
       }
     : {
         switchLabel: '한국어',
@@ -31,8 +30,7 @@ const labels =
         support: 'Support',
         download: 'Download',
         screens: 'Screenshots',
-        stores: 'Stores',
-        status: 'Status'
+        stores: 'Stores'
       };
 
 const bodyBlocks = renderBlocks(pageBodyDescription(copy));
@@ -118,7 +116,6 @@ const jsonLd = {
         <div class="identity">
           <img src={data.iconPath} alt={`${meta.title} icon`} width="88" height="88" />
           <div>
-            <p class="eyebrow">{labels.status}: {meta.status}</p>
             <h1 id="product-title">{meta.title}</h1>
             {heroIntro && <p class="intro">{heroIntro}</p>}
           </div>
