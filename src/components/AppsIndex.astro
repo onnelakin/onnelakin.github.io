@@ -41,6 +41,8 @@ const text =
         title: 'ONNELLAB 앱',
         description: 'ONNELLAB이 만든 조용하고 가벼운 앱을 한곳에서 살펴보세요.',
         heading: 'ONNELLAB 앱',
+        searchLabel: '앱 찾기',
+        searchPlaceholder: '앱 이름 검색',
         switchLabel: 'English',
         switchHref: '/apps/',
         homeHref: '/ko/'
@@ -49,6 +51,8 @@ const text =
         title: 'ONNELLAB Apps',
         description: 'Calm, lightweight apps by ONNELLAB.',
         heading: 'ONNELLAB Apps',
+        searchLabel: 'Find app',
+        searchPlaceholder: 'Search app name',
         switchLabel: '한국어',
         switchHref: '/apps/ko/',
         homeHref: '/'
@@ -100,9 +104,14 @@ const collectionJsonLd = {
       <p>{text.description}</p>
     </header>
 
+    <label class="app-search">
+      <span>{text.searchLabel}</span>
+      <input type="search" placeholder={text.searchPlaceholder} data-app-search />
+    </label>
+
     <section class="grid" aria-label={text.heading}>
       {apps.map((app) => (
-        <a class="app-card" href={app.href} style={appCardStyle(app)}>
+        <a class="app-card" href={app.href} style={appCardStyle(app)} data-app-row data-app-title={app.title.toLowerCase()}>
           <img src={app.iconPath} alt={`${app.title} icon`} width="64" height="64" />
           <div>
             <h2>{app.title}</h2>
@@ -120,6 +129,21 @@ const collectionJsonLd = {
         </a>
       ))}
     </section>
+    <script is:inline>
+      (() => {
+        const appSearch = document.querySelector('[data-app-search]');
+        const appRows = Array.from(document.querySelectorAll('[data-app-row]'));
+        if (!(appSearch instanceof HTMLInputElement)) return;
+
+        appSearch.addEventListener('input', () => {
+          const query = appSearch.value.trim().toLowerCase();
+          appRows.forEach((row) => {
+            const title = row.getAttribute('data-app-title') ?? '';
+            row.hidden = query.length > 0 && !title.includes(query);
+          });
+        });
+      })();
+    </script>
   </main>
 </BaseLayout>
 
@@ -191,43 +215,65 @@ const collectionJsonLd = {
     line-height: 1.6;
   }
 
+  .app-search {
+    display: grid;
+    gap: 8px;
+    max-width: 320px;
+    margin-top: 30px;
+    color: #6f695f;
+    font-size: 13px;
+    font-weight: 620;
+  }
+
+  .app-search input {
+    min-height: 40px;
+    border: 1px solid #ded6ca;
+    border-radius: 8px;
+    padding: 8px 11px;
+    background: rgba(255, 253, 248, 0.74);
+    color: #3f3b35;
+    font: inherit;
+    font-weight: 500;
+  }
+
+  .app-search input:focus {
+    border-color: #cfc5b7;
+    outline: 2px solid #827d72;
+    outline-offset: 3px;
+  }
+
   .grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
-    margin-top: 30px;
+    margin-top: 18px;
   }
 
   .app-card {
     position: relative;
     display: grid;
-    grid-template-columns: 64px 1fr;
+    grid-template-columns: 44px minmax(0, 1fr);
     align-items: start;
-    gap: 16px;
+    gap: 15px;
     border: 1px solid var(--accent-border, #e0d8cb);
     border-radius: 8px;
-    padding: 16px;
+    min-height: 92px;
+    padding: 13px;
     background:
-      linear-gradient(135deg, rgba(255, 253, 248, 0.96), var(--accent-bg, #fffdf8)),
+      linear-gradient(135deg, rgba(255, 253, 248, 0.94), var(--accent-bg, #fffdf8)),
       #fffdf8;
     color: inherit;
-    overflow: hidden;
     text-decoration: none;
     transition: border-color 140ms ease, background 140ms ease;
   }
 
-  .app-card::after {
-    content: "";
-    position: absolute;
-    inset: 16px 0 16px auto;
-    width: 2px;
-    background: var(--accent-border, #e0d8cb);
-    opacity: 0.58;
+  .app-card[hidden] {
+    display: none;
   }
 
   .app-card:hover,
   .app-card:focus-visible {
-    border-color: var(--accent-border);
+    border-color: var(--accent-border, #d8cec0);
     background: var(--accent-bg, #fffdf8);
   }
 
@@ -237,24 +283,24 @@ const collectionJsonLd = {
   }
 
   img {
-    border-radius: 16px;
-    background: #fffdf8;
-    box-shadow:
-      0 0 0 1px var(--accent-border, #ddd5c8),
-      0 10px 24px rgba(73, 63, 50, 0.06);
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+    box-shadow: 0 0 0 1px var(--accent-border, #ddd5c8);
   }
 
   h2 {
-    margin: 0 0 6px;
-    font-size: 20px;
+    margin: 0 0 5px;
+    font-size: 18px;
+    line-height: 1.25;
     letter-spacing: 0;
   }
 
   p {
     margin: 0;
     color: #4f4b43;
-    font-size: 16px;
-    line-height: 1.6;
+    font-size: 15px;
+    line-height: 1.5;
   }
 
   .meta-row {
@@ -331,19 +377,19 @@ const collectionJsonLd = {
     }
 
     .app-card {
-      grid-template-columns: 56px 1fr;
+      grid-template-columns: 48px minmax(0, 1fr);
       gap: 14px;
-      padding: 15px;
-    }
-
-    .app-card::after {
-      inset: 14px 0 14px auto;
+      min-height: auto;
+      padding: 16px;
+      background:
+        linear-gradient(135deg, #fffdf8 24%, var(--accent-bg, #fffdf8)),
+        #fffdf8;
     }
 
     img {
-      width: 56px;
-      height: 56px;
-      border-radius: 14px;
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
     }
   }
 </style>

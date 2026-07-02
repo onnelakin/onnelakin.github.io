@@ -9,7 +9,9 @@ import {
 const siteUrl = 'https://onnelakin.github.io';
 
 export function GET() {
-  const apps = getProductSources().map((source) => getProductPageData(source.slug, 'en'));
+  const sources = getProductSources();
+  const apps = sources.map((source) => getProductPageData(source.slug, 'en'));
+  const koreanApps = sources.map((source) => getProductPageData(source.slug, 'ko'));
   const lines = [
     '# ONNELLAB',
     '',
@@ -47,6 +49,31 @@ export function GET() {
         `- Privacy policy: ${app.meta.privacy}`,
         `- Platforms: ${app.meta.platforms.join(', ')}`,
         ...(app.meta.pricing ? [`- Pricing: ${app.meta.pricing}`] : []),
+        ''
+      ];
+    }),
+    '## Korean App Summaries',
+    '',
+    ...koreanApps.flatMap((app) => {
+      const bodyBlocks = renderBlocks(pageBodyDescription(app.copy));
+      const firstParagraph = bodyBlocks.find((block) => block.type === 'p')?.value as string | undefined;
+      const tasks = bodyBlocks.find((block) => block.type === 'ul')?.value as string[] | undefined;
+      const taskLines = (tasks ?? []).slice(0, 4).map((task) => `- ${task}`);
+      return [
+        `### ${app.meta.title}`,
+        '',
+        landingSubtitle(app.copy),
+        '',
+        firstParagraph ?? app.seoDescription,
+        '',
+        '주요 작업:',
+        ...taskLines,
+        '',
+        `- 한국어 랜딩 페이지: ${new URL(app.canonicalPath, siteUrl).toString()}`,
+        `- 영어 페이지: ${new URL(app.alternatePath, siteUrl).toString()}`,
+        `- 개인정보 처리방침: ${app.meta.privacy}`,
+        `- 지원 플랫폼: ${app.meta.platforms.join(', ')}`,
+        ...(app.meta.pricing ? [`- 가격: ${app.meta.pricing}`] : []),
         ''
       ];
     }),

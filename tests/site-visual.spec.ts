@@ -69,6 +69,13 @@ test.describe('site layout', () => {
     await expect(page.locator('[data-policy-row]:visible h2')).toHaveText('TagWeaver');
   });
 
+  test('apps search filters app cards', async ({ page }) => {
+    await page.goto('/apps/');
+    await page.locator('[data-app-search]').fill('vault');
+    await expect(page.locator('[data-app-row]:visible')).toHaveCount(1);
+    await expect(page.locator('[data-app-row]:visible h2')).toHaveText('VaultXT');
+  });
+
   test('korean browser language redirects default pages to korean pages', async ({ page }) => {
     await page.addInitScript(() => {
       Object.defineProperty(navigator, 'languages', { get: () => ['ko-KR', 'ko'] });
@@ -144,6 +151,12 @@ test.describe('site layout', () => {
     const robotsResponse = await page.request.get('/robots.txt');
     expect(robotsResponse.ok()).toBe(true);
     expect(await robotsResponse.text()).toContain('Sitemap: https://onnelakin.github.io/sitemap.xml');
+
+    const llmsResponse = await page.request.get('/llms.txt');
+    expect(llmsResponse.ok()).toBe(true);
+    const llmsText = await llmsResponse.text();
+    expect(llmsText).toContain('## Korean App Summaries');
+    expect(llmsText).toContain('주요 작업:');
   });
 
   test('site and collection schema remain crawlable', async ({ page }) => {
