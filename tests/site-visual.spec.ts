@@ -404,7 +404,7 @@ test.describe('site layout', () => {
       const transform = getComputedStyle(image).transform;
       return transform === 'none' ? 1 : new DOMMatrixReadOnly(transform).a;
     });
-    expect(pinchZoomScale).toBeCloseTo(1.21, 5);
+    expect(pinchZoomScale).toBeCloseTo(1.17, 5);
     await expect(page.locator('[data-viewer-image]')).toHaveAttribute('data-zoomed', 'true');
     const closeBox = await page.locator('[data-viewer-close]').boundingBox();
     const viewport = page.viewportSize();

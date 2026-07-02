@@ -295,15 +295,7 @@ const collectionJsonLd = {
   }
 
   .app-card::after {
-    content: "";
-    width: 22px;
-    height: 1px;
-    position: absolute;
-    right: 15px;
-    top: 19px;
-    background: linear-gradient(90deg, rgba(207, 197, 183, 0), var(--accent-border, #ddd5c8));
-    opacity: 0.34;
-    transition: opacity 140ms ease;
+    display: none;
   }
 
   .app-card[hidden] {
@@ -316,11 +308,6 @@ const collectionJsonLd = {
     background:
       linear-gradient(135deg, #fffdf8, var(--accent-bg, #fffdf8)),
       #fffdf8;
-  }
-
-  .app-card:hover::after,
-  .app-card:focus-visible::after {
-    opacity: 0.88;
   }
 
   .app-card:focus-visible {

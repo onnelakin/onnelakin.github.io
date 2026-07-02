@@ -242,9 +242,9 @@ const websiteJsonLd = {
     display: grid;
     grid-template-columns: minmax(0, 1.14fr) minmax(340px, 0.86fr);
     align-items: center;
-    gap: 48px;
-    min-height: 304px;
-    padding: 32px 0 28px;
+    gap: 52px;
+    min-height: 316px;
+    padding: 34px 0 30px;
     border-bottom: 1px solid #e0d8cb;
   }
 
@@ -311,10 +311,10 @@ const websiteJsonLd = {
   .featured {
     position: relative;
     display: grid;
-    gap: 16px;
+    gap: 17px;
     border: 1px solid var(--accent-border);
     border-radius: 8px;
-    padding: 17px 18px 19px;
+    padding: 18px 19px 20px;
     background:
       linear-gradient(135deg, var(--accent-bg), #fffdf8 68%),
       #fffdf8;
@@ -356,7 +356,7 @@ const websiteJsonLd = {
     display: grid;
     grid-template-columns: 82px minmax(0, 1fr);
     align-items: center;
-    gap: 20px;
+    gap: 21px;
   }
 
   .featured-body img {
@@ -385,7 +385,7 @@ const websiteJsonLd = {
   }
 
   .apps-section {
-    padding: 17px 0 0;
+    padding: 20px 0 0;
   }
 
   .section-head {
@@ -414,7 +414,7 @@ const websiteJsonLd = {
   .product-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    gap: 14px;
   }
 
   .product-card {
@@ -425,8 +425,8 @@ const websiteJsonLd = {
     gap: 15px;
     border: 1px solid var(--accent-border, #e0d8cb);
     border-radius: 8px;
-    min-height: 104px;
-    padding: 16px;
+    min-height: 108px;
+    padding: 17px;
     background:
       linear-gradient(135deg, rgba(255, 253, 248, 0.94), var(--accent-bg, #fffdf8)),
       #fffdf8;
@@ -443,12 +443,7 @@ const websiteJsonLd = {
   }
 
   .product-card.is-featured-list::after {
-    content: "";
-    position: absolute;
-    inset: auto 18px 15px 80px;
-    height: 1px;
-    background: linear-gradient(90deg, var(--accent-border), rgba(255, 253, 248, 0));
-    opacity: 0.46;
+    display: none;
   }
 
   .product-card:hover,
@@ -512,8 +507,8 @@ const websiteJsonLd = {
     justify-content: space-between;
     gap: 32px;
     border-top: 1px solid #e0d8cb;
-    margin-top: 12px;
-    padding-top: 14px;
+    margin-top: 14px;
+    padding-top: 15px;
     color: #737067;
   }
 
@@ -603,21 +598,17 @@ const websiteJsonLd = {
 
     .product-grid {
       grid-template-columns: 1fr;
-      gap: 8px;
+      gap: 9px;
     }
 
     .product-card {
       min-height: auto;
       grid-template-columns: 42px minmax(0, 1fr);
       gap: 12px;
-      padding: 13px;
+      padding: 14px;
       background:
         linear-gradient(135deg, #fffdf8 24%, var(--accent-bg, #fffdf8)),
         #fffdf8;
-    }
-
-    .product-card.is-featured-list::after {
-      inset: auto 14px 11px 67px;
     }
 
     .product-card > img {
