@@ -673,7 +673,6 @@ const jsonLd = {
   }
 
   .screenshot-row {
-    counter-reset: screenshot-flow;
     display: grid;
     grid-template-columns: minmax(0, 1.08fr) repeat(2, minmax(0, 0.96fr));
     align-items: start;
@@ -682,29 +681,12 @@ const jsonLd = {
   }
 
   figure {
-    counter-increment: screenshot-flow;
     position: relative;
     margin: 0;
     border: 1px solid var(--accent-border);
     border-radius: 8px;
     padding: 5px;
     background: rgba(255, 253, 248, 0.78);
-  }
-
-  figure::before {
-    content: counter(screenshot-flow, decimal-leading-zero);
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    z-index: 1;
-    border: 1px solid rgba(196, 185, 169, 0.58);
-    border-radius: 999px;
-    padding: 2px 7px;
-    background: rgba(255, 253, 248, 0.82);
-    color: var(--accent-text);
-    font-size: 11px;
-    font-weight: 650;
-    line-height: 1.4;
   }
 
   figure:first-child {
@@ -1243,27 +1225,52 @@ const jsonLd = {
 
     .screenshot-viewer {
       width: min(100vw - 14px, 520px);
+      max-height: calc(100dvh - 14px);
       border-radius: 20px;
     }
 
     .viewer-panel {
+      position: relative;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      max-height: calc(100dvh - 16px);
       padding: 8px;
       gap: 7px;
+    }
+
+    .viewer-bar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      min-height: 36px;
+      padding-bottom: 2px;
+      background: linear-gradient(180deg, rgba(242, 238, 231, 0.96), rgba(242, 238, 231, 0.72));
+    }
+
+    .viewer-close {
+      width: 36px;
+      height: 36px;
+      background:
+        linear-gradient(180deg, rgba(255, 253, 248, 0.94), rgba(244, 240, 233, 0.84)),
+        #fffdf8;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.78),
+        0 10px 24px rgba(39, 34, 29, 0.12);
     }
 
     .viewer-frame {
       grid-template-columns: 1fr 1fr;
       gap: 9px;
+      min-height: 0;
     }
 
     .viewer-image-stage {
       grid-column: 1 / -1;
       grid-row: 1;
-      max-height: calc(100vh - 184px);
+      max-height: calc(100dvh - 184px);
     }
 
     .viewer-image-stage img {
-      max-height: calc(100vh - 184px);
+      max-height: calc(100dvh - 184px);
     }
 
     .viewer-prev,
@@ -1326,7 +1333,16 @@ const jsonLd = {
   let isPinchingViewer = false;
   let pinchStartDistance = 0;
   let pinchStartZoom = 1;
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchLastX = 0;
+  let touchLastY = 0;
+  let touchPanStartX = 0;
+  let touchPanStartY = 0;
+  let isTouchPanningImage = false;
+  let didTouchPanImage = false;
   const dragThreshold = 4;
+  const swipeThreshold = 52;
   const minViewerZoom = 1;
   const clickViewerZoom = 1.15;
   const maxViewerZoom = 2;
@@ -1416,6 +1432,7 @@ const jsonLd = {
     if (!viewer || typeof viewer.showModal !== 'function') return;
     setViewerImage(index);
     viewer.showModal();
+    closeButton?.focus({ preventScroll: true });
   };
 
   const closeViewer = () => {
@@ -1482,31 +1499,100 @@ const jsonLd = {
     zoomViewerAtPoint(event.clientX, event.clientY);
   });
   viewerStage?.addEventListener('touchstart', (event) => {
-    if (!viewer?.open || event.touches.length !== 2) return;
-    event.preventDefault();
-    isPinchingViewer = true;
-    pinchStartDistance = getTouchDistance(event.touches);
-    pinchStartZoom = viewerZoom;
-    isDraggingImage = false;
-    didDragImage = false;
-    if (viewerImage) viewerImage.dataset.dragging = 'false';
+    if (!viewer?.open) return;
+    if (event.touches.length === 2) {
+      event.preventDefault();
+      isPinchingViewer = true;
+      isTouchPanningImage = false;
+      didTouchPanImage = false;
+      pinchStartDistance = getTouchDistance(event.touches);
+      pinchStartZoom = viewerZoom;
+      isDraggingImage = false;
+      didDragImage = false;
+      if (viewerImage) viewerImage.dataset.dragging = 'false';
+      return;
+    }
+    if (event.touches.length !== 1) return;
+    const touch = event.touches[0];
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+    touchLastX = touch.clientX;
+    touchLastY = touch.clientY;
+    touchPanStartX = viewerPanX;
+    touchPanStartY = viewerPanY;
+    didTouchPanImage = false;
+    isTouchPanningImage = viewerZoom > minViewerZoom;
+    if (isTouchPanningImage) {
+      event.preventDefault();
+      if (viewerImage) viewerImage.dataset.dragging = 'true';
+    }
   }, { passive: false });
   viewerStage?.addEventListener('touchmove', (event) => {
-    if (!viewer?.open || !isPinchingViewer || event.touches.length !== 2 || pinchStartDistance <= 0) return;
-    event.preventDefault();
-    const center = getTouchCenter(event.touches);
-    const targetZoom = pinchStartZoom * (getTouchDistance(event.touches) / pinchStartDistance);
-    setViewerZoomAtPoint(targetZoom, center.x, center.y);
+    if (!viewer?.open) return;
+    if (isPinchingViewer && event.touches.length === 2 && pinchStartDistance > 0) {
+      event.preventDefault();
+      const center = getTouchCenter(event.touches);
+      const targetZoom = pinchStartZoom * (getTouchDistance(event.touches) / pinchStartDistance);
+      setViewerZoomAtPoint(targetZoom, center.x, center.y);
+      return;
+    }
+    if (event.touches.length !== 1 || isPinchingViewer) return;
+    const touch = event.touches[0];
+    touchLastX = touch.clientX;
+    touchLastY = touch.clientY;
+    const deltaX = touch.clientX - touchStartX;
+    const deltaY = touch.clientY - touchStartY;
+    if (isTouchPanningImage) {
+      event.preventDefault();
+      if (!didTouchPanImage && Math.hypot(deltaX, deltaY) < dragThreshold) return;
+      didTouchPanImage = true;
+      viewerPanX = touchPanStartX + deltaX;
+      viewerPanY = touchPanStartY + deltaY;
+      applyViewerZoom();
+      return;
+    }
+    if (Math.abs(deltaX) > 8 && Math.abs(deltaX) > Math.abs(deltaY) * 1.25) {
+      event.preventDefault();
+    }
   }, { passive: false });
   viewerStage?.addEventListener('touchend', (event) => {
-    if (!isPinchingViewer || event.touches.length >= 2) return;
-    isPinchingViewer = false;
-    pinchStartDistance = 0;
-    pinchStartZoom = viewerZoom;
-    suppressNextViewerClick = true;
-    window.setTimeout(() => {
-      suppressNextViewerClick = false;
-    }, 0);
+    if (isPinchingViewer) {
+      if (event.touches.length >= 2) return;
+      isPinchingViewer = false;
+      pinchStartDistance = 0;
+      pinchStartZoom = viewerZoom;
+      suppressNextViewerClick = true;
+      window.setTimeout(() => {
+        suppressNextViewerClick = false;
+      }, 0);
+      return;
+    }
+    if (isTouchPanningImage) {
+      isTouchPanningImage = false;
+      if (viewerImage) viewerImage.dataset.dragging = 'false';
+      if (didTouchPanImage) {
+        suppressNextViewerClick = true;
+        window.setTimeout(() => {
+          suppressNextViewerClick = false;
+        }, 0);
+      }
+      didTouchPanImage = false;
+      return;
+    }
+    if (event.touches.length > 0 || viewerZoom > minViewerZoom) return;
+    const changedTouch = event.changedTouches[0];
+    const endX = changedTouch?.clientX ?? touchLastX;
+    const endY = changedTouch?.clientY ?? touchLastY;
+    const deltaX = endX - touchStartX;
+    const deltaY = endY - touchStartY;
+    if (Math.abs(deltaX) >= swipeThreshold && Math.abs(deltaX) > Math.abs(deltaY) * 1.35) {
+      event.preventDefault();
+      setViewerImage(currentScreenshotIndex + (deltaX < 0 ? 1 : -1));
+      suppressNextViewerClick = true;
+      window.setTimeout(() => {
+        suppressNextViewerClick = false;
+      }, 0);
+    }
   });
   viewerStage?.addEventListener('wheel', (event) => {
     if (!viewer?.open) return;

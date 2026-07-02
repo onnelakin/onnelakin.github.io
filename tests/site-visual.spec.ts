@@ -316,6 +316,64 @@ test.describe('site layout', () => {
 
     await page.locator('[data-viewer-stage]').evaluate((stage, box) => {
       const target = stage as HTMLElement;
+      const centerY = box.y + box.height / 2;
+      const createTouch = (identifier: number, x: number, y: number) =>
+        new Touch({ identifier, target, clientX: x, clientY: y });
+      const dispatchTouch = (
+        type: string,
+        touches: Array<[number, number, number]>,
+        changedTouches = touches
+      ) => {
+        const activeTouches = touches.map(([identifier, x, y]) => createTouch(identifier, x, y));
+        const changed = changedTouches.map(([identifier, x, y]) => createTouch(identifier, x, y));
+        target.dispatchEvent(
+          new TouchEvent(type, {
+            touches: activeTouches,
+            targetTouches: activeTouches,
+            changedTouches: changed,
+            bubbles: true,
+            cancelable: true
+          })
+        );
+      };
+      dispatchTouch('touchstart', [[1, box.x + box.width * 0.78, centerY]]);
+      dispatchTouch('touchmove', [[1, box.x + box.width * 0.2, centerY]]);
+      dispatchTouch('touchend', [], [[1, box.x + box.width * 0.2, centerY]]);
+    }, stageBox);
+    await expect(page.locator('[data-viewer-image]')).toHaveAttribute('src', /tagweaver\/assets\/screenshots\/en\/2\.png/);
+    await expect(page.locator('[data-viewer-thumb]').nth(1)).toHaveAttribute('aria-current', 'true');
+
+    await page.locator('[data-viewer-stage]').evaluate((stage, box) => {
+      const target = stage as HTMLElement;
+      const centerY = box.y + box.height / 2;
+      const createTouch = (identifier: number, x: number, y: number) =>
+        new Touch({ identifier, target, clientX: x, clientY: y });
+      const dispatchTouch = (
+        type: string,
+        touches: Array<[number, number, number]>,
+        changedTouches = touches
+      ) => {
+        const activeTouches = touches.map(([identifier, x, y]) => createTouch(identifier, x, y));
+        const changed = changedTouches.map(([identifier, x, y]) => createTouch(identifier, x, y));
+        target.dispatchEvent(
+          new TouchEvent(type, {
+            touches: activeTouches,
+            targetTouches: activeTouches,
+            changedTouches: changed,
+            bubbles: true,
+            cancelable: true
+          })
+        );
+      };
+      dispatchTouch('touchstart', [[1, box.x + box.width * 0.2, centerY]]);
+      dispatchTouch('touchmove', [[1, box.x + box.width * 0.78, centerY]]);
+      dispatchTouch('touchend', [], [[1, box.x + box.width * 0.78, centerY]]);
+    }, stageBox);
+    await expect(page.locator('[data-viewer-image]')).toHaveAttribute('src', /tagweaver\/assets\/screenshots\/en\/1\.png/);
+    await expect(page.locator('[data-viewer-thumb]').first()).toHaveAttribute('aria-current', 'true');
+
+    await page.locator('[data-viewer-stage]').evaluate((stage, box) => {
+      const target = stage as HTMLElement;
       const centerX = box.x + box.width / 2;
       const centerY = box.y + box.height / 2;
       const createTouch = (identifier: number, x: number, y: number) =>
@@ -348,6 +406,15 @@ test.describe('site layout', () => {
     });
     expect(pinchZoomScale).toBeCloseTo(1.5, 5);
     await expect(page.locator('[data-viewer-image]')).toHaveAttribute('data-zoomed', 'true');
+    const closeBox = await page.locator('[data-viewer-close]').boundingBox();
+    const viewport = page.viewportSize();
+    expect(closeBox).not.toBeNull();
+    expect(viewport).not.toBeNull();
+    if (!closeBox || !viewport) return;
+    expect(closeBox.y).toBeGreaterThanOrEqual(0);
+    expect(closeBox.y + closeBox.height).toBeLessThanOrEqual(viewport.height);
+    expect(closeBox.x).toBeGreaterThanOrEqual(0);
+    expect(closeBox.x + closeBox.width).toBeLessThanOrEqual(viewport.width);
     await page.locator('[data-viewer-stage]').dispatchEvent('wheel', {
       deltaY: 120,
       clientX: stageBox.x + stageBox.width / 2,
