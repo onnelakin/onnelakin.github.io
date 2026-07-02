@@ -15,7 +15,7 @@ const releasedAppCards = releasedApps
   .map((name) => contentApps.find((app) => app.title === name))
   .filter((app): app is ProductIndexItem => app !== undefined);
 const featuredApp = releasedAppCards.find((app) => app.title === 'TagWeaver') ?? releasedAppCards[0];
-const listedAppCards = releasedAppCards;
+const listedAppCards = releasedAppCards.slice(0, 4);
 const appCardStyle = (app: ProductIndexItem) =>
   `--accent-border: ${app.accent.border}; --accent-bg: ${app.accent.background}; --accent-text: ${app.accent.text};`;
 const siteUrl = new URL('/', Astro.site).toString();
@@ -636,11 +636,14 @@ const websiteJsonLd = {
 
     .home-footer {
       display: grid;
-      gap: 14px;
+      gap: 12px;
+      margin-top: 12px;
+      padding-top: 12px;
     }
 
     .footer-links {
       justify-content: flex-start;
+      gap: 10px;
     }
   }
 </style>

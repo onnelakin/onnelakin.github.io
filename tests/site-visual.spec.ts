@@ -51,6 +51,22 @@ test.describe('site layout', () => {
     expect(overlaps).toBe(false);
   });
 
+  test('core product hero layouts remain readable on mobile', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    for (const path of ['/apps/vaultxt/ko/', '/apps/clipnest/ko/', '/apps/segra/ko/']) {
+      await page.goto(path);
+      await expect(page.locator('#product-title')).toBeVisible();
+      await expect(page.locator('.hero .button.primary').first()).toBeVisible();
+
+      const titleBox = await page.locator('#product-title').boundingBox();
+      const actionBox = await page.locator('.hero-actions').boundingBox();
+      expect(titleBox).not.toBeNull();
+      expect(actionBox).not.toBeNull();
+      if (!titleBox || !actionBox) continue;
+      expect(titleBox.y + titleBox.height).toBeLessThan(actionBox.y);
+    }
+  });
+
   test('korean privacy heading keeps a readable mobile block', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 900 });
     await page.goto('/privacy/ko/');
@@ -67,6 +83,9 @@ test.describe('site layout', () => {
     await page.locator('[data-policy-search]').fill('tag');
     await expect(page.locator('[data-policy-row]:visible')).toHaveCount(1);
     await expect(page.locator('[data-policy-row]:visible h2')).toHaveText('TagWeaver');
+    await page.locator('[data-policy-search]').fill('missing-app');
+    await expect(page.locator('[data-policy-row]:visible')).toHaveCount(0);
+    await expect(page.locator('[data-policy-empty]')).toBeVisible();
   });
 
   test('apps search filters app cards', async ({ page }) => {
@@ -74,6 +93,15 @@ test.describe('site layout', () => {
     await page.locator('[data-app-search]').fill('vault');
     await expect(page.locator('[data-app-row]:visible')).toHaveCount(1);
     await expect(page.locator('[data-app-row]:visible h2')).toHaveText('VaultXT');
+    await page.locator('[data-app-search]').fill('missing-app');
+    await expect(page.locator('[data-app-row]:visible')).toHaveCount(0);
+    await expect(page.locator('[data-app-empty]')).toBeVisible();
+  });
+
+  test('home highlights featured app and four released apps', async ({ page }) => {
+    await page.goto('/ko/');
+    await expect(page.locator('.featured h2')).toHaveText('TagWeaver');
+    await expect(page.locator('.product-card')).toHaveCount(4);
   });
 
   test('korean browser language redirects default pages to korean pages', async ({ page }) => {

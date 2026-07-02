@@ -52,6 +52,7 @@ const text =
         heading: '개인정보 처리방침',
         searchLabel: '앱 찾기',
         searchPlaceholder: '앱 이름 검색',
+        empty: '일치하는 앱이 없습니다.',
         updated: '작성 날짜',
         home: 'ONNELLAB',
         switchLabel: 'English',
@@ -64,6 +65,7 @@ const text =
         heading: 'Privacy Policies',
         searchLabel: 'Find app',
         searchPlaceholder: 'Search app name',
+        empty: 'No matching apps.',
         updated: 'Policy date',
         home: 'ONNELLAB',
         switchLabel: '한국어',
@@ -122,6 +124,8 @@ const collectionJsonLd = {
       <input type="search" placeholder={text.searchPlaceholder} data-policy-search />
     </label>
 
+    <p class="empty-state" data-policy-empty hidden>{text.empty}</p>
+
     <section class="policy-list" aria-label={text.heading}>
       {policies.map((policy) => (
         <a class="policy-row" href={policy.href} data-policy-row data-policy-title={policy.title.toLowerCase()}>
@@ -149,10 +153,15 @@ const collectionJsonLd = {
 
         policySearch.addEventListener('input', () => {
           const query = policySearch.value.trim().toLowerCase();
+          let visibleCount = 0;
           policyRows.forEach((row) => {
             const title = row.getAttribute('data-policy-title') ?? '';
-            row.hidden = query.length > 0 && !title.includes(query);
+            const isHidden = query.length > 0 && !title.includes(query);
+            row.hidden = isHidden;
+            if (!isHidden) visibleCount += 1;
           });
+          const emptyState = document.querySelector('[data-policy-empty]');
+          if (emptyState instanceof HTMLElement) emptyState.hidden = visibleCount > 0;
         });
       })();
     </script>
@@ -267,6 +276,13 @@ const collectionJsonLd = {
     border-color: #cfc5b7;
     outline: 2px solid #827d72;
     outline-offset: 3px;
+  }
+
+  .empty-state {
+    margin: 16px 0 0;
+    color: #827d72;
+    font-size: 14px;
+    line-height: 1.5;
   }
 
   .policy-row {

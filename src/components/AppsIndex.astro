@@ -43,6 +43,7 @@ const text =
         heading: 'ONNELLAB 앱',
         searchLabel: '앱 찾기',
         searchPlaceholder: '앱 이름 검색',
+        empty: '일치하는 앱이 없습니다.',
         switchLabel: 'English',
         switchHref: '/apps/',
         homeHref: '/ko/'
@@ -53,6 +54,7 @@ const text =
         heading: 'ONNELLAB Apps',
         searchLabel: 'Find app',
         searchPlaceholder: 'Search app name',
+        empty: 'No matching apps.',
         switchLabel: '한국어',
         switchHref: '/apps/ko/',
         homeHref: '/'
@@ -109,6 +111,8 @@ const collectionJsonLd = {
       <input type="search" placeholder={text.searchPlaceholder} data-app-search />
     </label>
 
+    <p class="empty-state" data-app-empty hidden>{text.empty}</p>
+
     <section class="grid" aria-label={text.heading}>
       {apps.map((app) => (
         <a class="app-card" href={app.href} style={appCardStyle(app)} data-app-row data-app-title={app.title.toLowerCase()}>
@@ -137,10 +141,15 @@ const collectionJsonLd = {
 
         appSearch.addEventListener('input', () => {
           const query = appSearch.value.trim().toLowerCase();
+          let visibleCount = 0;
           appRows.forEach((row) => {
             const title = row.getAttribute('data-app-title') ?? '';
-            row.hidden = query.length > 0 && !title.includes(query);
+            const isHidden = query.length > 0 && !title.includes(query);
+            row.hidden = isHidden;
+            if (!isHidden) visibleCount += 1;
           });
+          const emptyState = document.querySelector('[data-app-empty]');
+          if (emptyState instanceof HTMLElement) emptyState.hidden = visibleCount > 0;
         });
       })();
     </script>
@@ -240,6 +249,13 @@ const collectionJsonLd = {
     border-color: #cfc5b7;
     outline: 2px solid #827d72;
     outline-offset: 3px;
+  }
+
+  .empty-state {
+    margin: 16px 0 0;
+    color: #827d72;
+    font-size: 14px;
+    line-height: 1.5;
   }
 
   .grid {
