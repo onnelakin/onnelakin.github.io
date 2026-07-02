@@ -183,14 +183,7 @@ const jsonLd = {
 
     {data.screenshotPaths.length > 0 && (
       <details class="screens-band">
-        <summary>
-          <span>{labels.screens}</span>
-          <span class="screen-peek" aria-hidden="true">
-            {data.screenshotPaths.slice(0, 3).map((screenshotPath) => (
-              <img src={screenshotPath} alt="" width="1242" height="2688" loading="lazy" decoding="async" />
-            ))}
-          </span>
-        </summary>
+        <summary>{labels.screens}</summary>
         <div class="screenshot-row">
           {data.screenshotPaths.slice(0, 3).map((screenshotPath, index) => (
             <figure>
@@ -221,7 +214,7 @@ const jsonLd = {
             <div class="viewer-frame">
               <button class="viewer-nav viewer-prev" type="button" data-viewer-prev aria-label="Previous">‹</button>
               <div class="viewer-image-stage" data-viewer-stage>
-                <img data-viewer-image alt="" />
+                <img data-viewer-image data-no-visual-search="true" alt="" />
               </div>
               <button class="viewer-nav viewer-next" type="button" data-viewer-next aria-label="Next">›</button>
             </div>
@@ -697,28 +690,6 @@ const jsonLd = {
     transform: rotate(225deg) translateY(-1px);
   }
 
-  .screen-peek {
-    display: inline-flex;
-    align-items: center;
-    gap: 0;
-    padding-left: 2px;
-  }
-
-  .screen-peek img {
-    width: 18px;
-    height: 24px;
-    margin-left: -5px;
-    border: 1px solid rgba(210, 201, 188, 0.82);
-    border-radius: 4px;
-    background: #fffdf8;
-    object-fit: cover;
-    opacity: 0.82;
-  }
-
-  .screen-peek img:first-child {
-    margin-left: 0;
-  }
-
   .screens-band summary:hover,
   .screens-band summary:focus-visible {
     border-color: var(--accent-border);
@@ -1033,7 +1004,9 @@ const jsonLd = {
   }
 
   .copy-column {
-    max-width: 720px;
+    max-width: 900px;
+    word-break: keep-all;
+    overflow-wrap: break-word;
   }
 
   h2 {
@@ -1061,7 +1034,7 @@ const jsonLd = {
     color: #3f3b35;
     font-size: 18px;
     line-height: 1.66;
-    max-width: 650px;
+    max-width: 820px;
   }
 
   .copy-column p + p {
@@ -1209,8 +1182,8 @@ const jsonLd = {
     }
 
     .meta-pill {
-      border-color: rgba(210, 199, 184, 0.72);
-      background: rgba(255, 253, 248, 0.48);
+      border-color: var(--accent-border);
+      background: var(--accent-bg);
       padding: 5px 8px;
     }
 
@@ -1272,11 +1245,6 @@ const jsonLd = {
     .copy-column {
       padding-left: 0;
       border-left: 0;
-    }
-
-    .screen-peek img {
-      width: 16px;
-      height: 22px;
     }
 
     p,
@@ -1423,8 +1391,25 @@ const jsonLd = {
   const wheelZoomStep = 0.1;
   const pinchZoomDamping = 0.42;
 
+  const constrainViewerPan = () => {
+    if (!viewerImage || !viewerStage || viewerZoom <= minViewerZoom) {
+      viewerPanX = 0;
+      viewerPanY = 0;
+      return;
+    }
+    const stageRect = viewerStage.getBoundingClientRect();
+    const baseWidth = viewerImage.offsetWidth || viewerImage.getBoundingClientRect().width / viewerZoom;
+    const baseHeight = viewerImage.offsetHeight || viewerImage.getBoundingClientRect().height / viewerZoom;
+    const overflowX = Math.max(0, (baseWidth * viewerZoom - stageRect.width) / 2);
+    const overflowY = Math.max(0, (baseHeight * viewerZoom - stageRect.height) / 2);
+    const slack = 24;
+    viewerPanX = Math.min(overflowX + slack, Math.max(-overflowX - slack, viewerPanX));
+    viewerPanY = Math.min(overflowY + slack, Math.max(-overflowY - slack, viewerPanY));
+  };
+
   const applyViewerZoom = () => {
     if (!viewerImage) return;
+    constrainViewerPan();
     viewerImage.style.transform = `translate(${viewerPanX}px, ${viewerPanY}px) scale(${viewerZoom})`;
     viewerImage.dataset.zoomed = viewerZoom > 1 ? 'true' : 'false';
   };
