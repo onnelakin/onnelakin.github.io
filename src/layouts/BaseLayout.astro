@@ -20,6 +20,7 @@ const {
 } = Astro.props;
 const canonicalUrl = new URL(canonicalPath, Astro.site);
 const imageUrl = image ? new URL(image, Astro.site) : undefined;
+const faviconUrl = imageUrl ?? new URL('/app-assets/quivra/assets/icon/quivra.png', Astro.site);
 const jsonLdItems = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
 ---
 
@@ -29,8 +30,8 @@ const jsonLdItems = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="google-site-verification" content="0IUOtlQTLbMO9gWiDi4TqtQpMCKZVsGRLEchK8A6IzE" />
-    <link rel="icon" type="image/png" href={new URL('/app-assets/quivra/assets/icon/quivra.png', Astro.site)} />
-    <link rel="apple-touch-icon" href={new URL('/app-assets/quivra/assets/icon/quivra.png', Astro.site)} />
+    <link rel="icon" type="image/png" href={faviconUrl} />
+    <link rel="apple-touch-icon" href={faviconUrl} />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />

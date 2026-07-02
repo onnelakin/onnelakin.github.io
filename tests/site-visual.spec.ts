@@ -168,6 +168,14 @@ test.describe('site layout', () => {
       'https://onnelakin.github.io/apps/tagweaver/'
     );
     await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', 'TagWeaver');
+    await expect(page.locator('link[rel="icon"]')).toHaveAttribute(
+      'href',
+      'https://onnelakin.github.io/app-assets/tagweaver/assets/icon/tagweaver.png'
+    );
+    await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute(
+      'href',
+      'https://onnelakin.github.io/app-assets/tagweaver/assets/icon/tagweaver.png'
+    );
     await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(1);
 
     const jsonLd = await page.locator('script[type="application/ld+json"]').textContent();
@@ -199,6 +207,10 @@ test.describe('site layout', () => {
 
   test('site and collection schema remain crawlable', async ({ page }) => {
     await page.goto('/');
+    await expect(page.locator('link[rel="icon"]')).toHaveAttribute(
+      'href',
+      'https://onnelakin.github.io/app-assets/quivra/assets/icon/quivra.png'
+    );
     const homeSchemas = await page.locator('script[type="application/ld+json"]').allTextContents();
     const homeTypes = homeSchemas.map((schema) => JSON.parse(schema)['@type']);
     expect(homeTypes).toEqual(['Organization', 'WebSite']);
