@@ -286,6 +286,15 @@ const collectionJsonLd = {
     transition: border-color 140ms ease, background 140ms ease, color 140ms ease;
   }
 
+  .app-card::before {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    border-radius: 7px;
+    border-top: 1px solid rgba(255, 253, 248, 0.86);
+    pointer-events: none;
+  }
+
   .app-card::after {
     content: "";
     width: 20px;
@@ -306,7 +315,7 @@ const collectionJsonLd = {
   .app-card:focus-visible {
     border-color: var(--accent-border, #d8cec0);
     background:
-      linear-gradient(135deg, rgba(255, 253, 248, 0.98), var(--accent-bg, #fffdf8)),
+      linear-gradient(135deg, #fffdf8, var(--accent-bg, #fffdf8)),
       #fffdf8;
   }
 

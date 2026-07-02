@@ -183,7 +183,14 @@ const jsonLd = {
 
     {data.screenshotPaths.length > 0 && (
       <details class="screens-band">
-        <summary>{labels.screens}</summary>
+        <summary>
+          <span>{labels.screens}</span>
+          <span class="screen-peek" aria-hidden="true">
+            {data.screenshotPaths.slice(0, 3).map((screenshotPath) => (
+              <img src={screenshotPath} alt="" width="1242" height="2688" loading="lazy" decoding="async" />
+            ))}
+          </span>
+        </summary>
         <div class="screenshot-row">
           {data.screenshotPaths.slice(0, 3).map((screenshotPath, index) => (
             <figure>
@@ -637,11 +644,24 @@ const jsonLd = {
     padding-top: 48px;
   }
 
+  .copy-column {
+    position: relative;
+  }
+
+  .copy-column::before {
+    content: "";
+    display: block;
+    width: 46px;
+    height: 1px;
+    margin-bottom: 28px;
+    background: linear-gradient(90deg, var(--accent-border), rgba(255, 253, 248, 0));
+  }
+
   .screens-band summary {
     width: fit-content;
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     cursor: pointer;
     color: #37342f;
     font-size: 17px;
@@ -671,6 +691,28 @@ const jsonLd = {
 
   .screens-band[open] summary::after {
     transform: rotate(225deg) translateY(-1px);
+  }
+
+  .screen-peek {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    padding-left: 2px;
+  }
+
+  .screen-peek img {
+    width: 18px;
+    height: 24px;
+    margin-left: -5px;
+    border: 1px solid rgba(210, 201, 188, 0.82);
+    border-radius: 4px;
+    background: #fffdf8;
+    object-fit: cover;
+    opacity: 0.82;
+  }
+
+  .screen-peek img:first-child {
+    margin-left: 0;
   }
 
   .screens-band summary:hover,
@@ -1015,6 +1057,7 @@ const jsonLd = {
     color: #3f3b35;
     font-size: 17px;
     line-height: 1.7;
+    max-width: 650px;
   }
 
   .copy-column p + p {
@@ -1116,7 +1159,7 @@ const jsonLd = {
 
     .hero-actions {
       width: 100%;
-      gap: 6px;
+      gap: 7px;
     }
 
     .actions {
@@ -1157,7 +1200,7 @@ const jsonLd = {
 
     .meta-list {
       justify-content: center;
-      margin-top: 1px;
+      margin-top: 2px;
       opacity: 0.82;
     }
 
@@ -1212,6 +1255,15 @@ const jsonLd = {
     .screens-band,
     .download-band {
       padding: 30px 0;
+    }
+
+    .copy-column::before {
+      margin-bottom: 22px;
+    }
+
+    .screen-peek img {
+      width: 16px;
+      height: 22px;
     }
 
     p,
