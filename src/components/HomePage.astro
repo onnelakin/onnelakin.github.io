@@ -280,13 +280,14 @@ const text =
 
   .featured {
     position: relative;
-    display: grid;
-    gap: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
     border: 1px solid var(--accent-border);
     border-radius: 8px;
-    padding: 22px 22px 24px;
+    padding: 20px 20px 22px;
     background:
-      linear-gradient(135deg, var(--accent-bg), #fffdf8 68%),
+      linear-gradient(90deg, rgba(255, 253, 248, 0.94), var(--accent-bg), rgba(255, 253, 248, 0.86)),
       #fffdf8;
     color: inherit;
     overflow: hidden;
@@ -297,8 +298,10 @@ const text =
   .featured::after {
     content: "";
     position: absolute;
-    inset: 0;
-    border-top: 1px solid rgba(255, 253, 248, 0.86);
+    inset: 14px auto 14px 0;
+    width: 2px;
+    background: var(--accent-border);
+    opacity: 0.72;
     pointer-events: none;
   }
 
@@ -306,7 +309,7 @@ const text =
   .featured:focus-visible {
     border-color: var(--accent-border);
     background:
-      linear-gradient(135deg, var(--accent-bg), #fffdf8 58%),
+      linear-gradient(90deg, #fffdf8, var(--accent-bg), rgba(255, 253, 248, 0.72)),
       #fffdf8;
   }
 
@@ -326,16 +329,25 @@ const text =
   .featured-body {
     position: relative;
     display: grid;
-    grid-template-columns: 82px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 74px;
     align-items: center;
-    gap: 20px;
+    gap: 24px;
   }
 
   .featured-body img {
-    width: 82px;
-    height: 82px;
-    border-radius: 19px;
-    box-shadow: 0 0 0 1px var(--accent-border);
+    grid-column: 2;
+    grid-row: 1;
+    width: 74px;
+    height: 74px;
+    border-radius: 18px;
+    box-shadow:
+      0 0 0 1px var(--accent-border),
+      0 14px 30px rgba(73, 63, 50, 0.08);
+  }
+
+  .featured-body > div {
+    grid-column: 1;
+    grid-row: 1;
   }
 
   .featured-label {
@@ -548,7 +560,7 @@ const text =
 
     .featured {
       width: 100%;
-      gap: 16px;
+      gap: 14px;
       padding: 17px;
     }
 
@@ -564,9 +576,14 @@ const text =
     }
 
     .featured-body img {
+      grid-column: 1;
       width: 72px;
       height: 72px;
       border-radius: 18px;
+    }
+
+    .featured-body > div {
+      grid-column: 2;
     }
 
     .product-grid {

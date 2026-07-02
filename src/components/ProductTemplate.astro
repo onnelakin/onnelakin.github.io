@@ -321,10 +321,10 @@ const jsonLd = {
   .hero::before {
     content: "";
     position: absolute;
-    inset: 78px 0 78px 56%;
+    inset: 78px 0;
     background:
-      linear-gradient(90deg, var(--accent-bg), rgba(255, 253, 248, 0));
-    opacity: 0.5;
+      linear-gradient(90deg, rgba(255, 253, 248, 0), var(--accent-bg), rgba(255, 253, 248, 0));
+    opacity: 0.34;
     pointer-events: none;
   }
 
@@ -381,11 +381,7 @@ const jsonLd = {
   .task-preview {
     display: grid;
     gap: 0;
-    border-left: 1px solid var(--accent-border);
-    background:
-      linear-gradient(90deg, rgba(255, 253, 248, 0.82), rgba(255, 253, 248, 0)),
-      linear-gradient(180deg, transparent, var(--accent-bg), transparent);
-    padding: 8px 0 8px 24px;
+    padding: 8px 0 8px 18px;
   }
 
   .task-row {
@@ -394,11 +390,10 @@ const jsonLd = {
     grid-template-columns: 38px minmax(0, 1fr);
     gap: 14px;
     padding: 13px 0;
-    border-bottom: 1px solid rgba(231, 223, 211, 0.92);
   }
 
-  .task-row:first-child {
-    border-top: 1px solid rgba(231, 223, 211, 0.92);
+  .task-row + .task-row {
+    border-top: 1px solid rgba(210, 199, 184, 0.48);
   }
 
   .task-row span {
@@ -442,18 +437,28 @@ const jsonLd = {
   .support-links {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    color: #827d72;
+    gap: 9px;
     font-size: 13px;
   }
 
   .support-links a {
-    color: inherit;
+    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ded6ca;
+    border-radius: 8px;
+    padding: 7px 11px;
+    background: #fffdf8;
+    color: #5f5a50;
     text-decoration: none;
+    font-weight: 650;
   }
 
   .support-links a:hover,
   .support-links a:focus-visible {
+    border-color: #cfc5b7;
+    background: rgba(255, 253, 248, 0.76);
     color: #4f4b43;
   }
 
