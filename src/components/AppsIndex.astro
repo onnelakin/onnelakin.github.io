@@ -176,9 +176,24 @@ const collectionJsonLd = {
   }
 
   .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     color: #737067;
     font-size: 14px;
     font-weight: 560;
+  }
+
+  .brand::before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    border: 1px solid #cfc5b7;
+    border-radius: 5px;
+    background:
+      linear-gradient(90deg, transparent 6px, #b9ad9d 6px 7px, transparent 7px),
+      linear-gradient(0deg, transparent 6px, #b9ad9d 6px 7px, transparent 7px),
+      linear-gradient(135deg, rgba(255, 253, 248, 0.96), rgba(239, 234, 226, 0.76));
   }
 
   .language {
