@@ -115,6 +115,33 @@ test.describe('site layout', () => {
     );
   });
 
+  test('product seo metadata remains crawlable', async ({ page }) => {
+    await page.goto('/apps/tagweaver/');
+
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      'https://onnelakin.github.io/apps/tagweaver/'
+    );
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', 'TagWeaver');
+    await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(1);
+
+    const jsonLd = await page.locator('script[type="application/ld+json"]').textContent();
+    expect(jsonLd).not.toBeNull();
+    const structuredData = JSON.parse(jsonLd ?? '{}');
+    expect(structuredData['@type']).toBe('SoftwareApplication');
+    expect(structuredData.name).toBe('TagWeaver');
+    expect(structuredData.applicationCategory).toBe('UtilitiesApplication');
+    expect(structuredData.publisher.name).toBe('ONNELLAB');
+
+    const sitemapResponse = await page.request.get('/sitemap.xml');
+    expect(sitemapResponse.ok()).toBe(true);
+    expect(await sitemapResponse.text()).toContain('https://onnelakin.github.io/apps/tagweaver/');
+
+    const robotsResponse = await page.request.get('/robots.txt');
+    expect(robotsResponse.ok()).toBe(true);
+    expect(await robotsResponse.text()).toContain('Sitemap: https://onnelakin.github.io/sitemap.xml');
+  });
+
   test('single store download action is centered', async ({ page }) => {
     await page.goto('/apps/clipnest/');
     const downloadBand = page.locator('.download-band');

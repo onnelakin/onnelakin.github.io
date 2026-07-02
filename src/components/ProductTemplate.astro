@@ -111,7 +111,7 @@ const jsonLd = {
       <a class="language" href={data.alternatePath} data-locale-choice={data.locale === 'ko' ? 'en' : 'ko'}>{labels.switchLabel}</a>
     </header>
 
-    <section class="hero" aria-labelledby="product-title">
+    <section class="hero" aria-labelledby="product-title" data-app={data.source.slug}>
       <div class="hero-grid">
         <div class="identity">
           <img src={data.iconPath} alt={`${meta.title} icon`} width="88" height="88" />
@@ -322,6 +322,49 @@ const jsonLd = {
       linear-gradient(90deg, rgba(255, 253, 248, 0), var(--accent-bg), rgba(255, 253, 248, 0));
     opacity: 0.34;
     pointer-events: none;
+  }
+
+  .hero::after {
+    content: "";
+    position: absolute;
+    inset: 112px auto 112px 0;
+    width: 132px;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(255, 253, 248, 0),
+      rgba(255, 253, 248, 0) 12px,
+      var(--accent-border) 12px,
+      var(--accent-border) 13px
+    );
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .hero[data-app="tagweaver"]::after {
+    width: 116px;
+    background:
+      linear-gradient(90deg, var(--accent-border) 0 1px, transparent 1px),
+      linear-gradient(0deg, var(--accent-border) 0 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .hero[data-app="vaultxt"]::after {
+    width: 156px;
+    background: repeating-linear-gradient(
+      0deg,
+      var(--accent-border) 0 1px,
+      transparent 1px 13px
+    );
+  }
+
+  .hero[data-app="segra"]::after,
+  .hero[data-app="clipnest"]::after {
+    width: 124px;
+    background: repeating-linear-gradient(
+      135deg,
+      transparent 0 13px,
+      var(--accent-border) 13px 14px
+    );
   }
 
   .hero-grid {
@@ -584,8 +627,8 @@ const jsonLd = {
     margin: 0;
     border: 1px solid var(--accent-border);
     border-radius: 8px;
-    padding: 7px;
-    background: #fffdf8;
+    padding: 5px;
+    background: rgba(255, 253, 248, 0.78);
   }
 
   figure img {
@@ -643,7 +686,7 @@ const jsonLd = {
   }
 
   .screenshot-link:hover img {
-    box-shadow: 0 0 0 1px var(--accent-text);
+    box-shadow: 0 0 0 1px var(--accent-border);
   }
 
   .screenshot-link:hover::before,
@@ -954,6 +997,10 @@ const jsonLd = {
       inset: 86px 0 auto 0;
       height: 188px;
       opacity: 0.22;
+    }
+
+    .hero::after {
+      display: none;
     }
 
     .identity,
