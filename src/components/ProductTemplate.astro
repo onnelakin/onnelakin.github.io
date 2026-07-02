@@ -634,13 +634,13 @@ const jsonLd = {
   }
 
   .content-band {
-    padding-top: 52px;
+    padding-top: 48px;
   }
 
   .copy-column {
     position: relative;
-    padding-left: 18px;
-    border-left: 1px solid rgba(224, 216, 203, 0.72);
+    padding-left: 20px;
+    border-left: 1px solid rgba(224, 216, 203, 0.54);
   }
 
   .copy-column::before {
@@ -650,8 +650,8 @@ const jsonLd = {
     top: 0;
     display: block;
     width: 1px;
-    height: 74px;
-    background: linear-gradient(180deg, var(--accent-border), rgba(255, 253, 248, 0));
+    height: 58px;
+    background: linear-gradient(180deg, rgba(185, 173, 157, 0.54), rgba(255, 253, 248, 0));
   }
 
   .screens-band summary {
@@ -857,9 +857,9 @@ const jsonLd = {
 
   .viewer-frame {
     display: grid;
-    grid-template-columns: 40px minmax(0, 1fr) 40px;
+    grid-template-columns: 36px minmax(0, 1fr) 36px;
     align-items: center;
-    gap: 10px;
+    gap: 9px;
   }
 
   .viewer-image-stage {
@@ -914,8 +914,8 @@ const jsonLd = {
   .viewer-nav {
     position: relative;
     z-index: 2;
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
     justify-self: center;
     padding: 0;
     font-size: 23px;
@@ -974,7 +974,7 @@ const jsonLd = {
   .download-band {
     display: grid;
     justify-items: center;
-    gap: 10px;
+    gap: 9px;
     background:
       linear-gradient(180deg, rgba(255, 253, 248, 0), rgba(255, 253, 248, 0.36), rgba(255, 253, 248, 0));
     text-align: center;
@@ -1010,8 +1010,8 @@ const jsonLd = {
   }
 
   h2 {
-    margin: 30px 0 10px;
-    font-size: 21px;
+    margin: 34px 0 9px;
+    font-size: 20px;
     line-height: 1.25;
     letter-spacing: 0;
   }
@@ -1032,8 +1032,8 @@ const jsonLd = {
 
   .copy-column > p:first-child {
     color: #3f3b35;
-    font-size: 18px;
-    line-height: 1.7;
+    font-size: 17px;
+    line-height: 1.72;
     max-width: none;
   }
 
@@ -1251,15 +1251,15 @@ const jsonLd = {
     .content-band,
     .screens-band,
     .download-band {
-      padding: 30px 0;
+      padding: 28px 0;
     }
 
     .copy-column::before {
       position: static;
-      width: 42px;
+      width: 36px;
       height: 1px;
-      margin-bottom: 22px;
-      background: linear-gradient(90deg, var(--accent-border), rgba(255, 253, 248, 0));
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, rgba(185, 173, 157, 0.54), rgba(255, 253, 248, 0));
     }
 
     .copy-column {
@@ -1295,15 +1295,15 @@ const jsonLd = {
       position: relative;
       grid-template-rows: auto minmax(0, 1fr) auto;
       max-height: calc(100dvh - 14px);
-      padding: 6px;
-      gap: 6px;
+      padding: 5px;
+      gap: 5px;
     }
 
     .viewer-bar {
       position: sticky;
       top: 0;
       z-index: 5;
-      min-height: 32px;
+      min-height: 31px;
       padding-bottom: 0;
       background: transparent;
     }
@@ -1328,11 +1328,11 @@ const jsonLd = {
     .viewer-image-stage {
       grid-column: 1 / -1;
       grid-row: 1;
-      max-height: calc(100dvh - 152px);
+      max-height: calc(100dvh - 142px);
     }
 
     .viewer-image-stage img {
-      max-height: calc(100dvh - 152px);
+      max-height: calc(100dvh - 142px);
     }
 
     .viewer-prev,
@@ -1342,26 +1342,26 @@ const jsonLd = {
 
     .viewer-nav {
       width: 100%;
-      height: 30px;
+      height: 28px;
       border-radius: 10px;
-      background: rgba(255, 253, 248, 0.34);
-      border-color: rgba(196, 185, 169, 0.22);
-      color: rgba(55, 52, 47, 0.62);
+      background: rgba(255, 253, 248, 0.25);
+      border-color: rgba(196, 185, 169, 0.18);
+      color: rgba(55, 52, 47, 0.52);
       box-shadow: none;
     }
 
     .viewer-thumbs {
       justify-content: center;
-      gap: 5px;
-      padding: 0 2px 2px;
-      opacity: 0.72;
+      gap: 4px;
+      padding: 0 2px 1px;
+      opacity: 0.62;
     }
 
     .viewer-thumb {
-      width: 32px;
-      height: 42px;
-      border-radius: 9px;
-      padding: 2px;
+      width: 28px;
+      height: 38px;
+      border-radius: 8px;
+      padding: 1px;
       box-shadow: none;
     }
 
