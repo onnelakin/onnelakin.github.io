@@ -1128,8 +1128,8 @@ const jsonLd = {
 
     .hero {
       min-height: auto;
-      gap: 12px;
-      padding: 26px 0 23px;
+      gap: 14px;
+      padding: 28px 0 25px;
     }
 
     .hero::before {
@@ -1185,11 +1185,12 @@ const jsonLd = {
 
     .hero-actions {
       width: 100%;
-      gap: 7px;
+      gap: 8px;
+      margin-top: 1px;
     }
 
     .actions {
-      gap: 7px;
+      gap: 8px;
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
@@ -1226,7 +1227,7 @@ const jsonLd = {
 
     .meta-list {
       justify-content: center;
-      margin-top: 2px;
+      margin-top: 4px;
       opacity: 0.82;
     }
 
@@ -1248,8 +1249,8 @@ const jsonLd = {
       border-left: 0;
       border-top: 1px solid rgba(210, 199, 184, 0.24);
       background: linear-gradient(180deg, rgba(255, 253, 248, 0.34), rgba(255, 253, 248, 0));
-      margin-top: 3px;
-      padding: 7px 0 0;
+      margin-top: 5px;
+      padding: 8px 0 0;
     }
 
     .task-row {
@@ -1471,12 +1472,25 @@ const jsonLd = {
   let didTouchPanImage = false;
   const dragThreshold = 4;
   const swipeThreshold = 44;
+  const zoomedEdgeSwipeThreshold = 64;
   const minViewerZoom = 1;
   const touchPanZoomThreshold = 1.03;
   const clickViewerZoom = 1.08;
   const maxViewerZoom = 1.35;
   const wheelZoomStep = 0.1;
   const pinchZoomDamping = 0.28;
+
+  const isViewerPanAtHorizontalEdge = (direction) => {
+    if (!viewerImage || !viewerStage || viewerZoom <= touchPanZoomThreshold) return true;
+    const stageRect = viewerStage.getBoundingClientRect();
+    const baseWidth = viewerImage.offsetWidth || viewerImage.getBoundingClientRect().width / viewerZoom;
+    const overflowX = Math.max(0, (baseWidth * viewerZoom - stageRect.width) / 2);
+    if (overflowX <= 0) return true;
+    const edgeSlack = 10;
+    return direction < 0
+      ? viewerPanX <= -overflowX + edgeSlack
+      : viewerPanX >= overflowX - edgeSlack;
+  };
 
   const resetViewerInteraction = () => {
     isDraggingImage = false;
@@ -1731,6 +1745,26 @@ const jsonLd = {
     if (isTouchPanningImage) {
       isTouchPanningImage = false;
       if (viewerImage) viewerImage.dataset.dragging = 'false';
+      const changedTouch = event.changedTouches[0];
+      const endX = changedTouch?.clientX ?? touchLastX;
+      const endY = changedTouch?.clientY ?? touchLastY;
+      const deltaX = endX - touchStartX;
+      const deltaY = endY - touchStartY;
+      const direction = deltaX < 0 ? -1 : 1;
+      if (
+        Math.abs(deltaX) >= zoomedEdgeSwipeThreshold &&
+        Math.abs(deltaX) > Math.abs(deltaY) * 1.35 &&
+        isViewerPanAtHorizontalEdge(direction)
+      ) {
+        event.preventDefault();
+        setViewerImage(currentScreenshotIndex + (direction < 0 ? 1 : -1));
+        suppressNextViewerClick = true;
+        window.setTimeout(() => {
+          suppressNextViewerClick = false;
+        }, 0);
+        didTouchPanImage = false;
+        return;
+      }
       if (didTouchPanImage) {
         suppressNextViewerClick = true;
         window.setTimeout(() => {
