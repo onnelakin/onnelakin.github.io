@@ -1305,9 +1305,11 @@ const jsonLd = {
 
     .screenshot-row {
       display: flex;
+      gap: 12px;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
-      padding-bottom: 3px;
+      scroll-padding-inline: 2px;
+      padding: 1px 1px 5px;
     }
 
     figure {
@@ -1365,6 +1367,7 @@ const jsonLd = {
       grid-column: 1;
       grid-row: 1;
       max-height: calc(100dvh - 96px);
+      border-radius: 15px;
     }
 
     .viewer-image-stage img {
@@ -1475,6 +1478,17 @@ const jsonLd = {
   const wheelZoomStep = 0.1;
   const pinchZoomDamping = 0.28;
 
+  const resetViewerInteraction = () => {
+    isDraggingImage = false;
+    didDragImage = false;
+    suppressNextViewerClick = false;
+    isPinchingViewer = false;
+    isTouchPanningImage = false;
+    didTouchPanImage = false;
+    pinchStartDistance = 0;
+    if (viewerImage) viewerImage.dataset.dragging = 'false';
+  };
+
   const constrainViewerPan = () => {
     if (!viewerImage || !viewerStage || viewerZoom <= minViewerZoom) {
       viewerPanX = 0;
@@ -1557,6 +1571,7 @@ const jsonLd = {
 
   const setViewerImage = (index) => {
     if (!viewerImage) return;
+    resetViewerInteraction();
     currentScreenshotIndex = (index + screenshotLinks.length) % screenshotLinks.length;
     const link = screenshotLinks[currentScreenshotIndex];
     const image = link.querySelector('img');
@@ -1580,6 +1595,7 @@ const jsonLd = {
   };
 
   const closeViewer = () => {
+    resetViewerInteraction();
     if (viewer?.open) viewer.close();
   };
 
@@ -1738,6 +1754,9 @@ const jsonLd = {
         suppressNextViewerClick = false;
       }, 0);
     }
+  });
+  viewerStage?.addEventListener('touchcancel', () => {
+    resetViewerInteraction();
   });
   viewerStage?.addEventListener('wheel', (event) => {
     if (!viewer?.open) return;
