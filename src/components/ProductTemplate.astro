@@ -538,11 +538,39 @@ const jsonLd = {
   }
 
   .screens-band summary {
+    width: fit-content;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
     cursor: pointer;
     color: #37342f;
     font-size: 17px;
     font-weight: 620;
-    list-style-position: outside;
+    list-style: none;
+  }
+
+  .screens-band summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .screens-band summary::after {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-right: 1.5px solid var(--accent-text);
+    border-bottom: 1.5px solid var(--accent-text);
+    opacity: 0.72;
+    transform: rotate(45deg) translateY(-1px);
+    transition: transform 140ms ease;
+  }
+
+  .screens-band[open] summary::after {
+    transform: rotate(225deg) translateY(-1px);
+  }
+
+  .screens-band summary:hover,
+  .screens-band summary:focus-visible {
+    color: var(--accent-text);
   }
 
   .screenshot-row {
@@ -814,23 +842,33 @@ const jsonLd = {
   .download-band {
     display: grid;
     justify-items: center;
-    gap: 12px;
+    gap: 10px;
     background:
-      linear-gradient(180deg, rgba(255, 253, 248, 0), rgba(255, 253, 248, 0.52), rgba(255, 253, 248, 0));
+      linear-gradient(180deg, rgba(255, 253, 248, 0), rgba(255, 253, 248, 0.36), rgba(255, 253, 248, 0));
     text-align: center;
+  }
+
+  .download-band .eyebrow {
+    margin-bottom: 5px;
   }
 
   .download-band h2 {
     margin: 0;
-    color: #4a453d;
-    font-size: 19px;
+    color: #5b574f;
+    font-size: 18px;
     font-weight: 600;
   }
 
   .actions.compact {
     justify-content: center;
     margin-left: 0;
-    width: min(100%, 286px);
+    width: min(100%, 264px);
+  }
+
+  .actions.compact .button {
+    min-height: 38px;
+    padding: 8px 12px;
+    font-size: 14px;
   }
 
   .copy-column {
@@ -878,9 +916,9 @@ const jsonLd = {
     grid-template-columns: minmax(0, 1fr);
     justify-items: center;
     align-items: center;
-    gap: 9px;
+    gap: 7px;
     border-top: 1px solid #e0d8cb;
-    padding-top: 20px;
+    padding-top: 16px;
     text-align: center;
   }
 
@@ -892,8 +930,8 @@ const jsonLd = {
   }
 
   footer a:first-of-type {
-    color: #4f4b43;
-    font-weight: 650;
+    color: #5f5a50;
+    font-weight: 620;
   }
 
   footer a:last-child {
