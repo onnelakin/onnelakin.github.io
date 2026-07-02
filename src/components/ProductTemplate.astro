@@ -61,8 +61,15 @@ const localizedGooglePlayUrl = (url: string | undefined, locale: ProductPageData
   playStoreUrl.searchParams.set('gl', locale === 'ko' ? 'KR' : 'US');
   return playStoreUrl.toString();
 };
+const localizedPrivacyUrl = (url: string, locale: ProductPageData['locale']) => {
+  if (locale !== 'ko') return url;
+  const privacyUrl = new URL(url);
+  privacyUrl.pathname = privacyUrl.pathname.replace(/\/?$/, '/ko/');
+  return privacyUrl.toString();
+};
 const appStoreUrl = localizedAppStoreUrl(meta.appstore, data.locale);
 const googlePlayUrl = localizedGooglePlayUrl(meta.googleplay, data.locale);
+const privacyUrl = localizedPrivacyUrl(meta.privacy, data.locale);
 const storeUrls = [appStoreUrl, googlePlayUrl].filter(Boolean);
 const screenshotUrls = data.screenshotPaths.map((screenshotPath) =>
   new URL(screenshotPath, Astro.site).toString()
@@ -101,7 +108,7 @@ const jsonLd = {
         }
       }
     : {}),
-  privacyPolicy: meta.privacy
+  privacyPolicy: privacyUrl
 };
 ---
 
@@ -152,7 +159,7 @@ const jsonLd = {
           {googlePlayUrl && <a class="button primary" href={googlePlayUrl}>{labels.googlePlay}</a>}
         </div>
         <div class="support-links" aria-label="Support links">
-          <a href={meta.privacy}>{labels.privacy}</a>
+          <a href={privacyUrl}>{labels.privacy}</a>
           <a href={`mailto:${meta.supportEmail}`}>{labels.support}</a>
         </div>
       </div>
@@ -256,7 +263,7 @@ const jsonLd = {
     </section>
 
     <footer>
-      <a href={meta.privacy}>{labels.footerPrivacy}</a>
+      <a href={privacyUrl}>{labels.footerPrivacy}</a>
       <a href={`mailto:${meta.supportEmail}`}>{meta.supportEmail}</a>
     </footer>
   </main>

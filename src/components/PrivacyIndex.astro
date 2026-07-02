@@ -27,18 +27,22 @@ const staticPrivacyApps = [
   { title: 'Melivra', href: 'https://onnelakin.github.io/melivra-privacy-policy/' }
 ].filter((app) => !contentAppTitles.has(app.title));
 const privacyDate = (title: string) => privacyUpdatedAtByTitle[title] ?? '9999-12-31';
+const localizedPolicyHref = (href: string) => {
+  if (locale !== 'ko') return href;
+  return href.replace(/\/?$/, '/ko/');
+};
 const policies = [
   ...contentApps
     .filter((app) => app.privacy)
     .map((app) => ({
       title: app.title,
-      href: app.privacy,
+      href: localizedPolicyHref(app.privacy),
       date: privacyDate(app.title),
       platforms: app.platforms
     })),
   ...staticPrivacyApps.map((app) => ({
     title: app.title,
-    href: app.href,
+    href: localizedPolicyHref(app.href),
     date: privacyDate(app.title),
     platforms: [] as string[]
   }))

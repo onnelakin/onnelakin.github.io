@@ -157,7 +157,15 @@ test.describe('site layout', () => {
       /https:\/\/play\.google\.com\/store\/apps\/details\?id=com\.onnellab\.tagweaver2&hl=ko&gl=KR/
     );
     await expect(page.locator('.support-links a').first()).toHaveText('Privacy Policy');
+    await expect(page.locator('.support-links a').first()).toHaveAttribute(
+      'href',
+      'https://onnelakin.github.io/tagweaver-privacy-policy/ko/'
+    );
     await expect(page.locator('footer a').first()).toHaveText('개인정보 처리방침');
+    await expect(page.locator('footer a').first()).toHaveAttribute(
+      'href',
+      'https://onnelakin.github.io/tagweaver-privacy-policy/ko/'
+    );
   });
 
   test('product seo metadata remains crawlable', async ({ page }) => {
@@ -230,6 +238,13 @@ test.describe('site layout', () => {
     expect(privacySchema['@type']).toBe('CollectionPage');
     expect(privacySchema['@id']).toBe('https://onnelakin.github.io/privacy/#privacy-policies');
     expect(privacySchema.mainEntity.itemListElement.length).toBeGreaterThan(5);
+    expect(privacySchema.mainEntity.itemListElement[0].url).not.toContain('/ko/');
+
+    await page.goto('/privacy/ko/');
+    const koreanPrivacySchema = JSON.parse(
+      (await page.locator('script[type="application/ld+json"]').textContent()) ?? '{}'
+    );
+    expect(koreanPrivacySchema.mainEntity.itemListElement[0].url).toContain('/ko/');
   });
 
   test('single store download action is centered', async ({ page }) => {
