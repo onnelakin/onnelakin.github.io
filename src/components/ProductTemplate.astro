@@ -16,6 +16,7 @@ const labels =
         appStore: 'App Store',
         googlePlay: 'Google Play',
         privacy: 'Privacy Policy',
+        footerPrivacy: '개인정보 처리방침',
         support: 'Support',
         download: '다운로드',
         screens: '스크린샷',
@@ -27,6 +28,7 @@ const labels =
         appStore: 'App Store',
         googlePlay: 'Google Play',
         privacy: 'Privacy Policy',
+        footerPrivacy: 'Privacy Policy',
         support: 'Support',
         download: 'Download',
         screens: 'Screenshots',
@@ -254,7 +256,7 @@ const jsonLd = {
     </section>
 
     <footer>
-      <a href={meta.privacy}>{labels.privacy}</a>
+      <a href={meta.privacy}>{labels.footerPrivacy}</a>
       <a href={`mailto:${meta.supportEmail}`}>{meta.supportEmail}</a>
     </footer>
   </main>
@@ -437,7 +439,9 @@ const jsonLd = {
     height: 124px;
     border: 1px solid var(--accent-border);
     border-radius: 26px;
-    background: #fffdf8;
+    background:
+      linear-gradient(180deg, rgba(255, 253, 248, 0.96), var(--accent-bg)),
+      #fffdf8;
   }
 
   .identity img:hover {
@@ -838,7 +842,9 @@ const jsonLd = {
   }
 
   .viewer-close:hover,
-  .viewer-nav:hover {
+  .viewer-nav:hover,
+  .viewer-close:active,
+  .viewer-nav:active {
     border-color: var(--accent-border);
     background:
       linear-gradient(180deg, #fffdf8, rgba(245, 241, 234, 0.82)),
@@ -1348,6 +1354,11 @@ const jsonLd = {
       color: rgba(55, 52, 47, 0.38);
       box-shadow: 0 6px 18px rgba(39, 34, 29, 0.06);
       font-size: 18px;
+    }
+
+    .viewer-nav:active {
+      background: rgba(255, 253, 248, 0.54);
+      color: var(--accent-text);
     }
 
     .viewer-prev {

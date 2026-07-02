@@ -156,6 +156,8 @@ test.describe('site layout', () => {
       'href',
       /https:\/\/play\.google\.com\/store\/apps\/details\?id=com\.onnellab\.tagweaver2&hl=ko&gl=KR/
     );
+    await expect(page.locator('.support-links a').first()).toHaveText('Privacy Policy');
+    await expect(page.locator('footer a').first()).toHaveText('개인정보 처리방침');
   });
 
   test('product seo metadata remains crawlable', async ({ page }) => {
