@@ -5,7 +5,7 @@ type Props = {
   canonicalPath: string;
   lang?: string;
   image?: string;
-  jsonLd?: unknown;
+  jsonLd?: unknown | unknown[];
   alternates?: Array<{ lang: string; path: string }>;
 };
 
@@ -20,6 +20,7 @@ const {
 } = Astro.props;
 const canonicalUrl = new URL(canonicalPath, Astro.site);
 const imageUrl = image ? new URL(image, Astro.site) : undefined;
+const jsonLdItems = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
 ---
 
 <!doctype html>
@@ -47,7 +48,7 @@ const imageUrl = image ? new URL(image, Astro.site) : undefined;
     <meta name="twitter:description" content={description} />
     {imageUrl && <meta name="twitter:image" content={imageUrl} />}
     <slot name="head" />
-    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    {jsonLdItems.map((item) => <script type="application/ld+json" set:html={JSON.stringify(item)} />)}
   </head>
   <body>
     <slot />

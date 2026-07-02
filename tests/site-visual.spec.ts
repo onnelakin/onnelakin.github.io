@@ -131,15 +131,38 @@ test.describe('site layout', () => {
     expect(structuredData['@type']).toBe('SoftwareApplication');
     expect(structuredData.name).toBe('TagWeaver');
     expect(structuredData.applicationCategory).toBe('UtilitiesApplication');
+    expect(structuredData.screenshot.length).toBeGreaterThan(0);
+    expect(structuredData.installUrl).toContain('https://apps.apple.com/us/app/id6759609875?l=en-US');
+    expect(structuredData.privacyPolicy).toBe('https://onnelakin.github.io/tagweaver-privacy-policy/');
     expect(structuredData.publisher.name).toBe('ONNELLAB');
 
     const sitemapResponse = await page.request.get('/sitemap.xml');
     expect(sitemapResponse.ok()).toBe(true);
+    expect(sitemapResponse.headers()['content-type']).toMatch(/(?:application|text)\/xml/);
     expect(await sitemapResponse.text()).toContain('https://onnelakin.github.io/apps/tagweaver/');
 
     const robotsResponse = await page.request.get('/robots.txt');
     expect(robotsResponse.ok()).toBe(true);
     expect(await robotsResponse.text()).toContain('Sitemap: https://onnelakin.github.io/sitemap.xml');
+  });
+
+  test('site and collection schema remain crawlable', async ({ page }) => {
+    await page.goto('/');
+    const homeSchemas = await page.locator('script[type="application/ld+json"]').allTextContents();
+    const homeTypes = homeSchemas.map((schema) => JSON.parse(schema)['@type']);
+    expect(homeTypes).toEqual(['Organization', 'WebSite']);
+
+    await page.goto('/apps/');
+    const appsSchema = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent()) ?? '{}');
+    expect(appsSchema['@type']).toBe('CollectionPage');
+    expect(appsSchema.mainEntity['@type']).toBe('ItemList');
+    expect(appsSchema.mainEntity.itemListElement.length).toBeGreaterThan(5);
+
+    await page.goto('/privacy/');
+    const privacySchema = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent()) ?? '{}');
+    expect(privacySchema['@type']).toBe('CollectionPage');
+    expect(privacySchema['@id']).toBe('https://onnelakin.github.io/privacy/#privacy-policies');
+    expect(privacySchema.mainEntity.itemListElement.length).toBeGreaterThan(5);
   });
 
   test('single store download action is centered', async ({ page }) => {

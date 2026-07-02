@@ -18,6 +18,7 @@ const featuredApp = releasedAppCards.find((app) => app.title === 'TagWeaver') ??
 const listedAppCards = releasedAppCards;
 const appCardStyle = (app: ProductIndexItem) =>
   `--accent-border: ${app.accent.border}; --accent-bg: ${app.accent.background}; --accent-text: ${app.accent.text};`;
+const siteUrl = new URL('/', Astro.site).toString();
 
 const text =
   locale === 'ko'
@@ -67,6 +68,33 @@ const text =
         switchLabel: '한국어',
         switchHref: '/ko/'
       };
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': new URL('/#organization', Astro.site).toString(),
+  name: 'ONNELLAB',
+  url: siteUrl,
+  description: text.description,
+  email: 'onnellab.app@gmail.com',
+  contactPoint: {
+    '@type': 'ContactPoint',
+    email: 'onnellab.app@gmail.com',
+    contactType: 'customer support',
+    availableLanguage: ['en', 'ko']
+  }
+};
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': new URL('/#website', Astro.site).toString(),
+  name: 'ONNELLAB',
+  url: siteUrl,
+  description: text.description,
+  inLanguage: locale,
+  publisher: {
+    '@id': new URL('/#organization', Astro.site).toString()
+  }
+};
 ---
 
 <BaseLayout
@@ -74,6 +102,7 @@ const text =
   description={text.description}
   canonicalPath={locale === 'ko' ? '/ko/' : '/'}
   lang={locale}
+  jsonLd={[organizationJsonLd, websiteJsonLd]}
   alternates={[
     { lang: 'en', path: '/' },
     { lang: 'ko', path: '/ko/' },

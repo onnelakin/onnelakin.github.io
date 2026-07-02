@@ -70,13 +70,36 @@ const text =
         switchHref: '/privacy/ko/',
         homeHref: '/'
       };
+const canonicalPath = locale === 'ko' ? '/privacy/ko/' : '/privacy/';
+const collectionJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': new URL(`${canonicalPath}#privacy-policies`, Astro.site).toString(),
+  name: text.title,
+  description: text.description,
+  url: new URL(canonicalPath, Astro.site).toString(),
+  inLanguage: locale,
+  isPartOf: {
+    '@id': new URL('/#website', Astro.site).toString()
+  },
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: policies.map((policy, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: `${policy.title} Privacy Policy`,
+      url: policy.href
+    }))
+  }
+};
 ---
 
 <BaseLayout
   title={text.title}
   description={text.description}
-  canonicalPath={locale === 'ko' ? '/privacy/ko/' : '/privacy/'}
+  canonicalPath={canonicalPath}
   lang={locale}
+  jsonLd={collectionJsonLd}
   alternates={[
     { lang: 'en', path: '/privacy/' },
     { lang: 'ko', path: '/privacy/ko/' },

@@ -61,20 +61,30 @@ const localizedGooglePlayUrl = (url: string | undefined, locale: ProductPageData
 };
 const appStoreUrl = localizedAppStoreUrl(meta.appstore, data.locale);
 const googlePlayUrl = localizedGooglePlayUrl(meta.googleplay, data.locale);
+const storeUrls = [appStoreUrl, googlePlayUrl].filter(Boolean);
+const screenshotUrls = data.screenshotPaths.map((screenshotPath) =>
+  new URL(screenshotPath, Astro.site).toString()
+);
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
+  '@id': `${canonicalUrl.toString()}#softwareapplication`,
   name: meta.title,
+  url: canonicalUrl.toString(),
   operatingSystem: meta.platforms.join(', '),
   applicationCategory: 'UtilitiesApplication',
   applicationSubCategory: copy.android.name || copy.ios.name,
   description: data.seoDescription,
   inLanguage: data.locale,
   image: iconUrl.toString(),
-  downloadUrl: [appStoreUrl, googlePlayUrl].filter(Boolean),
-  sameAs: [appStoreUrl, googlePlayUrl].filter(Boolean),
+  ...(screenshotUrls.length > 0 ? { screenshot: screenshotUrls } : {}),
+  downloadUrl: storeUrls,
+  installUrl: storeUrls,
+  sameAs: storeUrls,
+  softwareHelp: `mailto:${meta.supportEmail}`,
   publisher: {
     '@type': 'Organization',
+    '@id': new URL('/#organization', Astro.site).toString(),
     name: 'ONNELLAB',
     url: new URL('/', Astro.site).toString()
   },
@@ -84,11 +94,12 @@ const jsonLd = {
           '@type': 'Offer',
           price: meta.price,
           ...(offerPriceCurrency ? { priceCurrency: offerPriceCurrency } : {}),
-          ...(meta.pricing ? { description: meta.pricing } : {})
+          ...(meta.pricing ? { description: meta.pricing } : {}),
+          url: canonicalUrl.toString()
         }
       }
     : {}),
-  url: canonicalUrl.toString()
+  privacyPolicy: meta.privacy
 };
 ---
 

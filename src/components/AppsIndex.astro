@@ -53,13 +53,36 @@ const text =
         switchHref: '/apps/ko/',
         homeHref: '/'
       };
+const canonicalPath = locale === 'ko' ? '/apps/ko/' : '/apps/';
+const collectionJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': new URL(`${canonicalPath}#collection`, Astro.site).toString(),
+  name: text.title,
+  description: text.description,
+  url: new URL(canonicalPath, Astro.site).toString(),
+  inLanguage: locale,
+  isPartOf: {
+    '@id': new URL('/#website', Astro.site).toString()
+  },
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: apps.map((app, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: app.title,
+      url: new URL(app.href, Astro.site).toString()
+    }))
+  }
+};
 ---
 
 <BaseLayout
   title={text.title}
   description={text.description}
-  canonicalPath={locale === 'ko' ? '/apps/ko/' : '/apps/'}
+  canonicalPath={canonicalPath}
   lang={locale}
+  jsonLd={collectionJsonLd}
   alternates={[
     { lang: 'en', path: '/apps/' },
     { lang: 'ko', path: '/apps/ko/' },
