@@ -269,7 +269,7 @@ test.describe('site layout', () => {
       const matrix = transform === 'none' ? new DOMMatrixReadOnly() : new DOMMatrixReadOnly(transform);
       return { a: matrix.a, e: matrix.e, f: matrix.f };
     });
-    expect(focusedMatrix.a).toBe(1.1);
+    expect(focusedMatrix.a).toBe(1.08);
     expect(Math.abs(focusedMatrix.e)).toBeGreaterThan(20);
     expect(Math.abs(focusedMatrix.f)).toBeGreaterThan(20);
 
@@ -296,7 +296,7 @@ test.describe('site layout', () => {
       const transform = getComputedStyle(image).transform;
       return transform === 'none' ? 1 : new DOMMatrixReadOnly(transform).a;
     });
-    expect(wheelZoomScale).toBeCloseTo(1.2, 5);
+    expect(wheelZoomScale).toBeCloseTo(1.18, 5);
 
     for (let index = 0; index < 8; index += 1) {
       await page.locator('[data-viewer-stage]').dispatchEvent('wheel', {
@@ -404,7 +404,7 @@ test.describe('site layout', () => {
       const transform = getComputedStyle(image).transform;
       return transform === 'none' ? 1 : new DOMMatrixReadOnly(transform).a;
     });
-    expect(pinchZoomScale).toBeCloseTo(1.17, 5);
+    expect(pinchZoomScale).toBeCloseTo(1.14, 5);
     await expect(page.locator('[data-viewer-image]')).toHaveAttribute('data-zoomed', 'true');
     const closeBox = await page.locator('[data-viewer-close]').boundingBox();
     const viewport = page.viewportSize();
