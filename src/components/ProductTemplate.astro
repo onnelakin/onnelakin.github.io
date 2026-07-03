@@ -15,7 +15,7 @@ const labels =
         platforms: '지원 플랫폼',
         appStore: 'App Store',
         googlePlay: 'Google Play',
-        privacy: 'Privacy Policy',
+        privacy: '개인정보 처리방침',
         footerPrivacy: '개인정보 처리방침',
         support: '문의하기',
         download: '다운로드',
@@ -194,7 +194,7 @@ const jsonLd = {
       <details class="screens-band" open>
         <summary>{labels.screens}</summary>
         <div class="screenshot-row">
-          {data.screenshotPaths.slice(0, 3).map((screenshotPath, index) => (
+          {data.screenshotPaths.map((screenshotPath, index) => (
             <figure>
               <a
                 class="screenshot-link"
@@ -229,7 +229,7 @@ const jsonLd = {
               <button class="viewer-nav viewer-next" type="button" data-viewer-next aria-label="Next">›</button>
             </div>
             <div class="viewer-thumbs" aria-label={labels.screens}>
-              {data.screenshotPaths.slice(0, 3).map((screenshotPath, index) => (
+              {data.screenshotPaths.map((screenshotPath, index) => (
                 <button
                   class="viewer-thumb"
                   type="button"
@@ -568,7 +568,7 @@ const jsonLd = {
     display: grid;
     gap: 8px;
     margin-left: 152px;
-    width: min(100%, 298px);
+    width: min(100%, 430px);
     z-index: 1;
   }
 
@@ -599,6 +599,7 @@ const jsonLd = {
     text-decoration: none;
     font-weight: 600;
     white-space: nowrap;
+    font-size: 14px;
   }
 
   .support-links a:hover,
@@ -620,6 +621,8 @@ const jsonLd = {
     color: #4a453d;
     text-decoration: none;
     font-weight: 600;
+    white-space: nowrap;
+    font-size: 14px;
   }
 
   .button.primary {
@@ -949,8 +952,8 @@ const jsonLd = {
   }
 
   .viewer-image-stage img[data-zoomed="true"] {
-    max-width: none;
-    max-height: none;
+    max-width: 100%;
+    max-height: calc(100vh - 194px);
     cursor: grab;
   }
 
@@ -1222,30 +1225,17 @@ const jsonLd = {
     }
 
     .support-links {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      padding-top: 1px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      padding-top: 0;
     }
 
-    .support-links a {
-      min-height: auto;
-      width: auto;
-      border: 0;
-      border-radius: 0;
-      padding: 2px 0;
-      background: transparent;
-      color: #746d62;
+    .support-links a,
+    .button {
+      min-height: 40px;
+      padding: 8px 9px;
       font-size: 13px;
-      font-weight: 560;
-      text-decoration: underline;
-      text-decoration-color: rgba(185, 173, 157, 0.58);
-      text-underline-offset: 4px;
-    }
-
-    .support-links a:hover,
-    .support-links a:focus-visible {
-      background: transparent;
+      line-height: 1.2;
     }
 
     .meta-list {
@@ -1395,6 +1385,10 @@ const jsonLd = {
     }
 
     .viewer-image-stage img {
+      max-height: calc(100dvh - 96px);
+    }
+
+    .viewer-image-stage img[data-zoomed="true"] {
       max-height: calc(100dvh - 96px);
     }
 
