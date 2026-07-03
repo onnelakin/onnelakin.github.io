@@ -67,6 +67,7 @@ export type ProductIndexItem = {
   screenshotPath?: string;
   href: string;
   privacy: string;
+  hasStoreListing: boolean;
   accent: ProductAccent;
 };
 
@@ -161,6 +162,7 @@ export function getProductIndexItems(locale: Locale): ProductIndexItem[] {
       screenshotPath: getScreenshotRoutePaths(source, locale)[0],
       href: locale === 'en' ? `/apps/${source.slug}/` : `/apps/${source.slug}/ko/`,
       privacy: source.meta.privacy,
+      hasStoreListing: Boolean(source.meta.appstore || source.meta.googleplay),
       accent: productAccent(source)
     };
   });

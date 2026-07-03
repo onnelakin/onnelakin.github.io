@@ -8,12 +8,14 @@ type Props = {
 
 const { locale } = Astro.props;
 const contentApps = getProductIndexItems(locale);
-const releasedApps = ['Quivra', 'TagWeaver', 'VaultXT', 'Segra', 'ClipNest', 'Aligna'].sort(
-  (a, b) => a.localeCompare(b)
-);
-const releasedAppCards = releasedApps
-  .map((name) => contentApps.find((app) => app.title === name))
-  .filter((app): app is ProductIndexItem => app !== undefined);
+const homeReleasedAppOrder = ['Aligna', 'ClipNest', 'Quivra', 'Segra', 'TagWeaver', 'VaultXT'];
+const homeReleasedAppNames = new Set(homeReleasedAppOrder);
+const releasedAppCards = contentApps
+  .filter(
+    (app): app is ProductIndexItem =>
+      app.status === 'Released' && app.hasStoreListing && homeReleasedAppNames.has(app.title)
+  )
+  .sort((a, b) => homeReleasedAppOrder.indexOf(a.title) - homeReleasedAppOrder.indexOf(b.title));
 const featuredApp = releasedAppCards.find((app) => app.title === 'TagWeaver') ?? releasedAppCards[0];
 const listedAppCards = releasedAppCards.slice(0, 4);
 const appCardStyle = (app: ProductIndexItem) =>
