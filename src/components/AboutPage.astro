@@ -49,9 +49,9 @@ const canonicalPath = isKo ? '/about/ko/' : '/about/';
 const timelineItems = [
   { date: '2026.03.30', displayDate: '2026.03', app: 'TagWeaver', summary: isKo ? 'MP3 태그 편집기' : 'MP3 tag editor' },
   { date: '2026.04.02', displayDate: '2026.04', app: 'Quivra', summary: isKo ? '미디어 변환기' : 'media converter' },
-  { date: '2026.04.24', displayDate: '2026.04', app: 'VaultXT', summary: isKo ? '대용량 TXT 편집기' : 'large TXT editor' },
+  { date: '2026.04.24', displayDate: '2026.04', repeatedMonth: true, app: 'VaultXT', summary: isKo ? '대용량 TXT 편집기' : 'large TXT editor' },
   { date: '2026.06.25', displayDate: '2026.06', app: 'ClipNest', summary: isKo ? '클립보드 기록' : 'clipboard history' },
-  { date: '2026.06.30', displayDate: '2026.06', app: 'Aligna', summary: isKo ? '일괄 파일명 정리' : 'batch file renamer' },
+  { date: '2026.06.30', displayDate: '2026.06', repeatedMonth: true, app: 'Aligna', summary: isKo ? '일괄 파일명 정리' : 'batch file renamer' },
   { date: '2026.07.01', displayDate: '2026.07', app: 'Segra', summary: isKo ? '오디오 자르기와 병합' : 'audio cutter and merger' }
 ];
 const organizationJsonLd = {
@@ -107,7 +107,9 @@ const organizationJsonLd = {
       <ol class="timeline">
         {timelineItems.map((item) => (
           <li>
-            <time datetime={item.date.replace(/\./g, '-')}>{item.displayDate}</time>
+            <time class:list={[item.repeatedMonth && 'is-repeated']} datetime={item.date.replace(/\./g, '-')}>
+              {item.displayDate}
+            </time>
             <div>
               <span>{item.app} {text.eventLabel}</span>
               <p>{item.summary}</p>
@@ -224,7 +226,7 @@ const organizationJsonLd = {
 
   .contact-block p {
     margin: 0;
-    color: #81786b;
+    color: #70695e;
     font-size: 14px;
     line-height: 1.5;
   }
@@ -258,7 +260,7 @@ const organizationJsonLd = {
 
   .timeline {
     display: grid;
-    gap: 12px;
+    gap: 15px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -269,8 +271,8 @@ const organizationJsonLd = {
     grid-template-columns: 116px minmax(0, 1fr);
     gap: 20px;
     align-items: baseline;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #e8e0d4;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(232, 224, 212, 0.82);
   }
 
   .timeline time {
@@ -279,10 +281,14 @@ const organizationJsonLd = {
     font-variant-numeric: tabular-nums;
   }
 
+  .timeline time.is-repeated {
+    color: #aaa196;
+  }
+
   .timeline span {
     color: #37332f;
     font-size: 20px;
-    font-weight: 650;
+    font-weight: 620;
   }
 
   .timeline p {
@@ -315,10 +321,17 @@ const organizationJsonLd = {
     .timeline li {
       grid-template-columns: 96px minmax(0, 1fr);
       gap: 16px;
+      padding-bottom: 14px;
     }
 
     .timeline span {
       font-size: 18px;
+    }
+
+    .contact-block {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 8px;
     }
   }
 </style>
