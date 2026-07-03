@@ -194,7 +194,7 @@ const jsonLd = {
       <details class="screens-band" open>
         <summary>{labels.screens}</summary>
         <div class="screenshot-row">
-          {data.screenshotPaths.map((screenshotPath, index) => (
+          {data.screenshotPaths.slice(0, 3).map((screenshotPath, index) => (
             <figure>
               <a
                 class="screenshot-link"
@@ -229,7 +229,7 @@ const jsonLd = {
               <button class="viewer-nav viewer-next" type="button" data-viewer-next aria-label="Next">›</button>
             </div>
             <div class="viewer-thumbs" aria-label={labels.screens}>
-              {data.screenshotPaths.map((screenshotPath, index) => (
+              {data.screenshotPaths.slice(0, 3).map((screenshotPath, index) => (
                 <button
                   class="viewer-thumb"
                   type="button"
