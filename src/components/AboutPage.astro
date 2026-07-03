@@ -10,16 +10,18 @@ const { locale } = Astro.props;
 const isKo = locale === 'ko';
 const text = isKo
   ? {
-      title: 'About ONNELLAB',
+      title: 'ONNELLAB 소개',
       description: 'ONNELLAB은 한국에서 조용하고 신중한 유틸리티 앱을 만드는 독립 앱 스튜디오입니다.',
-      heading: 'About ONNELLAB',
+      heading: 'ONNELLAB 소개',
+      studioLabel: '독립 앱 스튜디오',
       intro: [
-        'Independent app studio from Korea.',
-        'Focused on thoughtful utilities and offline-first apps.',
+        '한국에서 시작한 독립 앱 스튜디오입니다.',
+        '신중하게 설계한 유틸리티와 오프라인 중심 앱에 집중합니다.',
         'Flutter • iOS • Android'
       ],
-      timeline: 'Timeline',
-      contact: 'Contact',
+      timeline: '타임라인',
+      eventLabel: '출시',
+      contact: '문의',
       homeHref: '/ko/',
       switchHref: '/about/',
       switchLabel: 'English'
@@ -28,12 +30,14 @@ const text = isKo
       title: 'About ONNELLAB',
       description: 'ONNELLAB is an independent app studio from Korea focused on thoughtful utilities and offline-first apps.',
       heading: 'About ONNELLAB',
+      studioLabel: 'Independent App Studio',
       intro: [
         'Independent app studio from Korea.',
         'Focused on thoughtful utilities and offline-first apps.',
         'Flutter • iOS • Android'
       ],
       timeline: 'Timeline',
+      eventLabel: 'launch',
       contact: 'Contact',
       homeHref: '/',
       switchHref: '/about/ko/',
@@ -85,7 +89,7 @@ const organizationJsonLd = {
     </nav>
 
     <section class="about-hero" aria-labelledby="about-title">
-      <p class="studio-label">Independent App Studio</p>
+      <p class="studio-label">{text.studioLabel}</p>
       <h1 id="about-title">{text.heading}</h1>
       <div class="intro-lines">
         {text.intro.map((line) => <p>{line}</p>)}
@@ -99,7 +103,7 @@ const organizationJsonLd = {
         {timelineItems.map((item) => (
           <li>
             <time datetime={item.date.replace(/\./g, '-')}>{item.date}</time>
-            <span>{item.app}</span>
+            <span>{item.app} {text.eventLabel}</span>
           </li>
         ))}
       </ol>
