@@ -15,12 +15,13 @@ const text = isKo
       heading: 'ONNELLAB 소개',
       studioLabel: 'Independent App Studio',
       intro: [
-        '한국에서 시작한 독립 앱 스튜디오입니다.',
-        '신중하게 만든 유틸리티와 오프라인에서도 바로 쓸 수 있는 앱에 집중합니다.',
+        '한국에서 조용한 유틸리티 앱을 만듭니다.',
+        '신중하게 설계하고, 오프라인에서도 바로 쓸 수 있게 만듭니다.',
         'Flutter • iOS • Android'
       ],
       timeline: '타임라인',
       eventLabel: '출시',
+      closing: 'ONNELLAB은 작고 오래 쓰는 도구를 계속 만듭니다.',
       contact: '문의하기',
       homeHref: '/ko/',
       switchHref: '/about/',
@@ -33,12 +34,13 @@ const text = isKo
       heading: 'About ONNELLAB',
       studioLabel: 'Independent App Studio',
       intro: [
-        'Independent app studio from Korea.',
-        'Focused on thoughtful utilities and offline-first apps.',
+        'Quiet utility apps from Korea.',
+        'Thoughtfully built to work offline, simply and reliably.',
         'Flutter • iOS • Android'
       ],
       timeline: 'Timeline',
       eventLabel: 'launch',
+      closing: 'ONNELLAB continues to build small tools made to last.',
       contact: 'Contact',
       homeHref: '/',
       switchHref: '/about/ko/',
@@ -117,6 +119,7 @@ const organizationJsonLd = {
           </li>
         ))}
       </ol>
+      <p class="closing-line">{text.closing}</p>
     </section>
   </main>
 </BaseLayout>
@@ -219,7 +222,7 @@ const organizationJsonLd = {
     margin-top: 28px;
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
     flex-wrap: wrap;
   }
 
@@ -245,7 +248,7 @@ const organizationJsonLd = {
     left: 180px;
     bottom: 0;
     width: 1px;
-    background: linear-gradient(180deg, rgba(185, 173, 157, 0.44), rgba(250, 248, 245, 0));
+    background: linear-gradient(180deg, rgba(185, 173, 157, 0.28), rgba(250, 248, 245, 0));
   }
 
   h2 {
@@ -259,7 +262,7 @@ const organizationJsonLd = {
 
   .timeline {
     display: grid;
-    gap: 15px;
+    gap: 17px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -270,13 +273,13 @@ const organizationJsonLd = {
     grid-template-columns: 116px minmax(0, 1fr);
     gap: 20px;
     align-items: baseline;
-    padding-bottom: 15px;
-    border-bottom: 1px solid rgba(232, 224, 212, 0.82);
+    padding-bottom: 17px;
+    border-bottom: 1px solid rgba(232, 224, 212, 0.58);
   }
 
   .timeline time {
-    color: #81786b;
-    font-size: 14px;
+    color: #8f8679;
+    font-size: 13px;
     font-variant-numeric: tabular-nums;
   }
 
@@ -287,7 +290,7 @@ const organizationJsonLd = {
   .timeline span {
     color: #37332f;
     font-size: 20px;
-    font-weight: 620;
+    font-weight: 600;
   }
 
   .timeline p {
@@ -295,6 +298,14 @@ const organizationJsonLd = {
     color: #81786b;
     font-size: 14px;
     line-height: 1.45;
+  }
+
+  .closing-line {
+    grid-column: 2;
+    margin: 8px 0 0;
+    color: #5f5a50;
+    font-size: 16px;
+    line-height: 1.65;
   }
 
   @media (max-width: 680px) {
@@ -319,12 +330,23 @@ const organizationJsonLd = {
 
     .timeline li {
       grid-template-columns: 96px minmax(0, 1fr);
-      gap: 16px;
-      padding-bottom: 14px;
+      gap: 15px;
+      padding-bottom: 16px;
     }
 
     .timeline span {
       font-size: 18px;
+      line-height: 1.32;
+    }
+
+    .timeline time {
+      font-size: 12px;
+    }
+
+    .closing-line {
+      grid-column: 1;
+      margin-top: 4px;
+      font-size: 15px;
     }
 
     .contact-block {
