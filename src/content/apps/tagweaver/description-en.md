@@ -1,25 +1,25 @@
 Android
 앱 이름:
-TagWeaver – MP3/FLAC Tag Editor
+TagWeaver MP3 FLAC Tagger
 
 간단한 설명:
-MP3/FLAC tag editor with batch edit, album art & lyrics
+Offline MP3/FLAC tag editor for metadata, rating, album art & lyrics
 
 Landing subtitle:
-MP3/FLAC Tag Editor
+Offline MP3/FLAC Tag Editor
 
 자세한 설명:
-MP3/FLAC Tag Editor
+Offline MP3/FLAC Tag Editor
 
-TagWeaver is a simple and reliable tag editor for MP3 and FLAC audio files.
-You can edit title, artist, album, album artist, track number, disc number, and year directly.
+TagWeaver is an offline MP3/FLAC tag editor for direct control over audio metadata.
+Edit title, artist, album, album artist, track number, disc number, year, genre, composer, and rating without uploading files.
 
 Key Features
 
 * Edit MP3 and FLAC title, artist, album, and album artist
 * MP3 ID3 and FLAC Vorbis Comment support
 * Modify track number, disc number, and year
-* Edit composer and genre
+* Edit composer, genre, and rating
 * Add or remove album art
 * Add or edit lyrics
 * Batch tag editing for multiple files
@@ -31,7 +31,7 @@ Batch saving for multiple files is available with Pro.
 
 Safe Offline Tag Editing
 
-TagWeaver works completely offline.
+TagWeaver works completely offline and keeps your files on your device.
 
 * No login required
 * No account creation
@@ -40,12 +40,12 @@ TagWeaver works completely offline.
 
 All tag editing is performed locally on your device.
 
-TagWeaver focuses on precise and predictable MP3/FLAC tag editing without unnecessary features.
+TagWeaver focuses on precise and predictable MP3/FLAC metadata editing without automatic library changes.
 
 Landing page:
-TagWeaver lets you inspect and edit MP3/FLAC metadata directly.
+TagWeaver lets you inspect and edit MP3/FLAC metadata, rating, artwork, and lyrics directly.
 
-Update the title, artist, album, track number, year, genre, and other metadata stored inside your music files. Album artwork and lyrics can be managed from the same editing flow.
+Update the title, artist, album, track number, year, genre, rating, and other metadata stored inside your music files. Album artwork and lyrics can be managed from the same editing flow.
 
 TagWeaver does not try to reorganize your library automatically. It saves only the fields you review and change.
 
@@ -54,6 +54,7 @@ Supported editing
 • Edit tag fields
 • Manage album artwork
 • Add or edit lyrics
+• Edit rating metadata
 • MP3 ID3 support
 • FLAC Vorbis Comment support
 • Multiple-file selection
@@ -65,16 +66,16 @@ All editing happens on your device. There is no login, account creation, file up
 
 ios
 앱 이름:
-TagWeaver – MP3/FLAC Tag Editor
+TagWeaver MP3 FLAC Tagger
 
 부제:
-Edit tags. No automation.
+Edit audio tags offline
 
 프로모션 텍스트:
-Edit MP3/FLAC tags your way. Clean, organize, and update metadata, artwork, and lyrics in one place.
+Edit MP3/FLAC metadata, rating, album art, and lyrics offline with manual save control.
 
 설명:
-TagWeaver is a focused MP3/FLAC tag editor.
+TagWeaver is a focused offline MP3/FLAC tag editor.
 
 Edit the metadata of your existing MP3 and FLAC files clearly and safely.
 No automation. No cloud syncing. Just direct control.
@@ -88,12 +89,14 @@ What you can edit
 • Track and Disc number
 • Year
 • Composer and Genre
+• Rating
 
 TagWeaver also supports:
 
 • MP3 ID3 / FLAC Vorbis Comment
 • Album artwork (add or remove)
 • Lyrics editing
+• Rating metadata
 • Extended tag fields
 
 Batch editing
@@ -118,4 +121,4 @@ TagWeaver does not automatically organize your music.
 It lets you see what’s inside your files — and change only what you choose.
 
 키워드:
-mp3,flac,tag,id3,vorbis comment,metadata,album art,lyrics,music editor,audio tags,offline editor
+mp3,flac,tag,id3,metadata,rating,album art,lyrics,audio tags,offline editor,tagger
