@@ -22,6 +22,26 @@ const canonicalUrl = new URL(canonicalPath, Astro.site);
 const imageUrl = image ? new URL(image, Astro.site) : undefined;
 const faviconUrl = imageUrl ?? new URL('/app-assets/quivra/assets/icon/quivra.png', Astro.site);
 const jsonLdItems = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
+const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID?.trim();
+const gaScript = gaMeasurementId
+  ? `
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){window.dataLayer.push(arguments);}
+    window.gtag = window.gtag || gtag;
+    gtag('js', new Date());
+    gtag('config', ${JSON.stringify(gaMeasurementId)}, {
+      anonymize_ip: true,
+      send_page_view: true
+    });
+    window.onnelTrack = (eventName, params = {}) => {
+      if (!eventName || typeof window.gtag !== 'function') return;
+      window.gtag('event', eventName, {
+        transport_type: 'beacon',
+        ...params
+      });
+    };
+  `
+  : '';
 ---
 
 <!doctype html>
@@ -50,6 +70,8 @@ const jsonLdItems = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
     {imageUrl && <meta name="twitter:image" content={imageUrl} />}
     <slot name="head" />
     {jsonLdItems.map((item) => <script type="application/ld+json" set:html={JSON.stringify(item)} />)}
+    {gaMeasurementId && <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}></script>}
+    {gaMeasurementId && <script is:inline set:html={gaScript}></script>}
   </head>
   <body>
     <slot />
@@ -62,6 +84,11 @@ const jsonLdItems = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
           const link = target.closest('a[data-locale-choice]');
           const locale = link?.getAttribute('data-locale-choice');
           if (!locale) return;
+          window.onnelTrack?.('language_switch', {
+            from_locale: document.documentElement.lang || '',
+            to_locale: locale,
+            page_path: window.location.pathname
+          });
           try {
             window.localStorage.setItem(preferenceKey, locale);
           } catch {

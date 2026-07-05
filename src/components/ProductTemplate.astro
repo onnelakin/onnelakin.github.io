@@ -80,12 +80,15 @@ const jsonLd = {
   '@id': `${canonicalUrl.toString()}#softwareapplication`,
   name: meta.title,
   url: canonicalUrl.toString(),
+  mainEntityOfPage: canonicalUrl.toString(),
   operatingSystem: meta.platforms.join(', '),
   applicationCategory: 'UtilitiesApplication',
   applicationSubCategory: copy.android.name || copy.ios.name,
   description: data.seoDescription,
   inLanguage: data.locale,
   image: iconUrl.toString(),
+  isAccessibleForFree: true,
+  ...(heroSignals.length > 0 ? { featureList: heroSignals } : {}),
   ...(screenshotUrls.length > 0 ? { screenshot: screenshotUrls } : {}),
   downloadUrl: storeUrls,
   installUrl: storeUrls,
@@ -125,7 +128,7 @@ const jsonLd = {
     { lang: 'x-default', path: enPath }
   ]}
 >
-  <main class="page-shell" style={pageStyle}>
+  <main class="page-shell" style={pageStyle} data-product-slug={data.source.slug} data-product-locale={data.locale}>
     <header class="topbar" aria-label="ONNELLAB">
       <a class="brand" href={homePath}>ONNELLAB</a>
       <a class="language" href={data.alternatePath} data-locale-choice={data.locale === 'ko' ? 'en' : 'ko'}>{labels.switchLabel}</a>
@@ -155,8 +158,8 @@ const jsonLd = {
 
       <div class="hero-actions">
         <div class="actions store-actions" aria-label={labels.stores}>
-          <a class="button primary" href={appStoreUrl}>{labels.appStore}</a>
-          {googlePlayUrl && <a class="button primary" href={googlePlayUrl}>{labels.googlePlay}</a>}
+          <a class="button primary" href={appStoreUrl} data-store-link data-store="app_store">{labels.appStore}</a>
+          {googlePlayUrl && <a class="button primary" href={googlePlayUrl} data-store-link data-store="google_play">{labels.googlePlay}</a>}
         </div>
         <div class="support-links" aria-label="Contact links">
           <a href={privacyUrl}>{labels.privacy}</a>
@@ -263,8 +266,8 @@ const jsonLd = {
     <section class="download-band" aria-label={labels.download}>
       <p class="eyebrow">{labels.download}</p>
       <div class="actions compact" aria-label={labels.stores}>
-        <a class="button primary" href={appStoreUrl}>{labels.appStore}</a>
-        {googlePlayUrl && <a class="button primary" href={googlePlayUrl}>{labels.googlePlay}</a>}
+        <a class="button primary" href={appStoreUrl} data-store-link data-store="app_store">{labels.appStore}</a>
+        {googlePlayUrl && <a class="button primary" href={googlePlayUrl} data-store-link data-store="google_play">{labels.googlePlay}</a>}
       </div>
     </section>
 
@@ -1467,6 +1470,23 @@ const jsonLd = {
 </style>
 
 <script>
+  const productRoot = document.querySelector('[data-product-slug]');
+  const productSlug = productRoot?.getAttribute('data-product-slug') || '';
+  const productLocale = productRoot?.getAttribute('data-product-locale') || document.documentElement.lang || '';
+  const trackProductEvent = (eventName, params = {}) => {
+    window.onnelTrack?.(eventName, {
+      app: productSlug,
+      locale: productLocale,
+      page_path: window.location.pathname,
+      ...params
+    });
+  };
+  document.querySelectorAll('[data-store-link]').forEach((link) => {
+    link.addEventListener('click', () => {
+      trackProductEvent('store_click', { store: link.getAttribute('data-store') || '' });
+    });
+  });
+
   const screenshotLinks = Array.from(document.querySelectorAll('[data-screenshot-link]'));
   const viewer = document.querySelector('.screenshot-viewer');
   const viewerImage = document.querySelector('[data-viewer-image]');
@@ -1585,6 +1605,7 @@ const jsonLd = {
     if (!viewerImage || !viewerStage) return;
     if (viewerZoom > minViewerZoom) {
       resetViewerZoom();
+      trackProductEvent('screenshot_zoom_reset', { screenshot_index: currentScreenshotIndex + 1 });
       return;
     }
     const imageRect = viewerImage.getBoundingClientRect();
@@ -1597,6 +1618,10 @@ const jsonLd = {
     viewerPanX = stageCenterX - imageCenterX - (clientX - imageCenterX) * clickViewerZoom;
     viewerPanY = stageCenterY - imageCenterY - (clientY - imageCenterY) * clickViewerZoom;
     applyViewerZoom();
+    trackProductEvent('screenshot_zoom', {
+      screenshot_index: currentScreenshotIndex + 1,
+      zoom: clickViewerZoom
+    });
   };
 
   const getTouchDistance = (touches) => {
@@ -1633,6 +1658,7 @@ const jsonLd = {
     if (!viewer || typeof viewer.showModal !== 'function') return;
     setViewerImage(index);
     viewer.showModal();
+    trackProductEvent('screenshot_open', { screenshot_index: currentScreenshotIndex + 1 });
     closeButton?.focus({ preventScroll: true });
   };
 
@@ -1650,8 +1676,14 @@ const jsonLd = {
   });
 
   closeButton?.addEventListener('click', closeViewer);
-  prevButton?.addEventListener('click', () => setViewerImage(currentScreenshotIndex - 1));
-  nextButton?.addEventListener('click', () => setViewerImage(currentScreenshotIndex + 1));
+  prevButton?.addEventListener('click', () => {
+    setViewerImage(currentScreenshotIndex - 1);
+    trackProductEvent('screenshot_previous', { screenshot_index: currentScreenshotIndex + 1 });
+  });
+  nextButton?.addEventListener('click', () => {
+    setViewerImage(currentScreenshotIndex + 1);
+    trackProductEvent('screenshot_next', { screenshot_index: currentScreenshotIndex + 1 });
+  });
   viewerImage?.addEventListener('mousedown', (event) => {
     if (!viewer?.open || !viewerImage) return;
     didDragImage = false;
@@ -1786,6 +1818,9 @@ const jsonLd = {
       ) {
         event.preventDefault();
         setViewerImage(currentScreenshotIndex + (direction < 0 ? 1 : -1));
+        trackProductEvent(direction < 0 ? 'screenshot_next' : 'screenshot_previous', {
+          screenshot_index: currentScreenshotIndex + 1
+        });
         suppressNextViewerClick = true;
         window.setTimeout(() => {
           suppressNextViewerClick = false;
@@ -1811,6 +1846,9 @@ const jsonLd = {
     if (Math.abs(deltaX) >= swipeThreshold && Math.abs(deltaX) > Math.abs(deltaY) * 1.25) {
       event.preventDefault();
       setViewerImage(currentScreenshotIndex + (deltaX < 0 ? 1 : -1));
+      trackProductEvent(deltaX < 0 ? 'screenshot_next' : 'screenshot_previous', {
+        screenshot_index: currentScreenshotIndex + 1
+      });
       suppressNextViewerClick = true;
       window.setTimeout(() => {
         suppressNextViewerClick = false;
@@ -1832,7 +1870,10 @@ const jsonLd = {
     setViewerZoomAtPoint(targetZoom, event.clientX, event.clientY);
   }, { passive: false });
   thumbnailButtons.forEach((button, index) => {
-    button.addEventListener('click', () => setViewerImage(index));
+    button.addEventListener('click', () => {
+      setViewerImage(index);
+      trackProductEvent('screenshot_select', { screenshot_index: currentScreenshotIndex + 1 });
+    });
   });
 
   viewer?.addEventListener('click', (event) => {
@@ -1841,7 +1882,13 @@ const jsonLd = {
 
   document.addEventListener('keydown', (event) => {
     if (!viewer?.open) return;
-    if (event.key === 'ArrowLeft') setViewerImage(currentScreenshotIndex - 1);
-    if (event.key === 'ArrowRight') setViewerImage(currentScreenshotIndex + 1);
+    if (event.key === 'ArrowLeft') {
+      setViewerImage(currentScreenshotIndex - 1);
+      trackProductEvent('screenshot_previous', { screenshot_index: currentScreenshotIndex + 1 });
+    }
+    if (event.key === 'ArrowRight') {
+      setViewerImage(currentScreenshotIndex + 1);
+      trackProductEvent('screenshot_next', { screenshot_index: currentScreenshotIndex + 1 });
+    }
   });
 </script>

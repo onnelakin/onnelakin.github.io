@@ -59,6 +59,8 @@ const text =
         empty: '일치하는 앱이 없습니다.',
         updated: '작성 날짜',
         home: 'ONNELLAB',
+        noticeTitle: '사이트 이용 분석',
+        noticeBody: 'ONNELLAB 웹사이트는 서비스 개선을 위해 Google Analytics가 설정된 경우에만 페이지 방문, 언어 전환, 스토어 이동, 스크린샷 열람 같은 집계 이벤트를 측정할 수 있습니다. 앱 안의 파일 내용, 태그 값, 계정 정보는 수집하지 않습니다.',
         switchLabel: 'English',
         switchHref: '/privacy/',
         homeHref: '/ko/'
@@ -72,6 +74,8 @@ const text =
         empty: 'No matching apps.',
         updated: 'Policy date',
         home: 'ONNELLAB',
+        noticeTitle: 'Website analytics',
+        noticeBody: 'When Google Analytics is configured, the ONNELLAB website may measure aggregate events such as page visits, language switches, store clicks, and screenshot opens to improve the site. It does not collect app file contents, tag values, or account information.',
         switchLabel: '한국어',
         switchHref: '/privacy/ko/',
         homeHref: '/'
@@ -129,6 +133,11 @@ const collectionJsonLd = {
     </label>
 
     <p class="empty-state" data-policy-empty hidden>{text.empty}</p>
+
+    <section class="privacy-notice" aria-labelledby="privacy-analytics-title">
+      <h2 id="privacy-analytics-title">{text.noticeTitle}</h2>
+      <p>{text.noticeBody}</p>
+    </section>
 
     <section class="policy-list" aria-label={text.heading}>
       {policies.map((policy) => (
@@ -254,6 +263,28 @@ const collectionJsonLd = {
     background:
       linear-gradient(180deg, rgba(255, 253, 248, 0.78), rgba(255, 253, 248, 0.2)),
       transparent;
+  }
+
+  .privacy-notice {
+    width: min(100%, 820px);
+    border-top: 1px solid #e0d8cb;
+    border-bottom: 1px solid #e0d8cb;
+    margin-top: 18px;
+    padding: 18px 0;
+    color: #5f5a50;
+  }
+
+  .privacy-notice h2 {
+    margin: 0 0 8px;
+    color: #383631;
+    font-size: 17px;
+    line-height: 1.35;
+  }
+
+  .privacy-notice p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.7;
   }
 
   .policy-search {

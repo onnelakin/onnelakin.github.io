@@ -203,10 +203,10 @@ test.describe('site layout', () => {
       'href',
       'https://onnelakin.github.io/apps/tagweaver/'
     );
-    await expect(page).toHaveTitle('TagWeaver - MP3/FLAC Tag Editor');
+    await expect(page).toHaveTitle('TagWeaver - Offline MP3/FLAC Tag Editor');
     await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
       'content',
-      'TagWeaver - MP3/FLAC Tag Editor'
+      'TagWeaver - Offline MP3/FLAC Tag Editor'
     );
     await expect(page.locator('link[rel="icon"]')).toHaveAttribute(
       'href',
@@ -223,7 +223,10 @@ test.describe('site layout', () => {
     const structuredData = JSON.parse(jsonLd ?? '{}');
     expect(structuredData['@type']).toBe('SoftwareApplication');
     expect(structuredData.name).toBe('TagWeaver');
+    expect(structuredData.mainEntityOfPage).toBe('https://onnelakin.github.io/apps/tagweaver/');
     expect(structuredData.applicationCategory).toBe('UtilitiesApplication');
+    expect(structuredData.isAccessibleForFree).toBe(true);
+    expect(structuredData.featureList.length).toBeGreaterThan(0);
     expect(structuredData.screenshot.length).toBeGreaterThan(0);
     expect(structuredData.installUrl).toContain('https://apps.apple.com/us/app/id6759609875?l=en-US');
     expect(structuredData.privacyPolicy).toBe('https://onnelakin.github.io/tagweaver-privacy-policy/');
