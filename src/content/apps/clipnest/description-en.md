@@ -41,14 +41,14 @@ ClipNest keeps copied text ready when you need it again.
 
 Save frequently used messages, addresses, emails, links, and snippets on your device, then paste them from the keyboard without leaving the app you are using.
 
-Pinned items stay easy to reach. Recent copied text can be searched and reused instead of being copied again.
+Pinned items stay easy to reach. Recent copied text stays easy to browse and reuse instead of being copied again.
 
 Core features
 
 • Save copied text
 • Paste from the keyboard
 • Pin frequent text
-• Recent clip search
+• Recent clip browsing
 • Duplicate handling
 • Local storage on your device
 
