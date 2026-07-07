@@ -1,20 +1,20 @@
 ios
 앱 이름:
-ClipNest - Clipboard History
+ClipNest - Clipboard Tool
 
 부제:
-Clipboard History & Paste
+Keyboard Paste & Snippets
 
 Landing subtitle:
-Clipboard History
+Keyboard Paste & Snippets
 
 프로모션 텍스트:
-Clipboard manager with automatic clipboard history, keyboard access, quick paste, and pinned text snippets. Keep copied text organized and ready anytime.
+Save copied text when the keyboard opens, pin important snippets, and paste again fast. Clipboard history stays local on your iPhone and iPad.
 
 설명:
-ClipNest is a clipboard manager for iPhone and iPad.
+ClipNest is a local clipboard tool for iPhone and iPad.
 
-Save clipboard history automatically and access your saved text directly from the keyboard. Keep frequently used messages, addresses, emails, links, and snippets ready whenever you need them.
+When the ClipNest keyboard opens, it checks your current clipboard once and saves new text locally on your device. Reuse copied messages, addresses, emails, links, and short snippets without searching through old apps or notes.
 
 Features
 
@@ -23,7 +23,7 @@ Features
 • Pin important clips
 • Recent clipboard management
 • Automatic duplicate handling
-• Fast browsing and access
+• Fast browsing and reuse
 • Fully local storage
 • No ads
 • No subscription
@@ -32,23 +32,23 @@ ClipNest does not constantly monitor your clipboard.
 
 It checks for new clipboard content when the keyboard is opened and stores it locally on your device. Your data never leaves your device and is never sent to external servers.
 
-Whether you need a clipboard manager, clipboard history, quick paste tool, or text snippets organizer, ClipNest helps you find and reuse copied text faster.
+Whether you need a clipboard tool, quick paste helper, or text snippets organizer, ClipNest helps you reuse copied text faster.
 
 Copy it. Save it. Paste it anytime.
 
 Landing page:
-ClipNest keeps copied text ready when you need it again.
+ClipNest keeps copied text ready when you need to paste it again.
 
-Save frequently used messages, addresses, emails, links, and snippets on your device, then paste them from the keyboard without leaving the app you are using.
+When the ClipNest keyboard opens, it checks your current clipboard once and saves new text locally on your device. Frequently used messages, addresses, emails, links, and snippets stay ready for fast reuse.
 
-Pinned items stay easy to reach. Recent copied text stays easy to browse and reuse instead of being copied again.
+Pinned items stay easy to reach from the keyboard. Recent copied text stays easy to browse and reuse instead of being copied again.
 
 Core features
 
-• Save copied text
+• Save copied text when the keyboard opens
 • Paste from the keyboard
 • Pin frequent text
-• Recent clip browsing
+• Recent clip browsing and reuse
 • Duplicate handling
 • Local storage on your device
 
