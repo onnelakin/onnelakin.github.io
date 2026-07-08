@@ -56,5 +56,15 @@ ClipNest does not constantly monitor your clipboard. It checks for new clipboard
 
 Your saved text is not sent to external servers. There are no accounts, ads, or subscriptions.
 
+FAQ:
+Q: Does ClipNest monitor the clipboard all the time?
+A: No. ClipNest checks the current clipboard once when the keyboard opens and saves new text locally.
+
+Q: Is saved text sent to a server?
+A: No. Saved text stays on your device and is not sent to external servers.
+
+Q: Can I pin frequently used snippets?
+A: Yes. You can pin important text and paste it again quickly from the keyboard.
+
 키워드:
 clipboard,manager,history,paste,keyboard,copy,text,snippets,pasteboard,pin

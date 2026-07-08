@@ -120,5 +120,15 @@ Designed for control
 TagWeaver does not automatically organize your music.
 It lets you see what’s inside your files — and change only what you choose.
 
+FAQ:
+Q: Are files uploaded to a server?
+A: No. TagWeaver edits on your device without login, account creation, or file uploads.
+
+Q: Can it edit both MP3 and FLAC files?
+A: Yes. TagWeaver supports MP3 ID3 tags and FLAC Vorbis Comment tags.
+
+Q: Can I save edits across multiple files?
+A: Multiple-file selection and batch editing are supported. Batch saving for multiple files is available with Pro.
+
 키워드:
 mp3,flac,tag,id3,metadata,rating,album art,lyrics,audio tags,offline editor,tagger

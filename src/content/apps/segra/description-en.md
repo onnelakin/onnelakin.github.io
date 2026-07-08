@@ -70,6 +70,16 @@ When you choose a start and end point, Segra saves the selected section as a new
 
 All processing happens on your device. There is no login, account creation, file upload, advertising, or tracking.
 
+FAQ:
+Q: Are original audio files modified?
+A: No. Segra saves trimmed sections and merged results as new files, leaving originals untouched.
+
+Q: What audio tasks are supported?
+A: Segra supports trimming MP3 and WAV files, merging audio files, and creating MP4 videos from audio and images.
+
+Q: Are files uploaded to a server?
+A: No. Processing happens on your device without login, account creation, or file uploads.
+
 ios
 앱 이름:
 Segra - Audio Cutter & Merger

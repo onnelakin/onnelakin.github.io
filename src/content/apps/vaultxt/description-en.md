@@ -56,6 +56,16 @@ VaultXT focuses on the basic editing flow: open the file, edit the text, keep th
 
 There are no accounts, ads, or tracking. File contents are not sent to external servers.
 
+FAQ:
+Q: Can VaultXT open large TXT files?
+A: Yes. VaultXT focuses on opening and editing large TXT files, long documents, logs, drafts, and exported text data.
+
+Q: How are edits kept recoverable?
+A: VaultXT is designed around autosave, undo, and snapshots so editing work can be recovered.
+
+Q: Is file content sent to a server?
+A: No. File contents are not sent to external servers and are processed on your device.
+
 ios
 앱 이름:
 VaultXT - TXT Editor

@@ -29,12 +29,23 @@ export type PlatformCopy = {
   landingDescription?: string;
   description: string;
   keywords?: string;
+  faq?: ProductFaq;
 };
 
 export type ProductCopy = {
   locale: Locale;
   android: PlatformCopy;
   ios: PlatformCopy;
+};
+
+export type ProductFaq = {
+  title: string;
+  items: ProductFaqItem[];
+};
+
+export type ProductFaqItem = {
+  question: string;
+  answer: string;
 };
 
 export type ProductSource = {
@@ -110,7 +121,9 @@ const fieldLabels = {
   subtitle: '부제:',
   promo: '프로모션 텍스트:',
   description: '설명:',
-  keywords: '키워드:'
+  keywords: '키워드:',
+  faq: '자주 묻는 질문:',
+  faqEn: 'FAQ:'
 };
 
 export function getProductSources(): ProductSource[] {
@@ -354,7 +367,8 @@ function parsePlatformCopy(text: string): PlatformCopy {
       field(text, fieldLabels.landingDescription) ?? field(text, fieldLabels.landingDescriptionEn),
     description:
       field(text, fieldLabels.detailedDescription) ?? field(text, fieldLabels.description) ?? '',
-    keywords: field(text, fieldLabels.keywords)
+    keywords: field(text, fieldLabels.keywords),
+    faq: parseFaqField(field(text, fieldLabels.faq) ?? field(text, fieldLabels.faqEn), text.includes(fieldLabels.faq) ? 'ko' : 'en')
   };
 }
 
@@ -428,6 +442,45 @@ function field(text: string, label: string): string | undefined {
     .join('\n')
     .trim();
   return value || undefined;
+}
+
+function parseFaqField(value: string | undefined, locale: Locale): ProductFaq | undefined {
+  if (!value) return undefined;
+  const questionLabel = locale === 'ko' ? '질문:' : 'Q:';
+  const answerLabel = locale === 'ko' ? '답변:' : 'A:';
+  const items: ProductFaqItem[] = [];
+  let currentQuestion: string | undefined;
+  let currentAnswer: string[] = [];
+  const flush = () => {
+    const answer = currentAnswer.join(' ').trim();
+    if (currentQuestion && answer) {
+      items.push({ question: currentQuestion, answer });
+    }
+    currentQuestion = undefined;
+    currentAnswer = [];
+  };
+  for (const line of value.split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    if (trimmed.startsWith(questionLabel)) {
+      flush();
+      currentQuestion = trimmed.slice(questionLabel.length).trim();
+      continue;
+    }
+    if (trimmed.startsWith(answerLabel)) {
+      currentAnswer = [trimmed.slice(answerLabel.length).trim()].filter(Boolean);
+      continue;
+    }
+    if (currentAnswer.length > 0) {
+      currentAnswer.push(trimmed);
+    }
+  }
+  flush();
+  if (items.length === 0) return undefined;
+  return {
+    title: locale === 'ko' ? '자주 묻는 질문' : 'FAQ',
+    items
+  };
 }
 
 function isSectionHeading(value: string): boolean {

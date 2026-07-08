@@ -54,6 +54,16 @@ Aligna is not a file explorer or cloud manager. It focuses on one task: making f
 
 There are no accounts, ads, or cloud services. On iOS, files may be saved with new names instead of directly changing the original file.
 
+FAQ:
+Q: Are original files changed directly?
+A: On Android, selected files can be renamed with your rules. On iOS, files are saved with new names because of system limitations.
+
+Q: Can I preview the new file names first?
+A: Yes. Aligna lets you review the names before applying changes.
+
+Q: Are files uploaded to a server?
+A: No. Aligna works on your device without accounts, ads, or cloud storage.
+
 ios
 앱 이름:
 Aligna - File Renamer

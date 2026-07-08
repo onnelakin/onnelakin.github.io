@@ -93,43 +93,8 @@ const tagweaverUseCaseContent = data.locale === 'ko'
         'Save only the fields you checked and changed, without automatic library changes'
       ]
     };
-const tagweaverFaqContent = data.locale === 'ko'
-  ? {
-      title: '자주 묻는 질문',
-      items: [
-        {
-          question: '파일이 서버로 업로드되나요?',
-          answer: '아니요. TagWeaver는 로그인, 계정 생성, 파일 업로드 없이 기기 안에서 편집합니다.'
-        },
-        {
-          question: 'MP3와 FLAC를 모두 편집할 수 있나요?',
-          answer: '네. MP3 ID3 태그와 FLAC Vorbis Comment 태그를 지원합니다.'
-        },
-        {
-          question: '여러 파일을 한 번에 저장할 수 있나요?',
-          answer: '여러 파일 선택과 일괄 편집을 지원하며, 여러 파일 일괄 저장은 Pro에서 사용할 수 있습니다.'
-        }
-      ]
-    }
-  : {
-      title: 'FAQ',
-      items: [
-        {
-          question: 'Are files uploaded to a server?',
-          answer: 'No. TagWeaver edits on your device without login, account creation, or file uploads.'
-        },
-        {
-          question: 'Can it edit both MP3 and FLAC files?',
-          answer: 'Yes. TagWeaver supports MP3 ID3 tags and FLAC Vorbis Comment tags.'
-        },
-        {
-          question: 'Can I save edits across multiple files?',
-          answer: 'Multiple-file selection and batch editing are supported. Batch saving for multiple files is available with Pro.'
-        }
-      ]
-    };
 const useCaseContent = data.source.slug === 'tagweaver' ? tagweaverUseCaseContent : undefined;
-const faqContent = data.source.slug === 'tagweaver' ? tagweaverFaqContent : undefined;
+const faqContent = copy.android.faq ?? copy.ios.faq;
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',

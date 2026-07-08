@@ -75,6 +75,16 @@ Quivra is a paid converter with no ads and no subscriptions. It remembers the sa
 
 Original files are left untouched. Quivra creates a new converted file so common media cleanup tasks stay simple and predictable.
 
+FAQ:
+Q: Do I need to choose an output format?
+A: No. Quivra automatically chooses the conversion path based on the input file type.
+
+Q: Which conversions are supported?
+A: WAV and M4A convert to MP3, MP4 can be saved as MP3 audio, and MOV can be converted to MP4 video.
+
+Q: Are original files changed?
+A: No. Quivra leaves original files untouched and creates a new converted file.
+
 ios
 앱 이름:
 Quivra – WAV to MP3 Converter

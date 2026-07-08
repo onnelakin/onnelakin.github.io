@@ -12,6 +12,10 @@ const pages = [
   '/privacy/',
   '/privacy/ko/'
 ];
+const productPages = ['aligna', 'clipnest', 'quivra', 'segra', 'tagweaver', 'vaultxt'].flatMap((slug) => [
+  `/apps/${slug}/`,
+  `/apps/${slug}/ko/`
+]);
 
 test.describe('site layout', () => {
   for (const path of pages) {
@@ -260,6 +264,22 @@ test.describe('site layout', () => {
     const llmsText = await llmsResponse.text();
     expect(llmsText).toContain('## Korean App Summaries');
     expect(llmsText).toContain('주요 작업:');
+  });
+
+  test('all product detail pages expose matching faq sections and structured data', async ({ page }) => {
+    for (const path of productPages) {
+      await page.goto(path);
+
+      const isKo = path.endsWith('/ko/');
+      await expect(page.locator('#faq-title')).toHaveText(isKo ? '자주 묻는 질문' : 'FAQ');
+      await expect(page.locator('.faq-list details')).toHaveCount(3);
+
+      const jsonLdItems = await page.locator('script[type="application/ld+json"]').allTextContents();
+      const faqData = jsonLdItems.map((jsonLd) => JSON.parse(jsonLd)).find((item) => item['@type'] === 'FAQPage');
+      expect(faqData).toBeDefined();
+      expect(faqData.mainEntity).toHaveLength(3);
+      expect(faqData['@id']).toContain(`${path}#faq`);
+    }
   });
 
   test('product store click analytics include app locale store and position', async ({ page }) => {
