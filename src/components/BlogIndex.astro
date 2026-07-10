@@ -201,29 +201,28 @@ const categories = isKo
     background: #fffdf8;
   }
   .category-preview {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
     padding: 22px 0 0;
   }
   .category-preview article {
-    max-width: 210px;
     border: 1px solid #ded6ca;
-    border-radius: 999px;
-    padding: 8px 13px;
+    border-radius: 8px;
+    padding: 12px 14px;
     background: rgba(255, 253, 248, 0.74);
   }
   .category-preview h2 {
-    margin: 0;
+    margin: 0 0 4px;
     color: #343331;
     font-size: 14px;
     line-height: 1.2;
   }
   .category-preview p {
-    margin: 3px 0 0;
+    margin: 0;
     color: #6c675f;
-    font-size: 12px;
-    line-height: 1.35;
+    font-size: 13px;
+    line-height: 1.45;
   }
   .post-list {
     display: grid;
@@ -258,10 +257,8 @@ const categories = isKo
     .blog-header {
       padding: 46px 0 30px;
     }
-    .category-preview article {
-      max-width: none;
-      width: 100%;
-      border-radius: 8px;
+    .category-preview {
+      grid-template-columns: 1fr;
     }
   }
 </style>
