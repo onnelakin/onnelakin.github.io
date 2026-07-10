@@ -55,7 +55,7 @@ const gaScript = gaMeasurementId
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
-    <link rel="alternate" type="application/rss+xml" title="ONNELLAB Apps" href={new URL('/rss.xml', Astro.site)} />
+    <link rel="alternate" type="application/rss+xml" title="ONNELLAB RSS" href={new URL('/rss.xml', Astro.site)} />
     {alternates.map((alternate) => (
       <link rel="alternate" hreflang={alternate.lang} href={new URL(alternate.path, Astro.site)} />
     ))}
@@ -116,9 +116,13 @@ const gaScript = gaMeasurementId
           targetPath = '/privacy/ko/';
         } else if (pathname === '/about/') {
           targetPath = '/about/ko/';
+        } else if (pathname === '/blog/' || pathname === '/blog/en/') {
+          targetPath = '/blog/ko/';
         } else {
           const appMatch = pathname.match(/^\/apps\/([^/]+)\/$/);
+          const blogMatch = pathname.match(/^\/blog\/en\/([^/]+)\/$/);
           if (appMatch && appMatch[1] !== 'ko') targetPath = `/apps/${appMatch[1]}/ko/`;
+          if (blogMatch) targetPath = `/blog/ko/${blogMatch[1]}/`;
         }
 
         if (targetPath) window.location.replace(`${targetPath}${search}${hash}`);

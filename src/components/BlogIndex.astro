@@ -1,0 +1,152 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getBlogPosts, type BlogPost } from '../lib/blog';
+import type { Locale } from '../lib/products';
+
+type Props = {
+  locale: Locale;
+};
+
+const { locale } = Astro.props;
+const posts: BlogPost[] = getBlogPosts(locale);
+const isKo = locale === 'ko';
+const copy = isKo
+  ? {
+      title: 'ONNELLAB 블로그 - 차분한 디지털 워크플로 가이드',
+      description: '읽기, 음악, 생산성, 미디어, 창작, 게임, 리서치 워크플로를 다루는 ONNELLAB 교육형 글입니다.',
+      canonicalPath: '/blog/ko/',
+      switchHref: '/blog/',
+      switchLabel: 'English',
+      eyebrow: 'ONNELLAB Blog',
+      heading: '차분한 디지털 워크플로를 위한 실전 가이드',
+      intro: '문제를 먼저 설명하고, 실제로 도움이 될 때만 앱을 소개하는 교육형 글을 게시합니다.',
+      emptyTitle: '아직 게시된 글이 없습니다',
+      emptyText: 'ONNELLAB Content Engine에서 생성한 정식 글을 받을 준비가 끝났습니다.'
+    }
+  : {
+      title: 'ONNELLAB Blog - Practical guides for calm digital workflows',
+      description: 'Educational ONNELLAB articles about reading, music, productivity, media, craft, games, and research workflows.',
+      canonicalPath: '/blog/',
+      switchHref: '/blog/ko/',
+      switchLabel: '한국어',
+      eyebrow: 'ONNELLAB Blog',
+      heading: 'Practical guides for calm digital workflows',
+      intro: 'Educational articles that explain problems first and introduce applications only when they are genuinely useful.',
+      emptyTitle: 'No articles published yet',
+      emptyText: 'The blog is ready to receive canonical articles from the ONNELLAB Content Engine.'
+    };
+---
+
+<BaseLayout
+  title={copy.title}
+  description={copy.description}
+  canonicalPath={copy.canonicalPath}
+  lang={locale}
+  alternates={[
+    { lang: 'en', path: '/blog/' },
+    { lang: 'ko', path: '/blog/ko/' },
+    { lang: 'x-default', path: '/blog/' }
+  ]}
+>
+  <main class="blog-shell">
+    <nav class="top-nav" aria-label="Blog language">
+      <a href={isKo ? '/ko/' : '/'}>ONNELLAB</a>
+      <a href={copy.switchHref} data-locale-choice={isKo ? 'en' : 'ko'}>{copy.switchLabel}</a>
+    </nav>
+
+    <header class="blog-header">
+      <p class="eyebrow">{copy.eyebrow}</p>
+      <h1>{copy.heading}</h1>
+      <p>{copy.intro}</p>
+    </header>
+
+    <section class="post-list" aria-label="Blog posts">
+      {posts.length === 0 ? (
+        <div class="empty-state">
+          <h2>{copy.emptyTitle}</h2>
+          <p>{copy.emptyText}</p>
+        </div>
+      ) : (
+        posts.map((post) => (
+          <article class="post-card">
+            <p>{post.meta.category}</p>
+            <h2><a href={post.href}>{post.meta.title}</a></h2>
+            <span>{post.meta.description}</span>
+          </article>
+        ))
+      )}
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .blog-shell {
+    width: min(920px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 22px 0 56px;
+    line-height: 1.65;
+  }
+  .top-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-size: 14px;
+  }
+  .top-nav a {
+    color: #5f5a50;
+    text-decoration: none;
+    font-weight: 650;
+  }
+  .blog-header {
+    padding: 64px 0 36px;
+    border-bottom: 1px solid #e0d8cb;
+  }
+  .eyebrow,
+  .post-card p {
+    margin: 0 0 10px;
+    color: #716a5f;
+    font-size: 13px;
+    font-weight: 720;
+    text-transform: uppercase;
+  }
+  h1 {
+    max-width: 760px;
+    margin: 0;
+    color: #2f2f2f;
+    font-size: clamp(36px, 7vw, 68px);
+    line-height: 1.02;
+    letter-spacing: 0;
+  }
+  .blog-header > p:last-child {
+    max-width: 680px;
+    margin: 22px 0 0;
+    color: #5b574f;
+    font-size: 18px;
+  }
+  .post-list {
+    display: grid;
+    gap: 14px;
+    padding-top: 28px;
+  }
+  .post-card,
+  .empty-state {
+    border: 1px solid #ded6ca;
+    border-radius: 8px;
+    padding: 22px;
+    background: #fffdf8;
+  }
+  .post-card h2,
+  .empty-state h2 {
+    margin: 0 0 8px;
+    color: #343331;
+    font-size: 22px;
+    line-height: 1.25;
+  }
+  .post-card h2 a {
+    text-decoration: none;
+  }
+  .post-card span,
+  .empty-state p {
+    color: #5d5850;
+  }
+</style>

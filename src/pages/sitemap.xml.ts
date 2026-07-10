@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { getBlogPosts } from '../lib/blog';
 import { getProductSources } from '../lib/products';
 
 type SitemapEntry = {
@@ -27,6 +28,10 @@ export function GET() {
       { path: koPath, lastmod, alternates }
     ];
   });
+  const blogEntries = getBlogPosts().map((post) => ({
+    path: post.href,
+    lastmod: sourceLastmod(post.sourcePath)
+  }));
   const entries: SitemapEntry[] = [
     {
       path: '/',
@@ -64,6 +69,25 @@ export function GET() {
         { lang: 'x-default', path: '/apps/' }
       ]
     },
+    {
+      path: '/blog/',
+      lastmod: sourceLastmod('src/pages/blog/index.astro'),
+      alternates: [
+        { lang: 'en', path: '/blog/' },
+        { lang: 'ko', path: '/blog/ko/' },
+        { lang: 'x-default', path: '/blog/' }
+      ]
+    },
+    {
+      path: '/blog/ko/',
+      lastmod: sourceLastmod('src/pages/blog/ko/index.astro'),
+      alternates: [
+        { lang: 'en', path: '/blog/' },
+        { lang: 'ko', path: '/blog/ko/' },
+        { lang: 'x-default', path: '/blog/' }
+      ]
+    },
+    ...blogEntries,
     {
       path: '/privacy/',
       lastmod: sourceLastmod('src/components/PrivacyIndex.astro'),
