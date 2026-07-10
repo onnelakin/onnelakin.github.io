@@ -105,7 +105,7 @@ const categories = isKo
     {posts.length > 0 && (
       <section class="post-list" aria-label={copy.postsLabel}>
         {posts.map((post) => (
-          <a class="post-card" href={post.href} aria-label={post.meta.title}>
+          <a class="post-card" href={post.href} aria-label={post.meta.cardTitle}>
             <article>
               <p>{post.meta.category}</p>
               <h2>{post.meta.cardTitle}</h2>

@@ -120,19 +120,96 @@ const tableCellClass = (value: string) => {
   const plain = value.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1').trim();
   return plain.length > 28 || /[.!?。！？]/.test(plain) ? 'cell-long' : 'cell-short';
 };
-const hasMeta = post.meta.publishedAt || post.meta.updatedAt || post.meta.relatedApps.length || post.meta.tags.length;
+const hasMeta = post.meta.publishedAt || post.meta.updatedAt || post.meta.relatedApps.length;
 const hasRecommendations =
   post.meta.relatedApps.length > 0 ||
   post.meta.relatedArticles.length > 0 ||
   post.meta.relatedGuides.length > 0 ||
   post.meta.tags.length > 0;
+const articleImage = articleImages[0]?.src;
+const articleTitle = `${post.meta.title} - ONNELLAB Blog`;
+const absoluteUrl = (path: string) => new URL(path, Astro.site).toString();
+const allFaqItems = Array.from(faqBlocks.values()).flat();
+const blogPostingJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.meta.title,
+  description: post.meta.description,
+  inLanguage: locale,
+  mainEntityOfPage: absoluteUrl(post.href),
+  url: absoluteUrl(post.href),
+  datePublished: post.meta.publishedAt,
+  dateModified: post.meta.updatedAt || post.meta.publishedAt,
+  articleSection: post.meta.category,
+  keywords: post.meta.tags,
+  image: articleImage ? [absoluteUrl(articleImage)] : undefined,
+  author: {
+    '@type': 'Organization',
+    name: 'ONNELLAB',
+    url: absoluteUrl('/')
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'ONNELLAB',
+    url: absoluteUrl('/')
+  }
+};
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'ONNELLAB',
+      item: absoluteUrl(homeHref)
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'ONNELLAB Blog',
+      item: absoluteUrl(blogHref)
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: post.meta.title,
+      item: absoluteUrl(post.href)
+    }
+  ]
+};
+const faqJsonLd =
+  allFaqItems.length > 0
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: allFaqItems.map((item) => ({
+          '@type': 'Question',
+          name: item.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: item.answer
+          }
+        }))
+      }
+    : undefined;
+const articleJsonLd = faqJsonLd ? [blogPostingJsonLd, breadcrumbJsonLd, faqJsonLd] : [blogPostingJsonLd, breadcrumbJsonLd];
 ---
 
 <BaseLayout
-  title={`${post.meta.title} - ONNELLAB Blog`}
+  title={articleTitle}
   description={post.meta.description}
   canonicalPath={post.href}
   lang={locale}
+  socialImage={articleImage}
+  ogType="article"
+  articleMeta={{
+    publishedTime: post.meta.publishedAt,
+    modifiedTime: post.meta.updatedAt || post.meta.publishedAt,
+    section: post.meta.category,
+    tags: post.meta.tags
+  }}
+  jsonLd={articleJsonLd}
   alternates={
     alternatePost
       ? [
@@ -164,10 +241,9 @@ const hasRecommendations =
         <p class="description">{post.meta.description}</p>
         {hasMeta && (
           <div class="meta-grid" aria-label="Article metadata">
-            {post.meta.publishedAt && <span>{copy.published} {dateLabel(post.meta.publishedAt)}</span>}
-            {post.meta.updatedAt && <span>{copy.updated} {dateLabel(post.meta.updatedAt)}</span>}
-            {post.meta.relatedApps.map((app) => <a href={appHref(app)}>{app}</a>)}
-            {post.meta.tags.map((tag) => <span>{tag}</span>)}
+            {post.meta.publishedAt && <span class="meta-date">{copy.published} {dateLabel(post.meta.publishedAt)}</span>}
+            {post.meta.updatedAt && <span class="meta-date">{copy.updated} {dateLabel(post.meta.updatedAt)}</span>}
+            {post.meta.relatedApps.map((app) => <a class="meta-app" href={appHref(app)}>{app}</a>)}
           </div>
         )}
       </header>
@@ -225,7 +301,7 @@ const hasRecommendations =
                   </thead>
                   <tbody>
                     {block.value.rows.map((row) => (
-                      <tr>{row.map((cell) => <td class={tableCellClass(cell)}>{inlineParts(cell).map((part) => part.href ? <a href={part.href}>{part.text}</a> : part.text)}</td>)}</tr>
+                      <tr>{row.map((cell, cellIndex) => <td class={tableCellClass(cell)} data-label={block.value.headers[cellIndex]}>{inlineParts(cell).map((part) => part.href ? <a href={part.href}>{part.text}</a> : part.text)}</td>)}</tr>
                     ))}
                   </tbody>
                 </table>
@@ -427,6 +503,14 @@ const hasRecommendations =
     font-weight: 650;
     line-height: 1.25;
     text-decoration: none;
+  }
+  .meta-grid .meta-date {
+    background: transparent;
+  }
+  .meta-grid .meta-app {
+    border-color: #c9d7d2;
+    background: #f6fbf9;
+    color: #3f625a;
   }
   .summary-box {
     margin-top: 24px;
@@ -769,6 +853,67 @@ const hasRecommendations =
     }
     .visual-plan {
       grid-template-columns: 1fr;
+    }
+    .table-scroll {
+      overflow: visible;
+      border: 0;
+      background: transparent;
+    }
+    .article-body table,
+    .article-body thead,
+    .article-body tbody,
+    .article-body tr,
+    .article-body th,
+    .article-body td {
+      display: block;
+    }
+    .article-body table {
+      min-width: 0;
+      border-collapse: separate;
+      font-size: 15px;
+    }
+    .article-body thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+    .article-body tbody {
+      display: grid;
+      gap: 10px;
+    }
+    .article-body tr {
+      border: 1px solid #ded6ca;
+      border-radius: 8px;
+      background: #fffdf8;
+      overflow: hidden;
+    }
+    .article-body td {
+      display: grid;
+      grid-template-columns: minmax(96px, 0.36fr) 1fr;
+      gap: 12px;
+      border-right: 0;
+      padding: 12px 13px;
+      text-align: left;
+    }
+    .article-body td.cell-short,
+    .article-body td.cell-long {
+      text-align: left;
+    }
+    .article-body td::before {
+      content: attr(data-label);
+      color: #716a5f;
+      font-size: 13px;
+      font-weight: 720;
+      line-height: 1.45;
+    }
+    .article-body tr:last-child td {
+      border-bottom: 1px solid #e7ded2;
+    }
+    .article-body tr td:last-child {
+      border-bottom: 0;
     }
   }
 </style>

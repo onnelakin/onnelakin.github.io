@@ -154,8 +154,8 @@ test.describe('site layout', () => {
     await expect(page.locator('.category-preview article')).toHaveCount(4);
 
     await page.goto('/blog/ko/');
-    await expect(page.locator('.empty-state')).toContainText('첫 글을 준비하고 있습니다');
-    await expect(page.locator('.empty-state')).not.toContainText('Content Engine');
+    await expect(page.locator('.post-card')).toContainText('대용량 TXT 파일 읽기');
+    await expect(page.locator('.empty-state')).toHaveCount(0);
     await expect(page.locator('.category-preview article')).toHaveCount(4);
   });
 
@@ -171,6 +171,26 @@ test.describe('site layout', () => {
     expect(rssResponse.ok()).toBe(true);
     expect(rssResponse.headers()['content-type']).toMatch(/(?:application|text)\/xml|rss\+xml/);
     expect(await rssResponse.text()).toContain('How to Read Large TXT Files Without Lag');
+  });
+
+  test('blog article metadata remains crawlable and answer-friendly', async ({ page }) => {
+    await page.goto('/blog/en/read-large-txt-files-without-lag/');
+
+    await expect(page.locator('meta[property="og:type"]')).toHaveAttribute('content', 'article');
+    await expect(page.locator('meta[property="article:published_time"]')).toHaveAttribute(
+      'content',
+      '2026-07-11T00:00:00+09:00'
+    );
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+      'content',
+      'https://onnelakin.github.io/blog-assets/en/read-large-txt-files-without-lag/workflow-diagram.svg'
+    );
+    const jsonLd = await page.locator('script[type="application/ld+json"]').evaluateAll((scripts) =>
+      scripts.map((script) => script.textContent || '').join('\n')
+    );
+    expect(jsonLd).toContain('BlogPosting');
+    expect(jsonLd).toContain('BreadcrumbList');
+    expect(jsonLd).toContain('FAQPage');
   });
 
   test('korean browser language redirects default pages to korean pages', async ({ page }) => {

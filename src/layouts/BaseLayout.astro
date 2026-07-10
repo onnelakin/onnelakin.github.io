@@ -5,6 +5,14 @@ type Props = {
   canonicalPath: string;
   lang?: string;
   image?: string;
+  socialImage?: string;
+  ogType?: string;
+  articleMeta?: {
+    publishedTime?: string;
+    modifiedTime?: string;
+    section?: string;
+    tags?: string[];
+  };
   jsonLd?: unknown | unknown[];
   alternates?: Array<{ lang: string; path: string }>;
 };
@@ -15,12 +23,15 @@ const {
   canonicalPath,
   lang = 'en',
   image,
+  socialImage,
+  ogType = 'website',
+  articleMeta,
   jsonLd,
   alternates = []
 } = Astro.props;
 const canonicalUrl = new URL(canonicalPath, Astro.site);
-const imageUrl = image ? new URL(image, Astro.site) : undefined;
-const faviconUrl = imageUrl ?? new URL('/app-assets/quivra/assets/icon/quivra.png', Astro.site);
+const imageUrl = socialImage || image ? new URL(socialImage || image || '', Astro.site) : undefined;
+const faviconUrl = image ? new URL(image, Astro.site) : new URL('/app-assets/quivra/assets/icon/quivra.png', Astro.site);
 const jsonLdItems = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
 const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID?.trim();
 const gaScript = gaMeasurementId
@@ -59,11 +70,15 @@ const gaScript = gaMeasurementId
     {alternates.map((alternate) => (
       <link rel="alternate" hreflang={alternate.lang} href={new URL(alternate.path, Astro.site)} />
     ))}
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     {imageUrl && <meta property="og:image" content={imageUrl} />}
+    {ogType === 'article' && articleMeta?.publishedTime && <meta property="article:published_time" content={articleMeta.publishedTime} />}
+    {ogType === 'article' && articleMeta?.modifiedTime && <meta property="article:modified_time" content={articleMeta.modifiedTime} />}
+    {ogType === 'article' && articleMeta?.section && <meta property="article:section" content={articleMeta.section} />}
+    {ogType === 'article' && articleMeta?.tags?.map((tag) => <meta property="article:tag" content={tag} />)}
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
