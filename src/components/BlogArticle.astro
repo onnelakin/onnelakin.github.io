@@ -116,6 +116,10 @@ const inlineParts = (value: string) => {
   if (lastIndex < value.length) parts.push({ text: value.slice(lastIndex) });
   return parts.length > 0 ? parts : [{ text: value }];
 };
+const tableCellClass = (value: string) => {
+  const plain = value.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1').trim();
+  return plain.length > 28 || /[.!?。！？]/.test(plain) ? 'cell-long' : 'cell-short';
+};
 const hasMeta = post.meta.publishedAt || post.meta.updatedAt || post.meta.relatedApps.length || post.meta.tags.length;
 const hasRecommendations =
   post.meta.relatedApps.length > 0 ||
@@ -217,11 +221,11 @@ const hasRecommendations =
               <div class="table-scroll">
                 <table>
                   <thead>
-                    <tr>{block.value.headers.map((header) => <th>{header}</th>)}</tr>
+                    <tr>{block.value.headers.map((header) => <th class={tableCellClass(header)}>{header}</th>)}</tr>
                   </thead>
                   <tbody>
                     {block.value.rows.map((row) => (
-                      <tr>{row.map((cell) => <td>{inlineParts(cell).map((part) => part.href ? <a href={part.href}>{part.text}</a> : part.text)}</td>)}</tr>
+                      <tr>{row.map((cell) => <td class={tableCellClass(cell)}>{inlineParts(cell).map((part) => part.href ? <a href={part.href}>{part.text}</a> : part.text)}</td>)}</tr>
                     ))}
                   </tbody>
                 </table>
@@ -490,6 +494,8 @@ const hasRecommendations =
   }
   .article-body {
     padding-top: 18px;
+    word-break: keep-all;
+    overflow-wrap: normal;
   }
   .article-body h2 {
     margin: 38px 0 12px;
@@ -561,8 +567,17 @@ const hasRecommendations =
     border-bottom: 1px solid #e7ded2;
     padding: 11px 13px;
     color: #4f4b45;
+    vertical-align: middle;
+    word-break: keep-all;
+    overflow-wrap: normal;
+  }
+  .article-body th.cell-short,
+  .article-body td.cell-short {
+    text-align: center;
+  }
+  .article-body th.cell-long,
+  .article-body td.cell-long {
     text-align: left;
-    vertical-align: top;
   }
   .article-body th {
     background: #f8f3ea;
