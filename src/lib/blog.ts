@@ -7,6 +7,7 @@ const blogContentDir = path.resolve(process.cwd(), 'src/content/blog');
 
 export type BlogPostMeta = {
   title: string;
+  cardTitle: string;
   slug: string;
   category: string;
   language: Locale;
@@ -171,6 +172,7 @@ function readPost(filePath: string, fallbackLanguage: Locale): BlogPost {
   const language = frontmatter.language === 'ko' ? 'ko' : frontmatter.language === 'en' ? 'en' : fallbackLanguage;
   const meta: BlogPostMeta = {
     title: frontmatter.title || slug,
+    cardTitle: frontmatter.card_title || frontmatter.cardTitle || frontmatter.title || slug,
     slug,
     category: frontmatter.category || 'general',
     language,

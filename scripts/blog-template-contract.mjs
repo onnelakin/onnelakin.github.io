@@ -8,6 +8,7 @@ const root = path.resolve(import.meta.dirname, '..');
 const fixtureDir = path.join(root, 'src/content/blog/en');
 const fixturePath = path.join(fixtureDir, 'template-contract.md');
 const outputPath = path.join(root, 'dist/blog/en/template-contract/index.html');
+const indexPath = path.join(root, 'dist/blog/en/index.html');
 
 after(() => {
   fs.rmSync(fixturePath, { force: true });
@@ -20,6 +21,7 @@ test('blog article template renders publishing metadata without committing sampl
     fixturePath,
     `---
 title: "How to Keep a Very Long ONNELLAB Workflow Article Title Readable on Mobile and Desktop"
+card_title: "Readable Workflow Article Title"
 slug: "template-contract"
 category: "productivity"
 language: "en"
@@ -79,7 +81,10 @@ Yes. The template should render recommendation metadata as links when a URL is p
   execFileSync('npm', ['run', 'build'], { cwd: root, stdio: 'pipe' });
 
   const html = fs.readFileSync(outputPath, 'utf-8');
+  const indexHtml = fs.readFileSync(indexPath, 'utf-8');
   assert.match(html, /How to Keep a Very Long ONNELLAB Workflow Article Title/);
+  assert.match(indexHtml, /Readable Workflow Article Title/);
+  assert.doesNotMatch(indexHtml, /How to Keep a Very Long ONNELLAB Workflow Article Title Readable on Mobile and Desktop/);
   assert.match(html, /Use a concise answer block/);
   assert.match(html, /Related articles/);
   assert.match(html, /Related guides/);

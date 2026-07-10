@@ -107,7 +107,7 @@ const categories = isKo
         {posts.map((post) => (
           <article class="post-card">
             <p>{post.meta.category}</p>
-            <h2><a href={post.href}>{post.meta.title}</a></h2>
+            <h2><a href={post.href}>{post.meta.cardTitle}</a></h2>
             <span>{post.meta.description}</span>
           </article>
         ))}
