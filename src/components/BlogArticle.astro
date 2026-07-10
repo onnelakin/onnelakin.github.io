@@ -99,6 +99,18 @@ const recommendation = (item: string) => {
   if (pair) return { label: pair[1].trim(), href: pair[2] };
   return { label: item, href: '' };
 };
+const inlineParts = (value: string) => {
+  const parts: Array<{ text: string; href?: string }> = [];
+  const pattern = /\[([^\]]+)\]\(([^)]+)\)/g;
+  let lastIndex = 0;
+  for (const match of value.matchAll(pattern)) {
+    if (match.index > lastIndex) parts.push({ text: value.slice(lastIndex, match.index) });
+    parts.push({ text: match[1], href: match[2] });
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < value.length) parts.push({ text: value.slice(lastIndex) });
+  return parts.length > 0 ? parts : [{ text: value }];
+};
 const hasMeta = post.meta.publishedAt || post.meta.updatedAt || post.meta.relatedApps.length || post.meta.tags.length;
 const hasRecommendations =
   post.meta.relatedApps.length > 0 ||
@@ -175,9 +187,13 @@ const hasRecommendations =
           }
           if (block.type === 'h2') return <h2>{block.value}</h2>;
           if (block.type === 'h3') return <h3>{block.value}</h3>;
-          if (block.type === 'ul') return <ul>{(block.value as string[]).map((item) => <li>{item}</li>)}</ul>;
-          if (block.type === 'ol') return <ol>{(block.value as string[]).map((item) => <li>{item}</li>)}</ol>;
-          if (block.type === 'blockquote') return <blockquote>{block.value}</blockquote>;
+          if (block.type === 'ul') {
+            return <ul>{(block.value as string[]).map((item) => <li>{inlineParts(item).map((part) => part.href ? <a href={part.href}>{part.text}</a> : part.text)}</li>)}</ul>;
+          }
+          if (block.type === 'ol') {
+            return <ol>{(block.value as string[]).map((item) => <li>{inlineParts(item).map((part) => part.href ? <a href={part.href}>{part.text}</a> : part.text)}</li>)}</ol>;
+          }
+          if (block.type === 'blockquote') return <blockquote>{inlineParts(block.value).map((part) => part.href ? <a href={part.href}>{part.text}</a> : part.text)}</blockquote>;
           if (block.type === 'code') return <pre><code>{block.value}</code></pre>;
           if (block.type === 'image') {
             const imageIndex = articleImages.indexOf(block);
@@ -199,14 +215,14 @@ const hasRecommendations =
                   </thead>
                   <tbody>
                     {block.value.rows.map((row) => (
-                      <tr>{row.map((cell) => <td>{cell}</td>)}</tr>
+                      <tr>{row.map((cell) => <td>{inlineParts(cell).map((part) => part.href ? <a href={part.href}>{part.text}</a> : part.text)}</td>)}</tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             );
           }
-          return <p>{block.value}</p>;
+          return <p>{inlineParts(String(block.value)).map((part) => part.href ? <a href={part.href}>{part.text}</a> : part.text)}</p>;
         })}
       </div>
 

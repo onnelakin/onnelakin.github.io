@@ -48,7 +48,7 @@ This section should feed the summary box and should not appear again in the body
 
 - Start with the reader problem.
 - Show the lowest-risk workflow.
-- Link to the matching ONNELLAB application.
+- Link to the matching [ONNELLAB application](/apps/vaultxt/).
 
 > Keep the callout short enough to scan before the reader reaches the detailed workflow.
 
@@ -90,6 +90,7 @@ Yes. The template should render recommendation metadata as links when a URL is p
   assert.match(html, /<details/);
   assert.match(html, /<summary[^>]*>Should FAQ answers be rendered as normal paragraphs\?/);
   assert.match(html, /href="\/blog\/en\/offline-text-workflows\/"/);
+  assert.match(html, /href="\/apps\/vaultxt\/"[^>]*>ONNELLAB application/);
   assert.match(html, /article-image-viewer/);
   assert.match(html, /data-article-image-trigger/);
   assert.match(html, /topics.csv -&gt; markdown draft/);
