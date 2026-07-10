@@ -12,6 +12,7 @@ const { locale, post } = Astro.props;
 const isKo = locale === 'ko';
 const blocks = renderMarkdownBlocks(post.body);
 const shortAnswerHeadings = new Set(['short answer', '짧은 답변', '요약']);
+const faqHeadings = new Set(['faq', '자주 묻는 질문']);
 const articleBlocks: typeof blocks = [];
 let skippingShortAnswer = false;
 for (const block of blocks) {
@@ -24,6 +25,34 @@ for (const block of blocks) {
   }
   if (!skippingShortAnswer) articleBlocks.push(block);
 }
+const faqBlocks = new Map<number, Array<{ question: string; answer: string }>>();
+const skippedBlockIndexes = new Set<number>();
+for (let index = 0; index < articleBlocks.length; index += 1) {
+  const block = articleBlocks[index];
+  if (block.type !== 'h2' || !faqHeadings.has(String(block.value).trim().toLowerCase())) continue;
+  const items: Array<{ question: string; answer: string }> = [];
+  let cursor = index + 1;
+  while (cursor < articleBlocks.length && articleBlocks[cursor].type !== 'h2') {
+    const questionBlock = articleBlocks[cursor];
+    if (questionBlock.type !== 'h3') {
+      cursor += 1;
+      continue;
+    }
+    const answerParts: string[] = [];
+    skippedBlockIndexes.add(cursor);
+    cursor += 1;
+    while (cursor < articleBlocks.length && articleBlocks[cursor].type !== 'h2' && articleBlocks[cursor].type !== 'h3') {
+      const answerBlock = articleBlocks[cursor];
+      skippedBlockIndexes.add(cursor);
+      if (answerBlock.type === 'p' || answerBlock.type === 'blockquote') answerParts.push(String(answerBlock.value));
+      if (answerBlock.type === 'ul' || answerBlock.type === 'ol') answerParts.push(answerBlock.value.join(' '));
+      cursor += 1;
+    }
+    items.push({ question: String(questionBlock.value), answer: answerParts.join(' ').trim() });
+  }
+  if (items.length > 0) faqBlocks.set(index, items);
+}
+const articleImages = articleBlocks.filter((block) => block.type === 'image');
 const homeHref = isKo ? '/ko/' : '/';
 const blogHref = isKo ? '/blog/ko/' : '/blog/';
 const appsHref = isKo ? '/apps/ko/' : '/apps/';
@@ -62,6 +91,13 @@ const dateLabel = (value?: string) => {
 const appHref = (appName: string) => {
   const slug = appName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   return isKo ? `/apps/${slug}/ko/` : `/apps/${slug}/`;
+};
+const recommendation = (item: string) => {
+  const markdown = item.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+  const pair = item.match(/^(.+?)\s*=>\s*(\/\S+)$/);
+  if (markdown) return { label: markdown[1], href: markdown[2] };
+  if (pair) return { label: pair[1].trim(), href: pair[2] };
+  return { label: item, href: '' };
 };
 const hasMeta = post.meta.publishedAt || post.meta.updatedAt || post.meta.relatedApps.length || post.meta.tags.length;
 const hasRecommendations =
@@ -120,7 +156,23 @@ const hasRecommendations =
       )}
 
       <div class="article-body">
-        {articleBlocks.map((block) => {
+        {articleBlocks.map((block, index) => {
+          if (skippedBlockIndexes.has(index)) return null;
+          if (block.type === 'h2' && faqBlocks.has(index)) {
+            return (
+              <section class="faq-section" aria-labelledby={`faq-${index}`}>
+                <h2 id={`faq-${index}`}>{block.value}</h2>
+                <div class="faq-list">
+                  {faqBlocks.get(index)?.map((item) => (
+                    <details>
+                      <summary>{item.question}</summary>
+                      <p>{item.answer}</p>
+                    </details>
+                  ))}
+                </div>
+              </section>
+            );
+          }
           if (block.type === 'h2') return <h2>{block.value}</h2>;
           if (block.type === 'h3') return <h3>{block.value}</h3>;
           if (block.type === 'ul') return <ul>{(block.value as string[]).map((item) => <li>{item}</li>)}</ul>;
@@ -128,9 +180,12 @@ const hasRecommendations =
           if (block.type === 'blockquote') return <blockquote>{block.value}</blockquote>;
           if (block.type === 'code') return <pre><code>{block.value}</code></pre>;
           if (block.type === 'image') {
+            const imageIndex = articleImages.indexOf(block);
             return (
               <figure class="article-image">
-                <img src={block.src} alt={block.alt || ''} loading="lazy" decoding="async" />
+                <button class="article-image-button" type="button" data-article-image-trigger data-image-index={imageIndex}>
+                  <img src={block.src} alt={block.alt || ''} loading="lazy" decoding="async" />
+                </button>
                 {block.caption && <figcaption>{block.caption}</figcaption>}
               </figure>
             );
@@ -161,7 +216,10 @@ const hasRecommendations =
             <section aria-label={copy.relatedArticles}>
               <h2>{copy.relatedArticles}</h2>
               <div class="recommendation-list">
-                {post.meta.relatedArticles.map((article) => <span>{article}</span>)}
+                {post.meta.relatedArticles.map((article) => {
+                  const item = recommendation(article);
+                  return item.href ? <a href={item.href}>{item.label}</a> : <span>{item.label}</span>;
+                })}
               </div>
             </section>
           )}
@@ -169,7 +227,10 @@ const hasRecommendations =
             <section aria-label={copy.relatedGuides}>
               <h2>{copy.relatedGuides}</h2>
               <div class="recommendation-list">
-                {post.meta.relatedGuides.map((guide) => <span>{guide}</span>)}
+                {post.meta.relatedGuides.map((guide) => {
+                  const item = recommendation(guide);
+                  return item.href ? <a href={item.href}>{item.label}</a> : <span>{item.label}</span>;
+                })}
               </div>
             </section>
           )}
@@ -192,7 +253,55 @@ const hasRecommendations =
         </footer>
       )}
     </article>
+
+    {articleImages.length > 0 && (
+      <dialog class="article-image-viewer" aria-label="Article image">
+        <div class="article-image-viewer-panel">
+          <button class="article-image-close" type="button" data-article-image-close aria-label="Close">×</button>
+          <img
+            src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
+            alt=""
+            data-article-image-viewer-img
+            hidden
+          />
+          <p data-article-image-viewer-caption></p>
+        </div>
+      </dialog>
+    )}
   </main>
+  <script is:inline>
+    (() => {
+      const triggers = Array.from(document.querySelectorAll('[data-article-image-trigger]'));
+      const viewer = document.querySelector('.article-image-viewer');
+      const viewerImage = document.querySelector('[data-article-image-viewer-img]');
+      const viewerCaption = document.querySelector('[data-article-image-viewer-caption]');
+      const closeButton = document.querySelector('[data-article-image-close]');
+      if (!triggers.length || !(viewer instanceof HTMLDialogElement) || !(viewerImage instanceof HTMLImageElement)) return;
+
+      const openViewer = (trigger) => {
+        const image = trigger.querySelector('img');
+        const figure = trigger.closest('figure');
+        if (!(image instanceof HTMLImageElement)) return;
+        viewerImage.src = image.currentSrc || image.src;
+        viewerImage.alt = image.alt || '';
+        viewerImage.hidden = false;
+        if (viewerCaption instanceof HTMLElement) viewerCaption.textContent = figure?.querySelector('figcaption')?.textContent || '';
+        viewer.showModal();
+        closeButton?.focus({ preventScroll: true });
+      };
+
+      triggers.forEach((trigger) => {
+        trigger.addEventListener('click', () => openViewer(trigger));
+      });
+      closeButton?.addEventListener('click', () => viewer.close());
+      viewer.addEventListener('click', (event) => {
+        if (event.target === viewer) viewer.close();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && viewer.open) viewer.close();
+      });
+    })();
+  </script>
 </BaseLayout>
 
 <style>
@@ -436,17 +545,117 @@ const hasRecommendations =
     padding: 8px;
     background: #fffdf8;
   }
+  .article-image-button {
+    display: block;
+    width: 100%;
+    border: 0;
+    border-radius: 6px;
+    padding: 0;
+    background: transparent;
+    cursor: zoom-in;
+  }
   .article-image img {
     display: block;
     width: 100%;
     height: auto;
     border-radius: 6px;
   }
+  .article-image-button:focus-visible {
+    outline: 2px solid #3f625a;
+    outline-offset: 3px;
+  }
   .article-image figcaption {
     margin-top: 8px;
     color: #716a5f;
     font-size: 13px;
     line-height: 1.45;
+  }
+  .faq-section {
+    margin-top: 38px;
+  }
+  .faq-section h2 {
+    margin-top: 0;
+  }
+  .faq-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .faq-list details {
+    border: 1px solid #ded6ca;
+    border-radius: 8px;
+    padding: 0;
+    background: #fffdf8;
+  }
+  .faq-list summary {
+    cursor: pointer;
+    padding: 14px 16px;
+    color: #343331;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.45;
+  }
+  .faq-list summary::marker {
+    color: #716a5f;
+  }
+  .faq-list p {
+    margin: 0;
+    border-top: 1px solid #e7ded2;
+    padding: 13px 16px 15px;
+    color: #4f4b45;
+    font-size: 16px;
+    line-height: 1.62;
+  }
+  .article-image-viewer {
+    width: min(960px, calc(100vw - 36px));
+    max-height: calc(100vh - 32px);
+    border: 1px solid rgba(210, 201, 188, 0.62);
+    border-radius: 18px;
+    padding: 0;
+    background: #f2eee7;
+    color: #37342f;
+    box-shadow: 0 28px 86px rgba(39, 34, 29, 0.26);
+  }
+  .article-image-viewer[open] {
+    display: block;
+  }
+  .article-image-viewer::backdrop {
+    background: rgba(34, 30, 26, 0.78);
+  }
+  .article-image-viewer-panel {
+    display: grid;
+    gap: 10px;
+    padding: 12px;
+  }
+  .article-image-close {
+    width: 34px;
+    height: 34px;
+    justify-self: end;
+    border: 1px solid rgba(196, 185, 169, 0.5);
+    border-radius: 999px;
+    background: #fffdf8;
+    color: #37342f;
+    font: inherit;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .article-image-viewer img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    max-height: calc(100vh - 150px);
+    margin: 0 auto;
+    border: 1px solid rgba(210, 201, 188, 0.82);
+    border-radius: 12px;
+    background: #fffdf8;
+  }
+  .article-image-viewer p {
+    margin: 0;
+    color: #716a5f;
+    font-size: 13px;
+    line-height: 1.45;
+    text-align: center;
   }
   .article-body a {
     color: #3f625a;
@@ -472,13 +681,22 @@ const hasRecommendations =
     display: grid;
     gap: 8px;
   }
-  .recommendation-list span {
+  .recommendation-list span,
+  .recommendation-list a {
     display: block;
     border-left: 3px solid #c4b9aa;
     padding: 8px 0 8px 12px;
     color: #4f4b45;
     font-size: 15px;
     line-height: 1.45;
+    text-decoration: none;
+  }
+  .recommendation-list a:hover,
+  .recommendation-list a:focus-visible {
+    border-left-color: #3f625a;
+    color: #3f625a;
+    text-decoration: underline;
+    text-underline-offset: 4px;
   }
   @media (max-width: 640px) {
     .article-shell {

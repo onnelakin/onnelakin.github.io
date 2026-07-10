@@ -29,8 +29,8 @@ published_at: "2026-07-11"
 updated_at: "2026-07-12"
 tags: "workflow|template"
 related_apps: "VaultXT|ClipNest"
-related_articles: "How to plan offline text workflows|How to structure clipboard notes"
-related_guides: "Large text editing guide|Clipboard workflow guide"
+related_articles: "How to plan offline text workflows => /blog/en/offline-text-workflows/|How to structure clipboard notes => /blog/en/clipboard-notes/"
+related_guides: "Large text editing guide => /blog/en/large-text-editing/|Clipboard workflow guide => /blog/en/clipboard-workflow/"
 image_specs: "Workflow diagram for the full process|Comparison diagram for tool choices"
 ---
 
@@ -62,6 +62,16 @@ topics.csv -> markdown draft -> image_spec.json -> published page
 \`\`\`
 
 ![Workflow placeholder](/app-assets/vaultxt/assets/screenshots/en/1.png "Caption text for a future generated workflow image")
+
+## FAQ
+
+### Should FAQ answers be rendered as normal paragraphs?
+
+No. FAQ questions should become collapsible details so long articles stay easy to scan.
+
+### Can related recommendations include URLs?
+
+Yes. The template should render recommendation metadata as links when a URL is provided.
 `,
     'utf-8'
   );
@@ -77,6 +87,11 @@ topics.csv -> markdown draft -> image_spec.json -> published page
   assert.match(html, /Workflow diagram for the full process/);
   assert.match(html, /<blockquote\b/);
   assert.match(html, /<table\b/);
+  assert.match(html, /<details/);
+  assert.match(html, /<summary[^>]*>Should FAQ answers be rendered as normal paragraphs\?/);
+  assert.match(html, /href="\/blog\/en\/offline-text-workflows\/"/);
+  assert.match(html, /article-image-viewer/);
+  assert.match(html, /data-article-image-trigger/);
   assert.match(html, /topics.csv -&gt; markdown draft/);
   assert.match(html, /Caption text for a future generated workflow image/);
   assert.doesNotMatch(html, />Short Answer</);
