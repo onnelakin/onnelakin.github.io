@@ -677,4 +677,17 @@ test.describe('site layout', () => {
     await page.locator('[data-viewer-close]').click();
     await expect(viewer).not.toBeVisible();
   });
+
+  test('product screenshot gallery exposes all screenshots with page controls', async ({ page }) => {
+    await page.goto('/apps/quivra/');
+    await expect(page.locator('[data-screenshot-link]')).toHaveCount(4);
+    await expect(page.locator('[data-screenshot-prev]')).toBeVisible();
+    await expect(page.locator('[data-screenshot-next]')).toBeVisible();
+
+    const initialScrollLeft = await page.locator('[data-screenshot-row]').evaluate((row) => row.scrollLeft);
+    await page.locator('[data-screenshot-next]').click();
+    await expect
+      .poll(() => page.locator('[data-screenshot-row]').evaluate((row) => row.scrollLeft))
+      .toBeGreaterThan(initialScrollLeft);
+  });
 });
