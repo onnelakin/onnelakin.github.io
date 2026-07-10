@@ -19,7 +19,7 @@ const canonicalPath = '/melivra-privacy-policy/';
   <main class="policy-page">
     <nav aria-label="Navigation">
       <a class="brand" href="/">ONNELLAB</a>
-      <a class="language" href="/melivra-privacy-policy/ko/" data-locale-choice="ko">한국어</a>
+      <a class="language" href="/melivra-privacy-policy/ko/" data-locale-choice="ko" aria-label="한국어로 보기" title="한국어">KO</a>
     </nav>
 
     <header>
@@ -119,17 +119,30 @@ const canonicalPath = '/melivra-privacy-policy/';
   }
 
   .language {
-    min-height: 34px;
+    min-width: 38px;
+    min-height: 28px;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     border: 1px solid #ded6ca;
     border-radius: 999px;
-    padding: 6px 12px;
+    padding: 4px 9px;
     background: rgba(255, 253, 248, 0.72);
     color: #5f5a50;
-    font-size: 13px;
-    font-weight: 650;
-    line-height: 1.35;
+    font-size: 12px;
+    font-weight: 720;
+    line-height: 1;
+  }
+
+  .language:hover,
+  .language:focus-visible {
+    border-color: #cfc5b7;
+    background: #fffdf8;
+  }
+
+  .language:focus-visible {
+    outline: 2px solid #827d72;
+    outline-offset: 3px;
   }
 
   header {

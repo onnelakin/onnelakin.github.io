@@ -11,7 +11,7 @@ const { meta, copy } = data;
 const labels =
   data.locale === 'ko'
     ? {
-        switchLabel: 'English',
+        switchLabel: 'EN',
         platforms: '지원 플랫폼',
         appStore: 'App Store',
         googlePlay: 'Google Play',
@@ -23,7 +23,7 @@ const labels =
         stores: '스토어'
       }
     : {
-        switchLabel: '한국어',
+        switchLabel: 'KO',
         platforms: 'Platforms',
         appStore: 'App Store',
         googlePlay: 'Google Play',
@@ -190,7 +190,7 @@ const faqJsonLd = {
   <main class="page-shell" style={pageStyle} data-product-slug={data.source.slug} data-product-locale={data.locale}>
     <header class="topbar" aria-label="ONNELLAB">
       <a class="brand" href={homePath}>ONNELLAB</a>
-      <a class="language" href={data.alternatePath} data-locale-choice={data.locale === 'ko' ? 'en' : 'ko'}>{labels.switchLabel}</a>
+      <a class="language" href={data.alternatePath} data-locale-choice={data.locale === 'ko' ? 'en' : 'ko'} aria-label={data.locale === 'ko' ? 'Switch to English' : '한국어로 보기'} title={data.locale === 'ko' ? 'English' : '한국어'}>{labels.switchLabel}</a>
     </header>
 
     <section class="hero" aria-labelledby="product-title" data-app={data.source.slug}>
@@ -390,17 +390,20 @@ const faqJsonLd = {
   }
 
   .language {
-    min-height: 34px;
+    min-width: 38px;
+    min-height: 28px;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     border: 1px solid #ded6ca;
     border-radius: 999px;
-    padding: 6px 12px;
+    padding: 4px 9px;
     background: rgba(255, 253, 248, 0.72);
     color: #5f5a50;
-    font-size: 13px;
-    font-weight: 650;
-    line-height: 1.35;
+    font-size: 12px;
+    font-weight: 720;
+    line-height: 1;
+    text-decoration: none;
   }
 
   .language:hover,

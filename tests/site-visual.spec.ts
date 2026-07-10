@@ -113,6 +113,16 @@ test.describe('site layout', () => {
     await expect(page.locator('.product-card')).toHaveCount(4);
   });
 
+  test('language switch uses compact badge labels', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('main > .top-nav .language')).toHaveText('KO');
+    await expect(page.locator('main > .top-nav .language')).toHaveAttribute('aria-label', '한국어로 보기');
+
+    await page.goto('/ko/');
+    await expect(page.locator('main > .top-nav .language')).toHaveText('EN');
+    await expect(page.locator('main > .top-nav .language')).toHaveAttribute('aria-label', 'Switch to English');
+  });
+
   test('home exposes blog navigation outside the footer', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('main > .top-nav a[href="/blog/"]')).toBeVisible();

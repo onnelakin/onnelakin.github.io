@@ -16,10 +16,10 @@ const copy = isKo
       description: '읽기, 음악, 생산성, 미디어, 창작, 게임, 리서치 워크플로를 다루는 ONNELLAB 교육형 글입니다.',
       canonicalPath: '/blog/ko/',
       switchHref: '/blog/',
-      switchLabel: 'English',
+      switchLabel: 'EN',
       eyebrow: 'ONNELLAB Blog',
-      heading: '차분한 디지털 워크플로를 위한 실전 가이드',
-      intro: '문제를 먼저 설명하고, 실제로 도움이 될 때만 앱을 소개하는 교육형 글을 게시합니다.',
+      heading: '워크플로 가이드',
+      intro: '읽기, 음악, 생산성, 미디어 작업을 차분하게 정리하는 실전 글입니다.',
       emptyTitle: '첫 글을 준비하고 있습니다',
       emptyText: '읽기, 음악, 생산성, 미디어 작업을 더 차분하게 정리하는 실전 가이드를 곧 게시합니다.',
       categoriesLabel: '다룰 주제',
@@ -30,10 +30,10 @@ const copy = isKo
       description: 'Educational ONNELLAB articles about reading, music, productivity, media, craft, games, and research workflows.',
       canonicalPath: '/blog/',
       switchHref: '/blog/ko/',
-      switchLabel: '한국어',
+      switchLabel: 'KO',
       eyebrow: 'ONNELLAB Blog',
-      heading: 'Practical guides for calm digital workflows',
-      intro: 'Educational articles that explain problems first and introduce applications only when they are genuinely useful.',
+      heading: 'Practical Workflow Guides',
+      intro: 'Focused articles for calmer reading, music, productivity, and media workflows.',
       emptyTitle: 'Articles are being prepared',
       emptyText: 'Practical guides for reading, music, productivity, and media workflows will appear here as they are published.',
       categoriesLabel: 'Planned topics',
@@ -68,7 +68,7 @@ const categories = isKo
   <main class="blog-shell">
     <nav class="top-nav" aria-label="Blog language">
       <a href={isKo ? '/ko/' : '/'}>ONNELLAB</a>
-      <a href={copy.switchHref} data-locale-choice={isKo ? 'en' : 'ko'}>{copy.switchLabel}</a>
+      <a class="language" href={copy.switchHref} data-locale-choice={isKo ? 'en' : 'ko'} aria-label={isKo ? 'Switch to English' : '한국어로 보기'} title={isKo ? 'English' : '한국어'}>{copy.switchLabel}</a>
     </nav>
 
     <header class="blog-header">
@@ -122,6 +122,30 @@ const categories = isKo
     color: #5f5a50;
     text-decoration: none;
     font-weight: 650;
+  }
+  .language {
+    min-width: 38px;
+    min-height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ded6ca;
+    border-radius: 999px;
+    padding: 4px 9px;
+    background: rgba(255, 253, 248, 0.72);
+    color: #5f5a50;
+    font-size: 12px;
+    font-weight: 720;
+    line-height: 1;
+  }
+  .language:hover,
+  .language:focus-visible {
+    border-color: #cfc5b7;
+    background: #fffdf8;
+  }
+  .language:focus-visible {
+    outline: 2px solid #827d72;
+    outline-offset: 3px;
   }
   .blog-header {
     padding: 64px 0 36px;

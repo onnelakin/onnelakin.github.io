@@ -44,7 +44,7 @@ const text =
         searchLabel: '앱 찾기',
         searchPlaceholder: '앱 이름 검색',
         empty: '일치하는 앱이 없습니다.',
-        switchLabel: 'English',
+        switchLabel: 'EN',
         switchHref: '/apps/',
         homeHref: '/ko/'
       }
@@ -55,7 +55,7 @@ const text =
         searchLabel: 'Find app',
         searchPlaceholder: 'Search app name',
         empty: 'No matching apps.',
-        switchLabel: '한국어',
+        switchLabel: 'KO',
         switchHref: '/apps/ko/',
         homeHref: '/'
       };
@@ -98,7 +98,7 @@ const collectionJsonLd = {
   <main class="page-shell">
     <nav aria-label="Navigation">
       <a class="brand" href={text.homeHref}>ONNELLAB</a>
-      <a class="language" href={text.switchHref} data-locale-choice={locale === 'ko' ? 'en' : 'ko'}>{text.switchLabel}</a>
+      <a class="language" href={text.switchHref} data-locale-choice={locale === 'ko' ? 'en' : 'ko'} aria-label={locale === 'ko' ? 'Switch to English' : '한국어로 보기'} title={locale === 'ko' ? 'English' : '한국어'}>{text.switchLabel}</a>
     </nav>
 
     <header>
@@ -181,17 +181,19 @@ const collectionJsonLd = {
   }
 
   .language {
-    min-height: 34px;
+    min-width: 38px;
+    min-height: 28px;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     border: 1px solid #ded6ca;
     border-radius: 999px;
-    padding: 6px 12px;
+    padding: 4px 9px;
     background: rgba(255, 253, 248, 0.72);
     color: #5f5a50;
-    font-size: 13px;
-    font-weight: 650;
-    line-height: 1.35;
+    font-size: 12px;
+    font-weight: 720;
+    line-height: 1;
   }
 
   .language:hover,
