@@ -28,6 +28,11 @@ export type BlogPost = {
   href: string;
 };
 
+export type MarkdownBlock =
+  | { type: 'p' | 'h2' | 'h3' | 'blockquote' | 'code' | 'image'; value: string; alt?: string; src?: string; caption?: string }
+  | { type: 'ul' | 'ol'; value: string[] }
+  | { type: 'table'; value: { headers: string[]; rows: string[][] } };
+
 export function getBlogPosts(locale?: Locale): BlogPost[] {
   if (!fs.existsSync(blogContentDir)) return [];
   const locales = locale ? [locale] : (['en', 'ko'] as const);
@@ -46,12 +51,15 @@ export function getAllBlogPages(): BlogPost[] {
   return getBlogPosts();
 }
 
-export function renderMarkdownBlocks(markdown: string): Array<{ type: 'p' | 'h2' | 'h3' | 'ul' | 'ol'; value: string | string[] }> {
-  const blocks: Array<{ type: 'p' | 'h2' | 'h3' | 'ul' | 'ol'; value: string | string[] }> = [];
+export function renderMarkdownBlocks(markdown: string): MarkdownBlock[] {
+  const blocks: MarkdownBlock[] = [];
   const lines = markdown.split(/\r?\n/);
   let paragraph: string[] = [];
   let unordered: string[] = [];
   let ordered: string[] = [];
+  let blockquote: string[] = [];
+  let code: string[] = [];
+  let inCodeBlock = false;
 
   const flushParagraph = () => {
     if (!paragraph.length) return;
@@ -64,42 +72,86 @@ export function renderMarkdownBlocks(markdown: string): Array<{ type: 'p' | 'h2'
     unordered = [];
     ordered = [];
   };
+  const flushBlockquote = () => {
+    if (!blockquote.length) return;
+    blocks.push({ type: 'blockquote', value: blockquote.join(' ') });
+    blockquote = [];
+  };
+  const flushCode = () => {
+    blocks.push({ type: 'code', value: code.join('\n') });
+    code = [];
+  };
+  const flushAll = () => {
+    flushParagraph();
+    flushLists();
+    flushBlockquote();
+  };
 
-  for (const line of lines) {
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
     const trimmed = line.trim();
+    if (trimmed.startsWith('```')) {
+      if (inCodeBlock) {
+        flushCode();
+        inCodeBlock = false;
+      } else {
+        flushAll();
+        inCodeBlock = true;
+        code = [];
+      }
+      continue;
+    }
+    if (inCodeBlock) {
+      code.push(line);
+      continue;
+    }
     if (!trimmed) {
-      flushParagraph();
-      flushLists();
+      flushAll();
       continue;
     }
     const h2 = trimmed.match(/^##\s+(.+)$/);
     const h3 = trimmed.match(/^###\s+(.+)$/);
     const ul = trimmed.match(/^-\s+(.+)$/);
     const ol = trimmed.match(/^\d+\.\s+(.+)$/);
+    const quote = trimmed.match(/^>\s?(.+)$/);
+    const image = trimmed.match(/^!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]+)")?\)$/);
     if (h2) {
-      flushParagraph();
-      flushLists();
+      flushAll();
       blocks.push({ type: 'h2', value: h2[1] });
     } else if (h3) {
+      flushAll();
+      blocks.push({ type: 'h3', value: h3[1] });
+    } else if (image) {
+      flushAll();
+      blocks.push({ type: 'image', value: image[2], alt: image[1], src: image[2], caption: image[3] || image[1] });
+    } else if (isTableStart(lines, index)) {
+      flushAll();
+      const table = readTable(lines, index);
+      blocks.push({ type: 'table', value: table.value });
+      index = table.endIndex;
+    } else if (quote) {
       flushParagraph();
       flushLists();
-      blocks.push({ type: 'h3', value: h3[1] });
+      blockquote.push(quote[1]);
     } else if (ul) {
       flushParagraph();
+      flushBlockquote();
       if (ordered.length) flushLists();
       unordered.push(ul[1]);
     } else if (ol) {
       flushParagraph();
+      flushBlockquote();
       if (unordered.length) flushLists();
       ordered.push(ol[1]);
     } else if (!trimmed.startsWith('# ')) {
       flushLists();
+      flushBlockquote();
       paragraph.push(trimmed);
     }
   }
 
-  flushParagraph();
-  flushLists();
+  if (inCodeBlock) flushCode();
+  flushAll();
   return blocks;
 }
 
@@ -161,6 +213,38 @@ function splitList(value?: string): string[] {
     .split(/[|,]/)
     .map((item) => item.trim())
     .filter(Boolean);
+}
+
+function isTableStart(lines: string[], index: number): boolean {
+  const header = lines[index]?.trim();
+  const separator = lines[index + 1]?.trim();
+  return Boolean(
+    header?.startsWith('|') &&
+      header.endsWith('|') &&
+      separator?.startsWith('|') &&
+      separator.endsWith('|') &&
+      /^(\|\s*:?-{3,}:?\s*)+\|$/.test(separator)
+  );
+}
+
+function readTable(lines: string[], startIndex: number): { value: { headers: string[]; rows: string[][] }; endIndex: number } {
+  const headers = splitTableRow(lines[startIndex]);
+  const rows: string[][] = [];
+  let index = startIndex + 2;
+  for (; index < lines.length; index += 1) {
+    const line = lines[index].trim();
+    if (!line.startsWith('|') || !line.endsWith('|')) break;
+    rows.push(splitTableRow(line));
+  }
+  return { value: { headers, rows }, endIndex: index - 1 };
+}
+
+function splitTableRow(line: string): string[] {
+  return line
+    .trim()
+    .replace(/^\||\|$/g, '')
+    .split('|')
+    .map((cell) => cell.trim());
 }
 
 function firstParagraph(markdown: string): string {

@@ -125,6 +125,32 @@ const hasRecommendations =
           if (block.type === 'h3') return <h3>{block.value}</h3>;
           if (block.type === 'ul') return <ul>{(block.value as string[]).map((item) => <li>{item}</li>)}</ul>;
           if (block.type === 'ol') return <ol>{(block.value as string[]).map((item) => <li>{item}</li>)}</ol>;
+          if (block.type === 'blockquote') return <blockquote>{block.value}</blockquote>;
+          if (block.type === 'code') return <pre><code>{block.value}</code></pre>;
+          if (block.type === 'image') {
+            return (
+              <figure class="article-image">
+                <img src={block.src} alt={block.alt || ''} loading="lazy" decoding="async" />
+                {block.caption && <figcaption>{block.caption}</figcaption>}
+              </figure>
+            );
+          }
+          if (block.type === 'table') {
+            return (
+              <div class="table-scroll">
+                <table>
+                  <thead>
+                    <tr>{block.value.headers.map((header) => <th>{header}</th>)}</tr>
+                  </thead>
+                  <tbody>
+                    {block.value.rows.map((row) => (
+                      <tr>{row.map((cell) => <td>{cell}</td>)}</tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            );
+          }
           return <p>{block.value}</p>;
         })}
       </div>
@@ -351,6 +377,77 @@ const hasRecommendations =
   .article-body li + li {
     margin-top: 7px;
   }
+  .article-body blockquote {
+    margin: 26px 0;
+    border-left: 3px solid #c4b9aa;
+    padding: 12px 0 12px 18px;
+    color: #4f4b45;
+    font-size: 17px;
+    line-height: 1.65;
+    background: linear-gradient(90deg, rgba(248, 243, 234, 0.76), rgba(248, 243, 234, 0));
+  }
+  .article-body pre {
+    overflow-x: auto;
+    margin: 24px 0;
+    border: 1px solid #ded6ca;
+    border-radius: 8px;
+    padding: 14px 16px;
+    background: #2f2d29;
+    color: #fffdf8;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .article-body code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  }
+  .table-scroll {
+    overflow-x: auto;
+    margin: 24px 0;
+    border: 1px solid #ded6ca;
+    border-radius: 8px;
+    background: #fffdf8;
+  }
+  .article-body table {
+    width: 100%;
+    min-width: 560px;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+  .article-body th,
+  .article-body td {
+    border-bottom: 1px solid #e7ded2;
+    padding: 11px 13px;
+    color: #4f4b45;
+    text-align: left;
+    vertical-align: top;
+  }
+  .article-body th {
+    background: #f8f3ea;
+    color: #343331;
+    font-weight: 720;
+  }
+  .article-body tr:last-child td {
+    border-bottom: 0;
+  }
+  .article-image {
+    margin: 28px 0;
+    border: 1px solid #ded6ca;
+    border-radius: 8px;
+    padding: 8px;
+    background: #fffdf8;
+  }
+  .article-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+  }
+  .article-image figcaption {
+    margin-top: 8px;
+    color: #716a5f;
+    font-size: 13px;
+    line-height: 1.45;
+  }
   .article-body a {
     color: #3f625a;
     font-weight: 650;
@@ -393,7 +490,8 @@ const hasRecommendations =
     }
     .description,
     .article-body p,
-    .article-body li {
+    .article-body li,
+    .article-body blockquote {
       font-size: 16px;
     }
     .visual-plan {

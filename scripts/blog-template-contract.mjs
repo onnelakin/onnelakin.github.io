@@ -23,8 +23,8 @@ title: "How to Keep a Very Long ONNELLAB Workflow Article Title Readable on Mobi
 slug: "template-contract"
 category: "productivity"
 language: "en"
-description: "A template contract fixture used only during tests."
-short_answer: "Use a concise answer block, restrained metadata, and related recommendations before the body."
+description: "A template contract fixture used only during tests with a deliberately long supporting sentence that checks whether the header remains readable without swallowing the article body."
+short_answer: "Use a concise answer block, restrained metadata, related recommendations, readable tables, calm callouts, code examples, and image captions before the body becomes dense."
 published_at: "2026-07-11"
 updated_at: "2026-07-12"
 tags: "workflow|template"
@@ -49,6 +49,19 @@ This section should feed the summary box and should not appear again in the body
 - Start with the reader problem.
 - Show the lowest-risk workflow.
 - Link to the matching ONNELLAB application.
+
+> Keep the callout short enough to scan before the reader reaches the detailed workflow.
+
+| Element | Purpose |
+| --- | --- |
+| Summary | Answers the core question quickly |
+| Related apps | Connects the workflow to a concrete ONNELLAB utility |
+
+\`\`\`
+topics.csv -> markdown draft -> image_spec.json -> published page
+\`\`\`
+
+![Workflow placeholder](/app-assets/vaultxt/assets/screenshots/en/1.png "Caption text for a future generated workflow image")
 `,
     'utf-8'
   );
@@ -62,5 +75,9 @@ This section should feed the summary box and should not appear again in the body
   assert.match(html, /Related guides/);
   assert.match(html, /Image plan/);
   assert.match(html, /Workflow diagram for the full process/);
+  assert.match(html, /<blockquote\b/);
+  assert.match(html, /<table\b/);
+  assert.match(html, /topics.csv -&gt; markdown draft/);
+  assert.match(html, /Caption text for a future generated workflow image/);
   assert.doesNotMatch(html, />Short Answer</);
 });
