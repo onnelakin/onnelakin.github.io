@@ -564,6 +564,7 @@ const hasRecommendations =
   }
   .article-body th,
   .article-body td {
+    border-right: 1px solid #eee4d8;
     border-bottom: 1px solid #e7ded2;
     padding: 11px 13px;
     color: #4f4b45;
@@ -583,6 +584,11 @@ const hasRecommendations =
     background: #f8f3ea;
     color: #343331;
     font-weight: 720;
+    border-bottom-color: #dcd1c1;
+  }
+  .article-body th:last-child,
+  .article-body td:last-child {
+    border-right: 0;
   }
   .article-body tr:last-child td {
     border-bottom: 0;
