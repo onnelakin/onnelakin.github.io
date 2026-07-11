@@ -173,6 +173,18 @@ test.describe('site layout', () => {
     expect(await rssResponse.text()).toContain('How to Read Large TXT Files Without Lag');
   });
 
+  test('blog index exposes collection structured data', async ({ page }) => {
+    await page.goto('/blog/');
+
+    const jsonLd = await page.locator('script[type="application/ld+json"]').evaluateAll((scripts) =>
+      scripts.map((script) => script.textContent || '').join('\n')
+    );
+    expect(jsonLd).toContain('Blog');
+    expect(jsonLd).toContain('CollectionPage');
+    expect(jsonLd).toContain('ItemList');
+    expect(jsonLd).toContain('Read Large TXT Files Without Lag');
+  });
+
   test('blog article metadata remains crawlable and answer-friendly', async ({ page }) => {
     await page.goto('/blog/en/read-large-txt-files-without-lag/');
 
@@ -191,6 +203,19 @@ test.describe('site layout', () => {
     expect(jsonLd).toContain('BlogPosting');
     expect(jsonLd).toContain('BreadcrumbList');
     expect(jsonLd).toContain('FAQPage');
+  });
+
+  test('blog article table of contents links to article sections', async ({ page }) => {
+    await page.goto('/blog/en/read-large-txt-files-without-lag/');
+
+    await expect(page.locator('.toc-box')).toBeVisible();
+    await expect(page.locator('.toc-box a[href="#recommended-workflow"]')).toContainText('Recommended Workflow');
+    await expect(page.locator('#recommended-workflow')).toBeVisible();
+
+    await page.goto('/blog/ko/read-large-txt-files-without-lag/');
+    await expect(page.locator('.toc-box')).toBeVisible();
+    await expect(page.locator('.toc-box a[href="#권장-워크플로"]')).toContainText('권장 워크플로');
+    await expect(page.locator('#권장-워크플로')).toBeVisible();
   });
 
   test('korean browser language redirects default pages to korean pages', async ({ page }) => {

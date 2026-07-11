@@ -67,6 +67,7 @@ const copy = isKo
       relatedApps: '관련 앱',
       relatedArticles: '관련 글',
       relatedGuides: '관련 가이드',
+      contents: '목차',
       visualPlan: '이미지 계획',
       tags: '태그',
       published: '게시',
@@ -79,6 +80,7 @@ const copy = isKo
       relatedApps: 'Related apps',
       relatedArticles: 'Related articles',
       relatedGuides: 'Related guides',
+      contents: 'Contents',
       visualPlan: 'Image plan',
       tags: 'Tags',
       published: 'Published',
@@ -120,6 +122,27 @@ const tableCellClass = (value: string) => {
   const plain = value.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1').trim();
   return plain.length > 28 || /[.!?。！？]/.test(plain) ? 'cell-long' : 'cell-short';
 };
+const slugifyHeading = (value: string) =>
+  value
+    .trim()
+    .toLowerCase()
+    .normalize('NFC')
+    .replace(/[^\p{L}\p{N}]+/gu, '-')
+    .replace(/^-|-$/g, '') || 'section';
+const headingIds = new Map<number, string>();
+const usedHeadingIds = new Map<string, number>();
+for (let index = 0; index < articleBlocks.length; index += 1) {
+  const block = articleBlocks[index];
+  if (block.type !== 'h2') continue;
+  const base = slugifyHeading(String(block.value));
+  const count = usedHeadingIds.get(base) || 0;
+  usedHeadingIds.set(base, count + 1);
+  headingIds.set(index, count === 0 ? base : `${base}-${count + 1}`);
+}
+const tocItems = Array.from(headingIds.entries()).map(([index, id]) => ({
+  id,
+  label: String(articleBlocks[index].value)
+}));
 const hasMeta = post.meta.publishedAt || post.meta.updatedAt || post.meta.relatedApps.length;
 const hasRecommendations =
   post.meta.relatedApps.length > 0 ||
@@ -253,13 +276,25 @@ const articleJsonLd = faqJsonLd ? [blogPostingJsonLd, breadcrumbJsonLd, faqJsonL
         <span>{summaryText}</span>
       </aside>
 
+      {tocItems.length > 3 && (
+        <nav class="toc-box" aria-label={copy.contents}>
+          <p>{copy.contents}</p>
+          <ol>
+            {tocItems.map((item) => (
+              <li><a href={`#${item.id}`}>{item.label}</a></li>
+            ))}
+          </ol>
+        </nav>
+      )}
+
       <div class="article-body">
         {articleBlocks.map((block, index) => {
           if (skippedBlockIndexes.has(index)) return null;
           if (block.type === 'h2' && faqBlocks.has(index)) {
+            const headingId = headingIds.get(index) || `faq-${index}`;
             return (
-              <section class="faq-section" aria-labelledby={`faq-${index}`}>
-                <h2 id={`faq-${index}`}>{block.value}</h2>
+              <section class="faq-section" aria-labelledby={headingId}>
+                <h2 id={headingId}>{block.value}</h2>
                 <div class="faq-list">
                   {faqBlocks.get(index)?.map((item) => (
                     <details>
@@ -271,7 +306,7 @@ const articleJsonLd = faqJsonLd ? [blogPostingJsonLd, breadcrumbJsonLd, faqJsonL
               </section>
             );
           }
-          if (block.type === 'h2') return <h2>{block.value}</h2>;
+          if (block.type === 'h2') return <h2 id={headingIds.get(index)}>{block.value}</h2>;
           if (block.type === 'h3') return <h3>{block.value}</h3>;
           if (block.type === 'ul') {
             return <ul>{(block.value as string[]).map((item) => <li>{inlineParts(item).map((part) => part.href ? <a href={part.href}>{part.text}</a> : part.text)}</li>)}</ul>;
@@ -530,6 +565,42 @@ const articleJsonLd = faqJsonLd ? [blogPostingJsonLd, breadcrumbJsonLd, faqJsonL
     color: #4f4b45;
     font-size: 16px;
     line-height: 1.62;
+  }
+  .toc-box {
+    margin-top: 16px;
+    border: 1px solid #ded6ca;
+    border-radius: 8px;
+    padding: 16px 18px;
+    background: rgba(255, 253, 248, 0.74);
+  }
+  .toc-box p {
+    margin: 0 0 10px;
+    color: #716a5f;
+    font-size: 13px;
+    font-weight: 720;
+    text-transform: uppercase;
+  }
+  .toc-box ol {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px 18px;
+    margin: 0;
+    padding-left: 18px;
+  }
+  .toc-box li {
+    color: #6c675f;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+  .toc-box a {
+    color: #4f4b45;
+    text-decoration: none;
+  }
+  .toc-box a:hover,
+  .toc-box a:focus-visible {
+    color: #3f625a;
+    text-decoration: underline;
+    text-underline-offset: 4px;
   }
   .visual-plan {
     display: grid;
@@ -853,6 +924,13 @@ const articleJsonLd = faqJsonLd ? [blogPostingJsonLd, breadcrumbJsonLd, faqJsonL
     }
     .visual-plan {
       grid-template-columns: 1fr;
+    }
+    .toc-box {
+      padding: 14px 16px;
+    }
+    .toc-box ol {
+      grid-template-columns: 1fr;
+      gap: 8px;
     }
     .table-scroll {
       overflow: visible;
