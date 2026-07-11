@@ -162,14 +162,14 @@ test.describe('site layout', () => {
   test('blog category filters prepare the post list for growth', async ({ page }) => {
     await page.goto('/blog/');
     await expect(page.locator('[data-blog-filter="all"]')).toHaveText('All');
-    await expect(page.locator('[data-blog-filter="reading"]')).toBeVisible();
+    await expect(page.locator('[data-blog-filter="reading"]')).toHaveText('Reading');
     await page.locator('[data-blog-filter="reading"]').click();
     await expect(page.locator('[data-post-category="reading"]')).toBeVisible();
     await expect(page.locator('[data-blog-filter="reading"]')).toHaveAttribute('aria-pressed', 'true');
 
     await page.goto('/blog/ko/');
     await expect(page.locator('[data-blog-filter="all"]')).toHaveText('전체');
-    await expect(page.locator('[data-blog-filter="reading"]')).toBeVisible();
+    await expect(page.locator('[data-blog-filter="reading"]')).toHaveText('읽기');
   });
 
   test('blog seo endpoints include blog routes', async ({ page }) => {
@@ -179,11 +179,18 @@ test.describe('site layout', () => {
     expect(sitemap).toContain('https://onnelakin.github.io/blog/');
     expect(sitemap).toContain('https://onnelakin.github.io/blog/ko/');
     expect(sitemap).toContain('https://onnelakin.github.io/blog/en/read-large-txt-files-without-lag/');
+    expect(sitemap).toContain('hreflang="ko" href="https://onnelakin.github.io/blog/ko/read-large-txt-files-without-lag/"');
 
     const rssResponse = await page.request.get('/rss.xml');
     expect(rssResponse.ok()).toBe(true);
     expect(rssResponse.headers()['content-type']).toMatch(/(?:application|text)\/xml|rss\+xml/);
     expect(await rssResponse.text()).toContain('How to Read Large TXT Files Without Lag');
+
+    const llmsResponse = await page.request.get('/llms.txt');
+    expect(llmsResponse.ok()).toBe(true);
+    const llms = await llmsResponse.text();
+    expect(llms).toContain('## Blog Articles');
+    expect(llms).toContain('https://onnelakin.github.io/blog/en/read-large-txt-files-without-lag/');
   });
 
   test('blog index exposes collection structured data', async ({ page }) => {
@@ -210,6 +217,7 @@ test.describe('site layout', () => {
       'content',
       'https://onnelakin.github.io/blog-assets/en/read-large-txt-files-without-lag/workflow-diagram.svg'
     );
+    await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary_large_image');
     const jsonLd = await page.locator('script[type="application/ld+json"]').evaluateAll((scripts) =>
       scripts.map((script) => script.textContent || '').join('\n')
     );
@@ -219,14 +227,25 @@ test.describe('site layout', () => {
   });
 
   test('blog article table of contents links to article sections', async ({ page }) => {
+    const isMobile = (page.viewportSize()?.width ?? 0) <= 640;
     await page.goto('/blog/en/read-large-txt-files-without-lag/');
 
     await expect(page.locator('.toc-box')).toBeVisible();
+    await expect(page.locator('.toc-box summary')).toHaveText('Contents');
+    if (isMobile) {
+      await expect(page.locator('.toc-box')).not.toHaveAttribute('open', '');
+      await page.locator('.toc-box summary').click();
+    }
     await expect(page.locator('.toc-box a[href="#recommended-workflow"]')).toContainText('Recommended Workflow');
     await expect(page.locator('#recommended-workflow')).toBeVisible();
 
     await page.goto('/blog/ko/read-large-txt-files-without-lag/');
     await expect(page.locator('.toc-box')).toBeVisible();
+    await expect(page.locator('.toc-box summary')).toHaveText('목차');
+    if (isMobile) {
+      await expect(page.locator('.toc-box')).not.toHaveAttribute('open', '');
+      await page.locator('.toc-box summary').click();
+    }
     await expect(page.locator('.toc-box a[href="#권장-워크플로"]')).toContainText('권장 워크플로');
     await expect(page.locator('#권장-워크플로')).toBeVisible();
   });

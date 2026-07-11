@@ -59,6 +59,26 @@ const appsHref = isKo ? '/apps/ko/' : '/apps/';
 const alternatePost = getBlogAlternatePost(post);
 const switchLabel = isKo ? 'English' : '한국어';
 const switchAria = isKo ? 'Switch to English' : '한국어로 보기';
+const categoryLabels: Record<string, string> = isKo
+  ? {
+      reading: '읽기',
+      music: '음악',
+      productivity: '생산성',
+      media: '미디어',
+      craft: '창작',
+      games: '게임',
+      research: '리서치'
+    }
+  : {
+      reading: 'Reading',
+      music: 'Music',
+      productivity: 'Productivity',
+      media: 'Media',
+      craft: 'Craft',
+      games: 'Games',
+      research: 'Research'
+    };
+const categoryLabel = categoryLabels[post.meta.category] || post.meta.category;
 const copy = isKo
   ? {
       blog: 'Blog',
@@ -289,7 +309,7 @@ const articleJsonLd = faqJsonLd ? [blogPostingJsonLd, breadcrumbJsonLd, faqJsonL
 
     <article>
       <header class="article-header">
-        <p class="category">{post.meta.category}</p>
+        <p class="category">{categoryLabel}</p>
         <h1>{post.meta.title}</h1>
         <p class="description">{post.meta.description}</p>
         {hasMeta && (
@@ -307,14 +327,16 @@ const articleJsonLd = faqJsonLd ? [blogPostingJsonLd, breadcrumbJsonLd, faqJsonL
       </aside>
 
       {tocItems.length > 3 && (
-        <nav class="toc-box" aria-label={copy.contents}>
-          <p>{copy.contents}</p>
-          <ol>
-            {tocItems.map((item) => (
-              <li><a href={`#${item.id}`}>{item.label}</a></li>
-            ))}
-          </ol>
-        </nav>
+        <details class="toc-box" data-toc-box open>
+          <summary>{copy.contents}</summary>
+          <nav aria-label={copy.contents}>
+            <ol>
+              {tocItems.map((item) => (
+                <li><a href={`#${item.id}`}>{item.label}</a></li>
+              ))}
+            </ol>
+          </nav>
+        </details>
       )}
 
       <div class="article-body">
@@ -453,6 +475,11 @@ const articleJsonLd = faqJsonLd ? [blogPostingJsonLd, breadcrumbJsonLd, faqJsonL
   </main>
   <script is:inline>
     (() => {
+      const tocBox = document.querySelector('[data-toc-box]');
+      if (tocBox instanceof HTMLDetailsElement && window.matchMedia('(max-width: 640px)').matches) {
+        tocBox.open = false;
+      }
+
       const triggers = Array.from(document.querySelectorAll('[data-article-image-trigger]'));
       const viewer = document.querySelector('.article-image-viewer');
       const viewerImage = document.querySelector('[data-article-image-viewer-img]');
@@ -618,12 +645,16 @@ const articleJsonLd = faqJsonLd ? [blogPostingJsonLd, breadcrumbJsonLd, faqJsonL
     padding: 16px 18px;
     background: rgba(255, 253, 248, 0.74);
   }
-  .toc-box p {
+  .toc-box summary {
+    cursor: pointer;
     margin: 0 0 10px;
     color: #716a5f;
     font-size: 13px;
     font-weight: 720;
     text-transform: uppercase;
+  }
+  .toc-box summary::marker {
+    color: #716a5f;
   }
   .toc-box ol {
     display: grid;
@@ -995,6 +1026,9 @@ const articleJsonLd = faqJsonLd ? [blogPostingJsonLd, breadcrumbJsonLd, faqJsonL
     }
     .toc-box {
       padding: 14px 16px;
+    }
+    .toc-box:not([open]) {
+      padding-bottom: 14px;
     }
     .toc-box ol {
       grid-template-columns: 1fr;

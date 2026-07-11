@@ -30,7 +30,8 @@ export function GET() {
   });
   const blogEntries = getBlogPosts().map((post) => ({
     path: post.href,
-    lastmod: sourceLastmod(post.sourcePath)
+    lastmod: sourceLastmod(post.sourcePath),
+    alternates: blogAlternates(post)
   }));
   const entries: SitemapEntry[] = [
     {
@@ -195,4 +196,16 @@ function newestFileMtime(dir: string): Date {
     if (mtime > newest) newest = mtime;
   }
   return newest;
+}
+
+function blogAlternates(post: ReturnType<typeof getBlogPosts>[number]): Array<{ lang: string; path: string }> | undefined {
+  const alternate = getBlogPosts(post.meta.language === 'ko' ? 'en' : 'ko').find((item) => item.meta.slug === post.meta.slug);
+  if (!alternate) return undefined;
+  const enPath = post.meta.language === 'en' ? post.href : alternate.href;
+  const koPath = post.meta.language === 'ko' ? post.href : alternate.href;
+  return [
+    { lang: 'en', path: enPath },
+    { lang: 'ko', path: koPath },
+    { lang: 'x-default', path: enPath }
+  ];
 }

@@ -61,6 +61,26 @@ const categories = isKo
       ['Media', 'Practical organization for screenshots, clips, and references']
     ];
 const postCategories = Array.from(new Set(posts.map((post) => post.meta.category))).sort((a, b) => a.localeCompare(b));
+const categoryLabels: Record<string, string> = isKo
+  ? {
+      reading: '읽기',
+      music: '음악',
+      productivity: '생산성',
+      media: '미디어',
+      craft: '창작',
+      games: '게임',
+      research: '리서치'
+    }
+  : {
+      reading: 'Reading',
+      music: 'Music',
+      productivity: 'Productivity',
+      media: 'Media',
+      craft: 'Craft',
+      games: 'Games',
+      research: 'Research'
+    };
+const categoryLabel = (category: string) => categoryLabels[category] || category;
 const absoluteUrl = (path: string) => new URL(path, Astro.site).toString();
 const blogJsonLd = [
   {
@@ -154,7 +174,7 @@ const blogJsonLd = [
         <div class="filter-row" role="group" aria-label={copy.categoriesLabel}>
           <button type="button" class="filter-chip is-active" data-blog-filter="all">{copy.allCategories}</button>
           {postCategories.map((category) => (
-            <button type="button" class="filter-chip" data-blog-filter={category}>{category}</button>
+            <button type="button" class="filter-chip" data-blog-filter={category}>{categoryLabel(category)}</button>
           ))}
         </div>
 
@@ -162,7 +182,7 @@ const blogJsonLd = [
           {posts.map((post) => (
             <a class="post-card" href={post.href} aria-label={post.meta.cardTitle} data-post-category={post.meta.category}>
               <article>
-                <p>{post.meta.category}</p>
+                <p>{categoryLabel(post.meta.category)}</p>
                 <h2>{post.meta.cardTitle}</h2>
                 <span>{post.meta.description}</span>
               </article>

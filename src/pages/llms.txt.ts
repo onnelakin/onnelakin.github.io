@@ -5,6 +5,7 @@ import {
   pageBodyDescription,
   renderBlocks
 } from '../lib/products';
+import { getBlogPosts } from '../lib/blog';
 
 const siteUrl = 'https://onnelakin.github.io';
 
@@ -12,6 +13,7 @@ export function GET() {
   const sources = getProductSources();
   const apps = sources.map((source) => getProductPageData(source.slug, 'en'));
   const koreanApps = sources.map((source) => getProductPageData(source.slug, 'ko'));
+  const blogPosts = getBlogPosts();
   const lines = [
     '# ONNELLAB',
     '',
@@ -24,8 +26,26 @@ export function GET() {
     `- Apps: ${siteUrl}/apps/`,
     `- Privacy policies: ${siteUrl}/privacy/`,
     `- Korean privacy policies: ${siteUrl}/privacy/ko/`,
+    `- Blog: ${siteUrl}/blog/`,
+    `- Korean blog: ${siteUrl}/blog/ko/`,
     `- RSS: ${siteUrl}/rss.xml`,
     `- Sitemap: ${siteUrl}/sitemap.xml`,
+    '',
+    '## Blog Articles',
+    '',
+    ...blogPosts.flatMap((post) => [
+      `### ${post.meta.title}`,
+      '',
+      post.meta.description,
+      '',
+      `- Language: ${post.meta.language}`,
+      `- Category: ${post.meta.category}`,
+      `- Search intent: ${post.meta.language === 'ko' ? 'problem solving guide in Korean' : 'problem-solving guide'}`,
+      `- Article: ${new URL(post.href, siteUrl).toString()}`,
+      ...(post.meta.relatedApps.length ? [`- Related apps: ${post.meta.relatedApps.join(', ')}`] : []),
+      ...(post.meta.tags.length ? [`- Tags: ${post.meta.tags.join(', ')}`] : []),
+      ''
+    ]),
     '',
     '## Apps',
     '',

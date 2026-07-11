@@ -31,6 +31,7 @@ const {
 } = Astro.props;
 const canonicalUrl = new URL(canonicalPath, Astro.site);
 const imageUrl = socialImage || image ? new URL(socialImage || image || '', Astro.site) : undefined;
+const twitterCard = imageUrl ? 'summary_large_image' : 'summary';
 const faviconUrl = image ? new URL(image, Astro.site) : new URL('/app-assets/quivra/assets/icon/quivra.png', Astro.site);
 const jsonLdItems = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
 const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID?.trim();
@@ -79,7 +80,7 @@ const gaScript = gaMeasurementId
     {ogType === 'article' && articleMeta?.modifiedTime && <meta property="article:modified_time" content={articleMeta.modifiedTime} />}
     {ogType === 'article' && articleMeta?.section && <meta property="article:section" content={articleMeta.section} />}
     {ogType === 'article' && articleMeta?.tags?.map((tag) => <meta property="article:tag" content={tag} />)}
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content={twitterCard} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     {imageUrl && <meta name="twitter:image" content={imageUrl} />}
