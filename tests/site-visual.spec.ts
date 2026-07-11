@@ -155,14 +155,15 @@ test.describe('site layout', () => {
 
   test('blog pages present published posts or visitor-facing planned topics', async ({ page }) => {
     await page.goto('/blog/');
-    await expect(page.locator('.post-card')).toContainText('Read Large TXT Files Without Lag');
+    await expect(page.locator('.post-card')).toContainText('How to Read Large TXT Files Without Lag');
     await expect(page.locator('.empty-state')).toHaveCount(0);
     await expect(page.locator('.category-preview article')).toHaveCount(4);
 
     await page.goto('/blog/ko/');
-    await expect(page.locator('.post-card')).toContainText('대용량 TXT 파일 읽기');
+    await expect(page.locator('.post-card')).toContainText('대용량 TXT 파일을 지연 없이 읽는 방법');
     await expect(page.locator('.empty-state')).toHaveCount(0);
     await expect(page.locator('.category-preview article')).toHaveCount(4);
+    await expect(page.locator('.category-preview h2')).toHaveText(['읽기', '음악', '생산성', '미디어']);
   });
 
   test('blog category filters prepare the post list for growth', async ({ page }) => {
@@ -211,7 +212,7 @@ test.describe('site layout', () => {
     expect(jsonLd).toContain('Blog');
     expect(jsonLd).toContain('CollectionPage');
     expect(jsonLd).toContain('ItemList');
-    expect(jsonLd).toContain('Read Large TXT Files Without Lag');
+    expect(jsonLd).toContain('How to Read Large TXT Files Without Lag');
   });
 
   test('blog article metadata remains crawlable and answer-friendly', async ({ page }) => {
