@@ -309,6 +309,11 @@ const faqJsonLd = {
           {hasScreenshotCarousel && (
             <button class="screenshot-step screenshot-step-next" type="button" data-screenshot-next aria-label="Next screenshot">›</button>
           )}
+          {hasScreenshotCarousel && (
+            <div class="screenshot-progress" aria-label={labels.screens}>
+              <span data-screenshot-count aria-live="polite">1 / {landingScreenshotPaths.length}</span>
+            </div>
+          )}
         </div>
         <dialog class="screenshot-viewer" aria-label={labels.screens}>
           <div class="viewer-panel">
@@ -977,6 +982,16 @@ const faqJsonLd = {
     outline: 0;
   }
 
+  .screenshot-progress {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+  }
+
   figure {
     position: relative;
     margin: 0;
@@ -1520,18 +1535,27 @@ const faqJsonLd = {
     }
 
     .screenshot-step {
+      top: auto;
+      bottom: 0;
       width: 44px;
       height: 48px;
       font-size: 18px;
       background: rgba(255, 253, 248, 0.74);
+      transform: none;
     }
 
     .screenshot-step-prev {
-      left: -6px;
+      left: calc(50% - 92px);
     }
 
     .screenshot-step-next {
-      right: -6px;
+      right: calc(50% - 92px);
+    }
+
+    .screenshot-progress {
+      min-height: 48px;
+      align-items: center;
+      margin-top: 12px;
     }
 
     .copy-column::before {
@@ -1717,6 +1741,7 @@ const faqJsonLd = {
   const screenshotRow = document.querySelector('[data-screenshot-row]');
   const screenshotPrevButton = document.querySelector('[data-screenshot-prev]');
   const screenshotNextButton = document.querySelector('[data-screenshot-next]');
+  const screenshotCount = document.querySelector('[data-screenshot-count]');
   const viewer = document.querySelector('.screenshot-viewer');
   const viewerImage = document.querySelector('[data-viewer-image]');
   const viewerStage = document.querySelector('[data-viewer-stage]');
@@ -1773,6 +1798,15 @@ const faqJsonLd = {
     }
     if (screenshotNextButton instanceof HTMLButtonElement) {
       screenshotNextButton.disabled = atEnd;
+    }
+    const firstItem = screenshotRow.querySelector('figure');
+    const itemWidth = firstItem instanceof HTMLElement ? firstItem.getBoundingClientRect().width : 0;
+    const columnGap = Number.parseFloat(getComputedStyle(screenshotRow).columnGap || '0') || 0;
+    const step = itemWidth + columnGap;
+    const itemCount = screenshotRow.querySelectorAll('figure').length;
+    const activeIndex = step > 0 ? Math.min(itemCount - 1, Math.max(0, Math.round(screenshotRow.scrollLeft / step))) : 0;
+    if (screenshotCount instanceof HTMLElement) {
+      screenshotCount.textContent = `${activeIndex + 1} / ${itemCount}`;
     }
   };
 
