@@ -311,7 +311,7 @@ const faqJsonLd = {
           )}
           {hasScreenshotCarousel && (
             <div class="screenshot-progress" aria-label={labels.screens}>
-              <span data-screenshot-count aria-live="polite">1 / {landingScreenshotPaths.length}</span>
+              <span data-screenshot-count aria-live="polite">1-3 / {landingScreenshotPaths.length}</span>
             </div>
           )}
         </div>
@@ -901,6 +901,34 @@ const faqJsonLd = {
   .screenshot-carousel {
     position: relative;
     margin-top: 22px;
+  }
+
+  .screenshot-carousel::before,
+  .screenshot-carousel::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 38px;
+    z-index: 2;
+    width: 34px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 140ms ease;
+  }
+
+  .screenshot-carousel::before {
+    left: 0;
+    background: linear-gradient(90deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
+  }
+
+  .screenshot-carousel::after {
+    right: 0;
+    background: linear-gradient(270deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
+  }
+
+  .screenshot-carousel[data-can-scroll-left="true"]::before,
+  .screenshot-carousel[data-can-scroll-right="true"]::after {
+    opacity: 0.72;
   }
 
   .screenshot-row {
@@ -1558,6 +1586,12 @@ const faqJsonLd = {
       margin-top: 18px;
     }
 
+    .screenshot-carousel::before,
+    .screenshot-carousel::after {
+      bottom: 66px;
+      width: 24px;
+    }
+
     .copy-column::before {
       position: static;
       width: 36px;
@@ -1738,6 +1772,7 @@ const faqJsonLd = {
   });
 
   const screenshotLinks = Array.from(document.querySelectorAll('[data-screenshot-link]'));
+  const screenshotCarousel = document.querySelector('[data-screenshot-carousel]');
   const screenshotRow = document.querySelector('[data-screenshot-row]');
   const screenshotPrevButton = document.querySelector('[data-screenshot-prev]');
   const screenshotNextButton = document.querySelector('[data-screenshot-next]');
@@ -1793,6 +1828,10 @@ const faqJsonLd = {
     const maxScrollLeft = screenshotRow.scrollWidth - screenshotRow.clientWidth;
     const atStart = screenshotRow.scrollLeft <= 1;
     const atEnd = screenshotRow.scrollLeft >= maxScrollLeft - 1;
+    if (screenshotCarousel instanceof HTMLElement) {
+      screenshotCarousel.dataset.canScrollLeft = String(!atStart);
+      screenshotCarousel.dataset.canScrollRight = String(!atEnd);
+    }
     if (screenshotPrevButton instanceof HTMLButtonElement) {
       screenshotPrevButton.disabled = atStart;
     }
@@ -1805,8 +1844,12 @@ const faqJsonLd = {
     const step = itemWidth + columnGap;
     const itemCount = screenshotRow.querySelectorAll('figure').length;
     const activeIndex = step > 0 ? Math.min(itemCount - 1, Math.max(0, Math.round(screenshotRow.scrollLeft / step))) : 0;
+    const visibleCount = step > 0 ? Math.max(1, Math.round(screenshotRow.clientWidth / step)) : 1;
+    const visibleEnd = Math.min(itemCount, activeIndex + visibleCount);
     if (screenshotCount instanceof HTMLElement) {
-      screenshotCount.textContent = `${activeIndex + 1} / ${itemCount}`;
+      screenshotCount.textContent = visibleEnd > activeIndex + 1
+        ? `${activeIndex + 1}-${visibleEnd} / ${itemCount}`
+        : `${activeIndex + 1} / ${itemCount}`;
     }
   };
 
