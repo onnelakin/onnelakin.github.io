@@ -859,16 +859,14 @@ const faqJsonLd = {
     width: fit-content;
     display: inline-flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     cursor: pointer;
     color: #37342f;
     font-size: 17px;
     font-weight: 620;
     list-style: none;
-    border: 1px solid rgba(211, 200, 185, 0.88);
-    border-radius: 999px;
-    padding: 8px 13px;
-    background: linear-gradient(180deg, rgba(255, 253, 248, 0.92), rgba(250, 248, 245, 0.64));
+    border-bottom: 1px solid rgba(211, 200, 185, 0.5);
+    padding: 0 0 7px;
     transition: border-color 140ms ease, background 140ms ease, color 140ms ease;
   }
 
@@ -893,8 +891,7 @@ const faqJsonLd = {
 
   .screens-band summary:hover,
   .screens-band summary:focus-visible {
-    border-color: var(--accent-border);
-    background: #fffdf8;
+    border-color: rgba(196, 185, 169, 0.74);
     color: var(--accent-text);
   }
 
@@ -1016,7 +1013,7 @@ const faqJsonLd = {
   figure {
     position: relative;
     margin: 0;
-    border: 1px solid var(--accent-border);
+    border: 1px solid rgba(196, 185, 169, 0.2);
     border-radius: 8px;
     padding: 5px;
     background: rgba(255, 253, 248, 0.78);
@@ -1559,9 +1556,11 @@ const faqJsonLd = {
       top: auto;
       bottom: 0;
       width: 44px;
-      height: 48px;
-      font-size: 18px;
-      background: rgba(255, 253, 248, 0.74);
+      height: 44px;
+      border-color: rgba(196, 185, 169, 0.28);
+      background: rgba(255, 253, 248, 0.58);
+      color: rgba(55, 52, 47, 0.54);
+      font-size: 17px;
       transform: none;
     }
 
