@@ -191,6 +191,9 @@ test.describe('site layout', () => {
     const llms = await llmsResponse.text();
     expect(llms).toContain('## Blog Articles');
     expect(llms).toContain('https://onnelakin.github.io/blog/en/read-large-txt-files-without-lag/');
+    expect(llms).toContain('Primary question: How can I read a very large TXT file without lag?');
+    expect(llms).toContain('Short answer: Use a reader that does not try to load and render the entire TXT file at once.');
+    expect(llms).toContain('Primary question: 대용량 TXT 파일을 지연 없이 읽으려면 어떻게 해야 하나요?');
   });
 
   test('blog index exposes collection structured data', async ({ page }) => {

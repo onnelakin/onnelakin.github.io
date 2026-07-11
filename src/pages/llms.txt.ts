@@ -5,9 +5,19 @@ import {
   pageBodyDescription,
   renderBlocks
 } from '../lib/products';
-import { getBlogPosts } from '../lib/blog';
+import { getBlogPosts, renderMarkdownBlocks, type BlogPost } from '../lib/blog';
 
 const siteUrl = 'https://onnelakin.github.io';
+
+function articleQuestion(post: BlogPost): string {
+  const blocks = renderMarkdownBlocks(post.body);
+  const questionHeadingIndex = blocks.findIndex(
+    (block) => block.type === 'h2' && ['question', '질문'].includes(String(block.value).trim().toLowerCase())
+  );
+  if (questionHeadingIndex === -1) return post.meta.title;
+  const answerBlock = blocks.slice(questionHeadingIndex + 1).find((block) => block.type === 'p');
+  return answerBlock?.type === 'p' ? String(answerBlock.value) : post.meta.title;
+}
 
 export function GET() {
   const sources = getProductSources();
@@ -38,6 +48,8 @@ export function GET() {
       '',
       post.meta.description,
       '',
+      `- Primary question: ${articleQuestion(post)}`,
+      `- Short answer: ${post.meta.shortAnswer || post.meta.description}`,
       `- Language: ${post.meta.language}`,
       `- Category: ${post.meta.category}`,
       `- Search intent: ${post.meta.language === 'ko' ? 'problem solving guide in Korean' : 'problem-solving guide'}`,

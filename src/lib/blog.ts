@@ -182,7 +182,7 @@ function readPost(filePath: string, fallbackLanguage: Locale): BlogPost {
     category: frontmatter.category || 'general',
     language,
     description: frontmatter.description || firstParagraph(body) || frontmatter.title || slug,
-    shortAnswer: frontmatter.short_answer || frontmatter.shortAnswer || extractSection(body, 'Short Answer') || undefined,
+    shortAnswer: frontmatter.short_answer || frontmatter.shortAnswer || extractFirstSection(body, ['Short Answer', '짧은 답변', '요약 답변', '핵심 답변', '요약']) || undefined,
     publishedAt: frontmatter.published_at || frontmatter.publishedAt || undefined,
     updatedAt: frontmatter.updated_at || frontmatter.updatedAt || undefined,
     tags: splitList(frontmatter.tags),
@@ -263,8 +263,13 @@ function firstParagraph(markdown: string): string {
 }
 
 function extractSection(markdown: string, heading: string): string {
+  return extractFirstSection(markdown, [heading]);
+}
+
+function extractFirstSection(markdown: string, headings: string[]): string {
   const lines = markdown.split(/\r?\n/);
-  const start = lines.findIndex((line) => line.trim().toLowerCase() === `## ${heading}`.toLowerCase());
+  const normalizedHeadings = new Set(headings.map((heading) => `## ${heading}`.toLowerCase()));
+  const start = lines.findIndex((line) => normalizedHeadings.has(line.trim().toLowerCase()));
   if (start === -1) return '';
   const section: string[] = [];
   for (const line of lines.slice(start + 1)) {
