@@ -32,7 +32,6 @@ const {
 const canonicalUrl = new URL(canonicalPath, Astro.site);
 const imageUrl = socialImage || image ? new URL(socialImage || image || '', Astro.site) : undefined;
 const twitterCard = imageUrl ? 'summary_large_image' : 'summary';
-const faviconUrl = image ? new URL(image, Astro.site) : new URL('/favicon.svg', Astro.site);
 const jsonLdItems = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
 const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID?.trim();
 const gaScript = gaMeasurementId
@@ -62,8 +61,11 @@ const gaScript = gaMeasurementId
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="google-site-verification" content="0IUOtlQTLbMO9gWiDi4TqtQpMCKZVsGRLEchK8A6IzE" />
-    <link rel="icon" type="image/png" href={faviconUrl} />
-    <link rel="apple-touch-icon" href={faviconUrl} />
+    <link rel="icon" href={new URL('/favicon.svg', Astro.site)} type="image/svg+xml" />
+    <link rel="icon" href={new URL('/favicon-32x32.png', Astro.site)} sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href={new URL('/apple-touch-icon.png', Astro.site)} />
+    <link rel="manifest" href={new URL('/site.webmanifest', Astro.site)} />
+    <meta name="theme-color" content="#f8f4ec" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
