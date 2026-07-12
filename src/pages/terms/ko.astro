@@ -1,0 +1,59 @@
+---
+import LegalPage from '../../components/LegalPage.astro';
+
+const sections = [
+  {
+    title: '사이트 이용',
+    body: [
+      'ONNELLAB은 소프트웨어 프로젝트, 앱, 글, 관련 게시 활동에 대한 정보를 제공합니다. 공개 페이지는 개인적 또는 정보 확인 목적으로 읽고 링크할 수 있습니다.',
+      '사이트 운영을 방해하거나, 자동 접근을 남용하거나, ONNELLAB을 사칭하거나, 허가 없이 ONNELLAB의 보증 또는 제휴가 있는 것처럼 콘텐츠를 사용해서는 안 됩니다.'
+    ]
+  },
+  {
+    title: '콘텐츠와 소유권',
+    body: [
+      '별도로 표시하지 않는 한, 이 사이트에 게시된 텍스트, 디자인, 원본 자료는 ONNELLAB이 소유하거나 관리합니다.',
+      '제3자 플랫폼, 스토어, API, 서비스에 대한 언급은 각 소유자에게 권리가 있으며, 호환성, 배포, 문서화를 위해 제공됩니다.'
+    ]
+  },
+  {
+    title: '외부 서비스',
+    body: [
+      '일부 ONNELLAB 페이지는 앱 스토어, 소셜 플랫폼, 개발자 플랫폼, 기타 제3자 서비스로 연결됩니다. 해당 서비스는 각자의 약관과 개인정보 처리방침에 따라 운영됩니다.',
+      'ONNELLAB은 외부 서비스의 변경, 장애, 계정 요건, 유료 플랜, 정책 결정에 대해 책임지지 않습니다.'
+    ]
+  },
+  {
+    title: '보증 없음',
+    body: [
+      '사이트와 콘텐츠는 있는 그대로 제공됩니다. ONNELLAB은 정보를 정확하고 유용하게 유지하려고 노력하지만, 모든 페이지가 완전하거나 최신이거나 오류가 없음을 보장하지 않습니다.',
+      '소프트웨어 동작, 플랫폼 정책, API 제공 여부, 스토어 요건은 시간이 지나며 변경될 수 있습니다.'
+    ]
+  },
+  {
+    title: '문의',
+    body: [
+      '이 약관에 대한 문의는 onnelakin@gmail.com 으로 연락할 수 있습니다.'
+    ]
+  }
+];
+---
+
+<LegalPage
+  title="ONNELLAB 서비스 약관"
+  description="ONNELLAB 웹사이트, 콘텐츠, 공개 페이지 이용에 대한 약관입니다."
+  canonicalPath="/terms/ko/"
+  lang="ko"
+  heading="서비스 약관"
+  updatedAt="2026-07-12"
+  homeHref="/ko/"
+  languageLabel="English"
+  languageHref="/terms/"
+  languageCode="en"
+  alternates={[
+    { lang: 'en', path: '/terms/' },
+    { lang: 'ko', path: '/terms/ko/' },
+    { lang: 'x-default', path: '/terms/' }
+  ]}
+  sections={sections}
+/>

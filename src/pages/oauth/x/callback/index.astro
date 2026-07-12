@@ -1,0 +1,52 @@
+---
+import LegalPage from '../../../../components/LegalPage.astro';
+
+const sections = [
+  {
+    title: 'Purpose',
+    body: [
+      'This page is the registered OAuth callback endpoint for ONNELLAB X API authentication.',
+      'It is used only to complete an owner-authorized X OAuth flow for publishing approved ONNELLAB posts from the ONNELLAB content workflow.'
+    ]
+  },
+  {
+    title: 'Data handling',
+    body: [
+      'ONNELLAB does not collect, sell, or analyze X user data through this page.',
+      'The X API integration is intended for posting ONNELLAB-owned content to an ONNELLAB-controlled X account and for basic credential verification.'
+    ]
+  },
+  {
+    title: 'Authorization code',
+    body: [
+      'If X redirects to this URL with an authorization code, the code is temporary and should be exchanged server-side or from a trusted local tool according to X OAuth requirements.',
+      'Do not share authorization codes, access tokens, refresh tokens, client secrets, or app credentials publicly.'
+    ]
+  },
+  {
+    title: 'Contact',
+    body: [
+      'For OAuth or developer platform questions, contact ONNELLAB at onnelakin@gmail.com.'
+    ]
+  }
+];
+---
+
+<LegalPage
+  title="ONNELLAB X OAuth Callback"
+  description="Registered X OAuth callback page for ONNELLAB publishing automation."
+  canonicalPath="/oauth/x/callback/"
+  lang="en"
+  heading="X OAuth Callback"
+  updatedAt="2026-07-12"
+  homeHref="/"
+  languageLabel="한국어"
+  languageHref="/oauth/x/callback/ko/"
+  languageCode="ko"
+  alternates={[
+    { lang: 'en', path: '/oauth/x/callback/' },
+    { lang: 'ko', path: '/oauth/x/callback/ko/' },
+    { lang: 'x-default', path: '/oauth/x/callback/' }
+  ]}
+  sections={sections}
+/>

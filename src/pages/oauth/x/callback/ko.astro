@@ -1,0 +1,52 @@
+---
+import LegalPage from '../../../../components/LegalPage.astro';
+
+const sections = [
+  {
+    title: '목적',
+    body: [
+      '이 페이지는 ONNELLAB X API 인증을 위해 등록된 OAuth 콜백 엔드포인트입니다.',
+      'ONNELLAB 콘텐츠 워크플로에서 승인된 글을 ONNELLAB X 계정에 게시하기 위한, 소유자 승인 OAuth 흐름을 완료하는 용도로만 사용됩니다.'
+    ]
+  },
+  {
+    title: '데이터 처리',
+    body: [
+      'ONNELLAB은 이 페이지를 통해 X 사용자 데이터를 수집, 판매, 분석하지 않습니다.',
+      'X API 연동은 ONNELLAB이 소유한 콘텐츠를 ONNELLAB이 관리하는 X 계정에 게시하고, 기본 인증 상태를 확인하기 위한 용도입니다.'
+    ]
+  },
+  {
+    title: '인증 코드',
+    body: [
+      'X가 인증 코드를 포함해 이 URL로 리다이렉트하는 경우, 해당 코드는 임시 값이며 X OAuth 요구사항에 따라 서버 측 또는 신뢰할 수 있는 로컬 도구에서 교환되어야 합니다.',
+      '인증 코드, 액세스 토큰, 리프레시 토큰, 클라이언트 시크릿, 앱 자격 증명을 공개적으로 공유하지 마세요.'
+    ]
+  },
+  {
+    title: '문의',
+    body: [
+      'OAuth 또는 개발자 플랫폼 관련 문의는 onnelakin@gmail.com 으로 연락할 수 있습니다.'
+    ]
+  }
+];
+---
+
+<LegalPage
+  title="ONNELLAB X OAuth 콜백"
+  description="ONNELLAB 게시 자동화를 위한 X OAuth 콜백 페이지입니다."
+  canonicalPath="/oauth/x/callback/ko/"
+  lang="ko"
+  heading="X OAuth 콜백"
+  updatedAt="2026-07-12"
+  homeHref="/ko/"
+  languageLabel="English"
+  languageHref="/oauth/x/callback/"
+  languageCode="en"
+  alternates={[
+    { lang: 'en', path: '/oauth/x/callback/' },
+    { lang: 'ko', path: '/oauth/x/callback/ko/' },
+    { lang: 'x-default', path: '/oauth/x/callback/' }
+  ]}
+  sections={sections}
+/>

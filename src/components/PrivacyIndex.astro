@@ -61,6 +61,10 @@ const text =
         home: 'ONNELLAB',
         noticeTitle: '사이트 이용 분석',
         noticeBody: 'ONNELLAB 웹사이트는 서비스 개선을 위해 Google Analytics가 설정된 경우에만 페이지 방문, 언어 전환, 스토어 이동, 스크린샷 열람 같은 집계 이벤트를 측정할 수 있습니다. 앱 안의 파일 내용, 태그 값, 계정 정보는 수집하지 않습니다.',
+        sitePrivacyTitle: 'ONNELLAB 웹사이트 개인정보',
+        sitePrivacyBody: 'ONNELLAB 웹사이트는 자체 콘텐츠와 앱 정보를 제공하기 위해 운영됩니다. X, Bluesky, Dev.to 같은 외부 게시 API는 ONNELLAB 계정의 승인된 콘텐츠 게시와 기본 인증 확인에만 사용하며, 타인의 소셜 데이터, 타임라인, 팔로워, 다이렉트 메시지를 수집하거나 판매하지 않습니다.',
+        contactTitle: '문의',
+        contactBody: '개인정보 관련 문의는 onnelakin@gmail.com 으로 연락할 수 있습니다.',
         switchLabel: 'English',
         switchHref: '/privacy/',
         homeHref: '/ko/'
@@ -76,6 +80,10 @@ const text =
         home: 'ONNELLAB',
         noticeTitle: 'Website analytics',
         noticeBody: 'When Google Analytics is configured, the ONNELLAB website may measure aggregate events such as page visits, language switches, store clicks, and screenshot opens to improve the site. It does not collect app file contents, tag values, or account information.',
+        sitePrivacyTitle: 'ONNELLAB website privacy',
+        sitePrivacyBody: 'The ONNELLAB website provides original content and product information. External publishing APIs such as X, Bluesky, and Dev.to are used only to publish approved ONNELLAB-owned content and verify credentials for ONNELLAB-controlled accounts. ONNELLAB does not collect, sell, or analyze other users’ social data, timelines, followers, or direct messages.',
+        contactTitle: 'Contact',
+        contactBody: 'For privacy questions, contact onnelakin@gmail.com.',
         switchLabel: '한국어',
         switchHref: '/privacy/ko/',
         homeHref: '/'
@@ -137,6 +145,12 @@ const collectionJsonLd = {
     <section class="privacy-notice" aria-labelledby="privacy-analytics-title">
       <h2 id="privacy-analytics-title">{text.noticeTitle}</h2>
       <p>{text.noticeBody}</p>
+    </section>
+
+    <section class="privacy-notice" aria-labelledby="privacy-site-title">
+      <h2 id="privacy-site-title">{text.sitePrivacyTitle}</h2>
+      <p>{text.sitePrivacyBody}</p>
+      <p>{text.contactBody}</p>
     </section>
 
     <section class="policy-list" aria-label={text.heading}>

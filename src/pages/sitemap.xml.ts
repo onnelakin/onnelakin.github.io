@@ -108,6 +108,42 @@ export function GET() {
       ]
     },
     {
+      path: '/terms/',
+      lastmod: sourceLastmod('src/pages/terms/index.astro'),
+      alternates: [
+        { lang: 'en', path: '/terms/' },
+        { lang: 'ko', path: '/terms/ko/' },
+        { lang: 'x-default', path: '/terms/' }
+      ]
+    },
+    {
+      path: '/terms/ko/',
+      lastmod: sourceLastmod('src/pages/terms/ko.astro'),
+      alternates: [
+        { lang: 'en', path: '/terms/' },
+        { lang: 'ko', path: '/terms/ko/' },
+        { lang: 'x-default', path: '/terms/' }
+      ]
+    },
+    {
+      path: '/oauth/x/callback/',
+      lastmod: sourceLastmod('src/pages/oauth/x/callback/index.astro'),
+      alternates: [
+        { lang: 'en', path: '/oauth/x/callback/' },
+        { lang: 'ko', path: '/oauth/x/callback/ko/' },
+        { lang: 'x-default', path: '/oauth/x/callback/' }
+      ]
+    },
+    {
+      path: '/oauth/x/callback/ko/',
+      lastmod: sourceLastmod('src/pages/oauth/x/callback/ko.astro'),
+      alternates: [
+        { lang: 'en', path: '/oauth/x/callback/' },
+        { lang: 'ko', path: '/oauth/x/callback/ko/' },
+        { lang: 'x-default', path: '/oauth/x/callback/' }
+      ]
+    },
+    {
       path: '/melivra-privacy-policy/',
       lastmod: sourceLastmod('src/pages/melivra-privacy-policy/index.astro'),
       alternates: [

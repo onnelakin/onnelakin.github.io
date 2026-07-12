@@ -1,0 +1,59 @@
+---
+import LegalPage from '../../components/LegalPage.astro';
+
+const sections = [
+  {
+    title: 'Use of the site',
+    body: [
+      'ONNELLAB provides information about its software projects, apps, articles, and related publishing activity. You may read and link to public pages for personal or informational use.',
+      'Do not attempt to disrupt the site, misuse automated access, impersonate ONNELLAB, or use the content in a way that suggests endorsement without permission.'
+    ]
+  },
+  {
+    title: 'Content and ownership',
+    body: [
+      'Unless otherwise stated, ONNELLAB owns or controls the text, design, and original materials published on this site.',
+      'References to third-party platforms, stores, APIs, or services belong to their respective owners and are provided for compatibility, distribution, or documentation purposes.'
+    ]
+  },
+  {
+    title: 'External services',
+    body: [
+      'Some ONNELLAB pages link to app stores, social platforms, developer platforms, or third-party services. Those services operate under their own terms and privacy policies.',
+      'ONNELLAB is not responsible for changes, outages, account requirements, paid plans, or policy decisions made by external services.'
+    ]
+  },
+  {
+    title: 'No warranty',
+    body: [
+      'The site and its content are provided as-is. ONNELLAB tries to keep information accurate and useful, but does not guarantee that every page is complete, current, or error-free.',
+      'Software behavior, platform policies, API availability, and store requirements may change over time.'
+    ]
+  },
+  {
+    title: 'Contact',
+    body: [
+      'For questions about these terms, contact ONNELLAB at onnelakin@gmail.com.'
+    ]
+  }
+];
+---
+
+<LegalPage
+  title="ONNELLAB Terms of Service"
+  description="Terms for using the ONNELLAB website, content, and related public pages."
+  canonicalPath="/terms/"
+  lang="en"
+  heading="Terms of Service"
+  updatedAt="2026-07-12"
+  homeHref="/"
+  languageLabel="한국어"
+  languageHref="/terms/ko/"
+  languageCode="ko"
+  alternates={[
+    { lang: 'en', path: '/terms/' },
+    { lang: 'ko', path: '/terms/ko/' },
+    { lang: 'x-default', path: '/terms/' }
+  ]}
+  sections={sections}
+/>
