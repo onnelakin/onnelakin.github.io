@@ -86,6 +86,11 @@ Yes. The template should render recommendation metadata as links when a URL is p
   const html = fs.readFileSync(outputPath, 'utf-8');
   const indexHtml = fs.readFileSync(indexPath, 'utf-8');
   assert.match(html, /How to Keep a Very Long ONNELLAB Workflow Article Title/);
+  assert.ok(html.includes('href="https://onnelakin.github.io/favicon.svg?v=20260712-transparent"'));
+  assert.ok(html.includes('href="https://onnelakin.github.io/favicon-32x32.png?v=20260712-transparent"'));
+  assert.ok(html.includes('href="https://onnelakin.github.io/apple-touch-icon.png?v=20260712-transparent"'));
+  assert.ok(html.includes('href="https://onnelakin.github.io/site.webmanifest?v=20260712-transparent"'));
+  assert.match(html, /<meta name="theme-color" content="#f8f4ec">/);
   assert.match(indexHtml, /Readable Workflow Article Title/);
   assert.doesNotMatch(indexHtml, /How to Keep a Very Long ONNELLAB Workflow Article Title Readable on Mobile and Desktop/);
   assert.match(html, /Use a concise answer block/);
