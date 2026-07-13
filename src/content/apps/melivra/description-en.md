@@ -3,7 +3,7 @@ Android
 Melivra - Offline Music Player
 
 간단한 설명:
-Offline music player for local audio files and libraries.
+Offline music player with local library, AI transcript, and AI translation.
 
 Landing subtitle:
 Local Audio Library Player
@@ -13,7 +13,7 @@ Melivra is an offline music player for local audio collections across multiple f
 
 Play MP3, FLAC, WAV, ALAC, AIFF, M4A, and OGG files, and organize your music by album, artist, composer, genre, or folder.
 
-No streaming. No account required. Melivra is built for people who own their music and want a clean way to browse, search, and listen to a local audio library.
+No streaming. No account required. Melivra is built for people who own their music and want a clean way to browse, search, and listen to a local audio library. When you approve it, Melivra can also use AI Tokens to create AI transcripts and AI translations from your audio, then save or export the results.
 
 Features
 
@@ -27,6 +27,9 @@ Features
 • Playback speed control
 • Playlist management
 • Local lyrics support
+• AI transcript generation
+• AI translation
+• AI result export
 • Large music collection support
 
 Melivra Pro
@@ -47,6 +50,8 @@ There is no streaming service, account system, or recommendation feed. Melivra i
 
 For long tracks and repeat listening, Melivra includes resume playback, bookmarks, A-B repeat, and playback speed control. You can browse albums with cover-focused grid view or use list view when you want more direct library navigation.
 
+Melivra also supports AI transcript generation and AI translation. With your approval, Melivra uses AI Tokens to process selected audio, save the AI result, and export transcripts or translations as TXT, SRT, LRC, or JSON.
+
 Supported features
 
 • MP3, FLAC, WAV, ALAC, AIFF, M4A, and OGG playback
@@ -59,13 +64,16 @@ Supported features
 • Playback speed control
 • Playlist management
 • Local lyrics support
+• AI transcript generation
+• AI translation
+• AI result export
 • Large music collection support
 
 Melivra Pro adds multi-band EQ, Volume Normalization, Gapless Playback, and Playlist Backup & Restore.
 
 FAQ:
 Q: Are music files uploaded to a server?
-A: No. Melivra is a local music player without streaming or cloud library sync.
+A: No. Melivra is a local music player without streaming or cloud library sync. Audio is uploaded only when you explicitly approve AI transcript or AI translation processing.
 
 Q: Which audio files can it play?
 A: Melivra supports MP3, FLAC, WAV, ALAC, AIFF, M4A, and OGG playback.
@@ -73,15 +81,18 @@ A: Melivra supports MP3, FLAC, WAV, ALAC, AIFF, M4A, and OGG playback.
 Q: Is it useful for audiobooks or long tracks?
 A: Yes. Resume playback, bookmarks, A-B repeat, and playback speed control help with long-form listening.
 
+Q: Can Melivra create transcripts or translations?
+A: Yes. With your approval, Melivra can use AI Tokens to create AI transcripts and AI translations, then export saved results as TXT, SRT, LRC, or JSON.
+
 ios
 앱 이름:
 Melivra - Offline Music Player
 
 부제:
-Local MP3 & FLAC Library
+Local Music, AI Transcript
 
 프로모션 텍스트:
-Offline music player for MP3, FLAC, WAV, ALAC, and more. Browse your local music library, save bookmarks, use A-B repeat, and resume playback anytime.
+Offline music player for MP3, FLAC, WAV, ALAC, and more. Browse your local music library, save bookmarks, use A-B repeat, resume playback, and create AI transcripts or translations.
 
 설명:
 Melivra is an offline music player built for local music collections.
@@ -89,6 +100,8 @@ Melivra is an offline music player built for local music collections.
 Play MP3, FLAC, WAV, ALAC, AIFF, M4A, and OGG files with a fast and organized music library. Browse your collection by album, artist, composer, genre, or folder, and find music instantly with integrated search.
 
 Whether you listen to albums, soundtracks, drama CDs, audiobooks, or personal recordings, Melivra helps you manage and enjoy your local audio library without subscriptions or streaming services.
+
+When you approve it, Melivra can use AI Tokens to create AI transcripts and AI translations from selected audio. Saved AI results can be exported as TXT, SRT, LRC, or JSON.
 
 Features
 
@@ -102,10 +115,13 @@ Features
 • A-B repeat
 • Playlist management
 • Local lyrics support
+• AI transcript generation
+• AI translation
+• AI result export
 • Large music collection support
 • List view and album grid view
 
 Melivra is designed for people who own their music and want a powerful local music player with a clean and focused listening experience.
 
 키워드:
-music player,offline music,mp3 player,flac player,audio player,lyrics,bookmark,ab repeat
+music player,offline music,mp3 player,flac player,audio player,ai transcript,ai translation,lyrics,bookmark,ab repeat
