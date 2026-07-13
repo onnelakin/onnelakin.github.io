@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { landingSubtitle, pageBodyDescription, renderBlocks, type ProductPageData } from '../lib/products';
+import { latestReleaseNoteForApp, releaseNotePath } from '../lib/releaseNotes';
 
 type Props = {
   data: ProductPageData;
@@ -17,6 +18,7 @@ const labels =
         googlePlay: 'Google Play',
         privacy: '개인정보 처리방침',
         footerPrivacy: '개인정보 처리방침',
+        releaseNotes: '릴리즈 노트',
         support: '문의하기',
         download: '다운로드',
         screens: '스크린샷',
@@ -29,6 +31,7 @@ const labels =
         googlePlay: 'Google Play',
         privacy: 'Privacy Policy',
         footerPrivacy: 'Privacy Policy',
+        releaseNotes: 'Release Notes',
         support: 'Contact',
         download: 'Download',
         screens: 'Screenshots',
@@ -72,6 +75,8 @@ const appStoreUrl = localizedAppStoreUrl(meta.appstore, data.locale);
 const googlePlayUrl = localizedGooglePlayUrl(meta.googleplay, data.locale);
 const privacyUrl = localizedPrivacyUrl(meta.privacy, data.locale);
 const storeUrls = [appStoreUrl, googlePlayUrl].filter(Boolean);
+const latestReleaseNote = latestReleaseNoteForApp(data.source.slug);
+const releaseNotesUrl = latestReleaseNote ? releaseNotePath(latestReleaseNote) : undefined;
 const landingScreenshotPaths = data.screenshotPaths;
 const hasScreenshotCarousel = landingScreenshotPaths.length > 3;
 const screenshotUrls = landingScreenshotPaths.map((screenshotPath) =>
@@ -220,6 +225,7 @@ const faqJsonLd = {
         <div class="actions store-actions" aria-label={labels.stores}>
           <a class="button primary" href={appStoreUrl} data-store-link data-store="app_store" data-store-position="hero">{labels.appStore}</a>
           {googlePlayUrl && <a class="button primary" href={googlePlayUrl} data-store-link data-store="google_play" data-store-position="hero">{labels.googlePlay}</a>}
+          {releaseNotesUrl && <a class="button secondary" href={releaseNotesUrl}>{labels.releaseNotes}</a>}
         </div>
         <div class="support-links" aria-label="Contact links">
           <a href={privacyUrl}>{labels.privacy}</a>
@@ -364,6 +370,7 @@ const faqJsonLd = {
       <div class="actions compact" aria-label={labels.stores}>
         <a class="button primary" href={appStoreUrl} data-store-link data-store="app_store" data-store-position="download">{labels.appStore}</a>
         {googlePlayUrl && <a class="button primary" href={googlePlayUrl} data-store-link data-store="google_play" data-store-position="download">{labels.googlePlay}</a>}
+        {releaseNotesUrl && <a class="button secondary" href={releaseNotesUrl}>{labels.releaseNotes}</a>}
       </div>
     </section>
 
@@ -739,7 +746,7 @@ const faqJsonLd = {
 
   .store-actions {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
   }
 
   .store-actions .button,
@@ -1294,7 +1301,7 @@ const faqJsonLd = {
   .actions.compact {
     justify-content: center;
     margin-left: 0;
-    width: min(100%, 264px);
+    width: min(100%, 430px);
   }
 
   .actions.compact .button {

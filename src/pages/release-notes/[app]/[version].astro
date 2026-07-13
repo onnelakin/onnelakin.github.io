@@ -1,0 +1,243 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getProductPageData } from '../../../lib/products';
+import { getReleaseNote, releaseNotePath, releaseNotes } from '../../../lib/releaseNotes';
+
+export function getStaticPaths() {
+  return releaseNotes.map((note) => ({
+    params: { app: note.appSlug, version: note.version }
+  }));
+}
+
+const app = Astro.params.app as string;
+const version = Astro.params.version as string;
+const note = getReleaseNote(app, version);
+if (!note) throw new Error(`Missing release note for ${app} ${version}`);
+
+const product = getProductPageData(note.appSlug, 'en');
+const canonicalPath = releaseNotePath(note);
+const canonicalUrl = new URL(canonicalPath, Astro.site);
+const appPath = `/apps/${note.appSlug}/`;
+const description = `${note.title} release notes. ${note.summary}`;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  '@id': `${canonicalUrl.toString()}#release-notes`,
+  headline: note.title,
+  description,
+  datePublished: note.releasedDate,
+  dateModified: note.releasedDate,
+  inLanguage: 'en',
+  mainEntityOfPage: canonicalUrl.toString(),
+  about: {
+    '@type': 'SoftwareApplication',
+    name: note.appName,
+    softwareVersion: note.version,
+    url: new URL(appPath, Astro.site).toString()
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': new URL('/#organization', Astro.site).toString(),
+    name: 'ONNELLAB',
+    url: new URL('/', Astro.site).toString()
+  }
+};
+---
+
+<BaseLayout
+  title={`${note.title} Release Notes | ONNELLAB`}
+  description={description}
+  canonicalPath={canonicalPath}
+  lang="en"
+  image={product.iconPath}
+  ogType="article"
+  articleMeta={{
+    publishedTime: note.releasedDate,
+    modifiedTime: note.releasedDate,
+    section: 'Release Notes',
+    tags: [note.appName, note.platform, note.version]
+  }}
+  jsonLd={jsonLd}
+>
+  <main class="release-shell">
+    <nav class="topbar" aria-label="ONNELLAB">
+      <a class="brand" href="/">ONNELLAB</a>
+      <a class="back-link" href={appPath}>{note.appName}</a>
+    </nav>
+
+    <article class="release-note">
+      <header>
+        <p class="eyebrow">Release Notes</p>
+        <h1>{note.title}</h1>
+        <p class="summary">{note.summary}</p>
+        <dl class="facts">
+          <div>
+            <dt>Released</dt>
+            <dd>{note.releasedDate}</dd>
+          </div>
+          <div>
+            <dt>Platform</dt>
+            <dd>{note.platform}</dd>
+          </div>
+          <div>
+            <dt>Previous public version</dt>
+            <dd>{note.previousVersion}</dd>
+          </div>
+        </dl>
+      </header>
+
+      <section aria-labelledby="changed-heading">
+        <h2 id="changed-heading">What Changed</h2>
+        <ul>
+          {note.changes.map((change) => <li>{change}</li>)}
+        </ul>
+      </section>
+
+      <section aria-labelledby="compat-heading">
+        <h2 id="compat-heading">Compatibility</h2>
+        <p>This update is distributed through the public app store listing for {note.appName}.</p>
+      </section>
+
+      <section aria-labelledby="upgrade-heading">
+        <h2 id="upgrade-heading">Upgrade Notes</h2>
+        <p>No special upgrade steps are required.</p>
+      </section>
+    </article>
+  </main>
+</BaseLayout>
+
+<style>
+  .release-shell {
+    min-height: 100vh;
+    padding: 28px 20px 56px;
+    background: #faf8f5;
+  }
+
+  .topbar,
+  .release-note {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 34px;
+  }
+
+  .brand {
+    color: #2f2f2f;
+    font-size: 15px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .back-link {
+    color: #5f5a52;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .release-note {
+    color: #343230;
+  }
+
+  .eyebrow {
+    margin: 0 0 10px;
+    color: #6e675e;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+    color: #252321;
+    font-size: clamp(34px, 5vw, 58px);
+    line-height: 1.04;
+    letter-spacing: 0;
+  }
+
+  .summary {
+    max-width: 680px;
+    margin: 18px 0 0;
+    color: #4f4a44;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 28px 0 42px;
+  }
+
+  .facts div {
+    border: 1px solid #ddd6cc;
+    border-radius: 8px;
+    background: #fffdf9;
+    padding: 14px;
+  }
+
+  dt {
+    color: #6e675e;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  dd {
+    margin: 6px 0 0;
+    color: #2f2c29;
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  section {
+    border-top: 1px solid #ded8cf;
+    padding: 28px 0;
+  }
+
+  h2 {
+    margin: 0 0 14px;
+    color: #282522;
+    font-size: 24px;
+    line-height: 1.25;
+    letter-spacing: 0;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 22px;
+  }
+
+  li,
+  p {
+    color: #48433d;
+    font-size: 17px;
+    line-height: 1.7;
+  }
+
+  li + li {
+    margin-top: 8px;
+  }
+
+  @media (max-width: 640px) {
+    .release-shell {
+      padding: 22px 16px 44px;
+    }
+
+    .topbar {
+      margin-bottom: 28px;
+    }
+
+    .facts {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
