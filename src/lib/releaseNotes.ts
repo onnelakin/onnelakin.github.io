@@ -16,6 +16,52 @@ export type ReleaseNote = {
 
 export const releaseNotes: ReleaseNote[] = [
   {
+    appSlug: 'clipnest',
+    appName: 'ClipNest',
+    version: '1.0.2',
+    tag: 'v1.0.2',
+    platform: 'iOS',
+    releasedDate: '2026-07-13',
+    title: 'ClipNest v1.0.2',
+    summary: 'Public iOS store update for ClipNest 1.0.2.',
+    summaryKo: 'ClipNest 1.0.2 공개 iOS 스토어 업데이트입니다.',
+    previousVersion: '1.0.1',
+    internalGitHubUrl: 'https://github.com/onnellab/clipnest/releases/tag/v1.0.2',
+    changes: [
+      'Improved keyboard editing handoff.',
+      'Fixed clip action menu behavior.',
+      'Included App Store stability fixes for the public 1.0.2 release.'
+    ],
+    changesKo: [
+      '키보드 편집 전환 흐름을 개선했습니다.',
+      '클립 작업 메뉴 동작을 수정했습니다.',
+      '공개 1.0.2 릴리즈에 App Store 안정성 수정 사항을 포함했습니다.'
+    ]
+  },
+  {
+    appSlug: 'tagweaver',
+    appName: 'TagWeaver',
+    version: '2.2',
+    tag: 'v2.2',
+    platform: 'iOS',
+    releasedDate: '2026-07-12',
+    title: 'TagWeaver v2.2',
+    summary: 'Public iOS store update for TagWeaver 2.2.',
+    summaryKo: 'TagWeaver 2.2 공개 iOS 스토어 업데이트입니다.',
+    previousVersion: '2.1',
+    internalGitHubUrl: 'https://github.com/onnellab/tagweaver/releases/tag/v2.2',
+    changes: [
+      'Improved stability for the public iOS 2.2 release.',
+      'Kept the notes scoped to App Store-visible stability fixes.',
+      'Excluded private-test-only and local build metadata changes from the public notes.'
+    ],
+    changesKo: [
+      '공개 iOS 2.2 릴리즈의 안정성을 개선했습니다.',
+      'App Store에 공개된 안정성 수정 범위로 릴리즈 노트를 한정했습니다.',
+      '비공개 테스트 전용 변경과 로컬 빌드 메타데이터 변경은 공개 노트에서 제외했습니다.'
+    ]
+  },
+  {
     appSlug: 'tagweaver',
     appName: 'TagWeaver',
     version: '2.1.3',
