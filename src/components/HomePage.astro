@@ -45,6 +45,8 @@ const text =
         aboutHref: '/about/ko/',
         privacyLink: '앱별 개인정보 처리방침',
         privacyHref: '/privacy/ko/',
+        termsLink: '서비스 약관',
+        termsHref: '/terms/ko/',
         contact: '문의',
         contactLink: '문의',
         soon: '출시 예정',
@@ -72,6 +74,8 @@ const text =
         aboutHref: '/about/',
         privacyLink: 'View app privacy policies',
         privacyHref: '/privacy/',
+        termsLink: 'Terms',
+        termsHref: '/terms/',
         contact: 'Contact',
         contactLink: 'Contact',
         soon: 'Coming Soon',
@@ -204,6 +208,7 @@ const websiteJsonLd = {
         <a href={text.aboutHref}>{text.aboutLink}</a>
         <a href={text.blogHref}>{text.blogLink}</a>
         <a href={text.privacyHref}>{text.privacyLink}</a>
+        <a href={text.termsHref}>{text.termsLink}</a>
         <a href="mailto:onnellab.app@gmail.com">{text.contactLink}</a>
       </div>
     </footer>
@@ -588,6 +593,9 @@ const websiteJsonLd = {
   }
 
   .footer-links a {
+    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
     text-decoration: none;
   }
 

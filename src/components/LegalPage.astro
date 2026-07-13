@@ -17,6 +17,7 @@ type Props = {
   languageLabel: string;
   languageHref: string;
   languageCode: 'en' | 'ko';
+  summary?: string;
   alternates: Array<{ lang: string; path: string }>;
   sections: Section[];
 };
@@ -32,9 +33,12 @@ const {
   languageLabel,
   languageHref,
   languageCode,
+  summary,
   alternates,
   sections
 } = Astro.props;
+
+const updatedLabel = lang === 'ko' ? '최종 업데이트' : 'Last updated';
 ---
 
 <BaseLayout title={title} description={description} canonicalPath={canonicalPath} lang={lang} alternates={alternates}>
@@ -47,8 +51,14 @@ const {
     <header>
       <p class="eyebrow">ONNELLAB</p>
       <h1>{heading}</h1>
-      <p class="updated">Last updated: <time datetime={updatedAt}>{updatedAt}</time></p>
+      <p class="updated">{updatedLabel}: <time datetime={updatedAt}>{updatedAt}</time></p>
     </header>
+
+    {summary && (
+      <section class="summary-card" aria-label={lang === 'ko' ? '요약' : 'Summary'}>
+        <p>{summary}</p>
+      </section>
+    )}
 
     <div class="legal-content">
       {sections.map((section) => (
@@ -78,19 +88,20 @@ const {
 
   .brand,
   .language {
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
     color: #68645c;
     text-decoration: none;
   }
 
   .brand {
+    padding: 7px 0;
     font-size: 14px;
     font-weight: 620;
   }
 
   .language {
-    min-height: 34px;
-    display: inline-flex;
-    align-items: center;
     border: 1px solid #ded6ca;
     border-radius: 999px;
     padding: 7px 13px;
@@ -100,7 +111,7 @@ const {
   }
 
   header {
-    margin: 76px 0 34px;
+    margin: 62px 0 22px;
   }
 
   .eyebrow {
@@ -130,6 +141,21 @@ const {
     gap: 22px;
   }
 
+  .summary-card {
+    border: 1px solid #ded6ca;
+    border-radius: 8px;
+    margin: 0 0 24px;
+    padding: 14px 16px;
+    background: #fffdf8;
+  }
+
+  .summary-card p {
+    margin: 0;
+    color: #4d4942;
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
   section {
     border-top: 1px solid #e5ded4;
     padding-top: 22px;
@@ -155,7 +181,8 @@ const {
     }
 
     header {
-      margin-top: 52px;
+      margin-top: 38px;
+      margin-bottom: 18px;
     }
   }
 </style>
