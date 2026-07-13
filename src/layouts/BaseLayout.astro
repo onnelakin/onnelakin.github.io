@@ -32,7 +32,7 @@ const {
 const canonicalUrl = new URL(canonicalPath, Astro.site);
 const imageUrl = socialImage || image ? new URL(socialImage || image || '', Astro.site) : undefined;
 const twitterCard = imageUrl ? 'summary_large_image' : 'summary';
-const faviconVersion = '20260713-ol-flat3-v2';
+const faviconVersion = '20260713-ol-classic-v2';
 const jsonLdItems = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
 const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID?.trim();
 const gaScript = gaMeasurementId
