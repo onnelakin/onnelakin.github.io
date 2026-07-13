@@ -42,32 +42,24 @@ Melivra Pro
 Melivra is made for your own music collection — not endless recommendations.
 
 Landing page:
-Melivra is an offline music player for MP3, FLAC, WAV, ALAC, AIFF, M4A, OGG, and other local audio collections. It keeps multiple audio formats organized in one focused local music library.
+Melivra is an offline music player for local audio collections. Play MP3, FLAC, WAV, ALAC, AIFF, M4A, and OGG files in one focused local music library.
 
-Browse your local music library by album, artist, composer, genre, or folder, and use integrated music search to find tracks quickly.
+Browse by album, artist, composer, genre, or folder, and use integrated music search when you need a track quickly.
 
-There is no streaming service, account system, or recommendation feed. Melivra is built around music files you already own, with local library management and a focused listening flow.
+There is no streaming service, account system, or recommendation feed. Melivra is built for music files you already own.
 
-For long tracks and repeat listening, Melivra includes resume playback, bookmarks, A-B repeat, and playback speed control. You can browse albums with cover-focused grid view or use list view when you want more direct library navigation.
-
-Melivra also supports AI transcript generation and AI translation. With your approval, Melivra uses AI Tokens to process selected audio, save the AI result, and export transcripts or translations as TXT, SRT, LRC, or JSON.
+For long tracks and repeat listening, Melivra includes resume playback, bookmarks, A-B repeat, and playback speed control. With your approval, AI Tokens can also create AI transcripts and AI translations, then export saved results.
 
 Supported features
 
 • MP3, FLAC, WAV, ALAC, AIFF, M4A, and OGG playback
-• Local music library management
 • Album, Artist, Composer, Genre, and Folder views
 • Integrated music search
-• Resume playback
-• Bookmarks
-• A-B repeat
-• Playback speed control
+• Resume playback and bookmarks
+• A-B repeat and playback speed control
 • Playlist management
-• Local lyrics support
-• AI transcript generation
-• AI translation
-• AI result export
-• Large music collection support
+• AI transcript and AI translation export
+• List view and album grid view
 
 Melivra Pro adds multi-band EQ, Volume Normalization, Gapless Playback, and Playlist Backup & Restore.
 
