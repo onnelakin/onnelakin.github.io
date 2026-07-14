@@ -16,4 +16,4 @@ price: 0
 
 accent: #f1c8bb, #fbf2ed, #6a5148
 
-icon: assets\icon\Melivra.png
+icon: assets\icon\melivra.png
